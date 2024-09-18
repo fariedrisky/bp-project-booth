@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Layout from "@/components/Layout";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
 	return (
@@ -25,6 +26,7 @@ export default function Home() {
 						className="rounded-lg shadow-lg"
 					/>
 				</div>
+				<Button>Hello</Button>
 			</section>
 		</Layout>
 	);

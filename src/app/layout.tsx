@@ -5,7 +5,7 @@ import "./globals.css";
 
 const inter = Inter({
 	subsets: ["latin"],
-	weight: ["100", "400", "700"], // Sesuaikan dengan bobot yang Anda butuhkan
+	weight: ["400", "500", "600", "700"], // Sesuaikan dengan bobot yang Anda butuhkan
 });
 
 export const metadata = {
