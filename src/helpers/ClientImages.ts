@@ -23,7 +23,7 @@ import client21 from '../../public/assets/images/our-client/21.png';
 import client22 from '../../public/assets/images/our-client/22.png';
 import client23 from '../../public/assets/images/our-client/23.png';
 
-const clientImages = [
+export {
     client1,
     client2,
     client3,
@@ -47,6 +47,4 @@ const clientImages = [
     client21,
     client22,
     client23,
-];
-
-export default clientImages;
+}

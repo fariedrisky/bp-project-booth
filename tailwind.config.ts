@@ -10,8 +10,8 @@ const config: Config = {
 	theme: {
 		extend: {
 			colors: {
-				background: '#35302D',
-				foreground: 'hsl(var(--foreground))',
+				background: '#000000',
+				foreground: '#FFFFFF',
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
@@ -21,7 +21,7 @@ const config: Config = {
 					foreground: 'hsl(var(--popover-foreground))'
 				},
 				primary: {
-					DEFAULT: '#9E6725', // Warna utama yang kamu minta
+					DEFAULT: '#000000', // Warna utama yang kamu minta
 					foreground: 'hsl(var(--primary-foreground))'
 				},
 				secondary: {
@@ -29,7 +29,7 @@ const config: Config = {
 					foreground: 'hsl(var(--secondary-foreground))'
 				},
 				accent: {
-					DEFAULT: '#000000', // Warna aksen yang kamu minta (hitam)
+					DEFAULT: '#C78D4E', // Warna aksen yang kamu minta (hitam)
 					foreground: 'hsl(var(--accent-foreground))'
 				},
 				muted: {

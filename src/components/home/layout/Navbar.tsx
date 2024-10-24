@@ -58,9 +58,11 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`${
-                  isActiveLink(link.href) ? "text-primary" : "text-white"
-                } transition-colors duration-300 hover:text-primary`}
+                className={`relative ${
+                  isActiveLink(link.href)
+                    ? "text-accent after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-accent"
+                    : "text-white after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-accent after:transition-all after:duration-300 hover:after:w-full"
+                } transition-colors duration-300`}
               >
                 {link.label}
               </Link>
@@ -93,7 +95,7 @@ export default function Navbar() {
 
       {/* Mobile Navigation */}
       <nav
-        className={`fixed inset-x-0 top-0 z-40 h-screen w-full bg-[#35302D] bg-opacity-90 transition-transform duration-300 ease-in-out lg:hidden ${
+        className={`fixed inset-x-0 top-0 z-40 h-screen w-full bg-black bg-opacity-90 transition-transform duration-300 ease-in-out lg:hidden ${
           isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"
         }`}
       >
@@ -104,9 +106,11 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`${
-                  isActiveLink(link.href) ? "text-primary" : "text-white"
-                } text-xl transition-colors duration-300 hover:text-primary`}
+                className={`relative ${
+                  isActiveLink(link.href)
+                    ? "text-accent after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-accent"
+                    : "text-white after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-accent after:transition-all after:duration-300 hover:after:w-full"
+                } transition-colors duration-300`}
                 onClick={handleToggleMobileMenu}
               >
                 {link.label}

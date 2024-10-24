@@ -10,7 +10,7 @@ const ServiceCard = ({
   title: string;
   description: string;
 }) => (
-  <div className="rounded-lg bg-white p-6 shadow-md">
+  <div className="bg-white p-6 shadow-md">
     <Icon className="mb-4 h-12 w-12 text-primary" />
     <h3 className="mb-2 text-xl font-semibold text-primary">{title}</h3>
     <p className="text-primary">{description}</p>
@@ -57,8 +57,10 @@ export default function OurServiceSection() {
             title="Spin 360"
             description="Booth terpopuler dengan fitur video 360° menggunakan iPhone dan GoPro."
           />
-          <div className="rounded-lg bg-primary p-6 text-white">
-            <h3 className="mb-4 text-xl font-semibold text-white">All Products</h3>
+          <div className="bg-primary p-6 text-white">
+            <h3 className="mb-4 text-xl font-semibold text-white">
+              All Products
+            </h3>
             <p className="mb-4">
               Lihat semua produk kami, pastinya dengan harga yang relevan dan
               sertis yang profesional
