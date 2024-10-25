@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
-import * as SpinImages from "@/helpers/SpinImages";
+import * as SpinImages from "@/data/images/SpinImages";
 
 const SpinImagesArray = Object.values(SpinImages);
 

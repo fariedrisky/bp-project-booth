@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { heroBackground, heroClient } from "@/helpers/heroImages";
+import { heroBackground, heroClient } from "@/data/images/heroImages";
 import { motion } from "framer-motion";
 import { slideInFromBottom } from "@/utils/motion";
 

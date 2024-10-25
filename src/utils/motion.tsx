@@ -30,3 +30,22 @@ export function sideBar() {
     },
   };
 }
+
+export function slideInFromLeftWithBounce(delay: number) {
+  return {
+    offscreen: {
+      x: -100,
+      opacity: 0,
+    },
+    onscreen: {
+      x: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        duration: 0.6,
+        delay: delay,
+        bounce: 0.3,
+      },
+    },
+  };
+}

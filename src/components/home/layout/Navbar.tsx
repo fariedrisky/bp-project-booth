@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { HiMenuAlt3, HiOutlineX } from "react-icons/hi";
 import { usePathname } from "next/navigation";
-import logo from "../../../../public/assets/images/logo-white.svg";
+import { logowhite } from "@/data/images/logo";
 import { menu } from "@/data/HomeMenu";
 
 // Define the type for menu items
@@ -14,16 +14,14 @@ type MenuItem = {
 };
 
 export default function Navbar() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const currentPage = usePathname();
 
-  // Toggle mobile menu and manage body overflow for smooth scrolling
-  const handleToggleMobileMenu = () => {
+  const toggleMobileMenu = () => {
     setIsMobileMenuOpen((prevState) => !prevState);
     document.body.style.overflow = isMobileMenuOpen ? "unset" : "hidden";
   };
 
-  // Close the mobile menu on window resize (if the screen width is larger than 1024px)
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
@@ -39,40 +37,46 @@ export default function Navbar() {
     };
   }, []);
 
-  // Helper function to check if the current page matches the menu item
   const isActiveLink = (href: string) => currentPage === href;
+
+  const renderMenuLinks = () =>
+    menu.map((link: MenuItem) => (
+      <Link
+        key={link.href}
+        href={link.href}
+        className={`relative transition-colors duration-300 ${
+          isActiveLink(link.href)
+            ? "text-accent after:w-full"
+            : "text-white after:w-0 hover:after:w-full"
+        } after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-accent after:transition-all after:duration-300`}
+        onClick={() => isMobileMenuOpen && toggleMobileMenu()}
+      >
+        {link.label}
+      </Link>
+    ));
 
   return (
     <>
       {/* Navbar */}
-      <header className="fixed left-0 right-0 top-0 z-50 w-full border-b border-white border-opacity-20 bg-background bg-opacity-80 backdrop-blur-lg transition-colors duration-300">
+      <header className="fixed inset-x-0 top-0 z-50 w-full border-b border-white border-opacity-20 bg-background bg-opacity-80 backdrop-blur-lg transition-colors duration-300">
         <div className="container mx-auto flex items-center justify-between px-4 py-4 xl:px-0">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <Image src={logo} alt="logo" width={250} height={40} />
-          </div>
+          <Image
+            src={logowhite}
+            alt="logo"
+            width={250}
+            height={40}
+            className="flex-shrink-0"
+          />
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex lg:items-center lg:gap-10">
-            {menu.map((link: MenuItem) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`relative ${
-                  isActiveLink(link.href)
-                    ? "text-accent after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-accent"
-                    : "text-white after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-accent after:transition-all after:duration-300 hover:after:w-full"
-                } transition-colors duration-300`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {renderMenuLinks()}
           </nav>
 
           {/* Mobile Menu Toggle Button */}
           <button
             className="text-white lg:hidden"
-            onClick={handleToggleMobileMenu}
+            onClick={toggleMobileMenu}
             aria-label={
               isMobileMenuOpen ? "Close mobile menu" : "Open mobile menu"
             }
@@ -102,20 +106,7 @@ export default function Navbar() {
         <div className="container mx-auto flex h-full flex-col px-4 py-4">
           {/* Mobile Menu Links */}
           <div className="flex flex-grow flex-col items-center justify-center gap-10">
-            {menu.map((link: MenuItem) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`relative ${
-                  isActiveLink(link.href)
-                    ? "text-accent after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-accent"
-                    : "text-white after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-accent after:transition-all after:duration-300 hover:after:w-full"
-                } transition-colors duration-300`}
-                onClick={handleToggleMobileMenu}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {renderMenuLinks()}
           </div>
         </div>
       </nav>

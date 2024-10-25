@@ -1,4 +1,4 @@
-import * as clientImages from "@/helpers/ClientImages";
+import * as clientImages from "@/data/images/ClientImages";
 import Image from "next/image";
 import Marquee from "react-fast-marquee";
 

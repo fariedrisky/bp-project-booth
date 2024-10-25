@@ -19,7 +19,7 @@ const ServiceCard = ({
 
 export default function OurServiceSection() {
   return (
-    <section id="our-service" className="bg-zinc-100 px-4 py-12">
+    <section id="our-service" className="bg-foreground px-4 py-12">
       <div className="container mx-auto w-full">
         <div className="mb-8">
           <h2 className="mb-2 text-sm font-semibold text-primary">
