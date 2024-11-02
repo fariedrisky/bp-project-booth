@@ -1,14 +1,15 @@
 // app/layout.tsx
-
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/home/layout/Navbar";
-import Footer from "@/components/home/layout/Footer";
+import GuestLayout from "@/components/guest/layout";
+import AuthLayout from "@/components/auth/layout";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
+import { Toaster } from "sonner";
+import { cookies } from "next/headers";
 
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"], // Sesuaikan dengan bobot yang Anda butuhkan
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata = {
@@ -21,13 +22,25 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Ambil status autentikasi dari cookie
+  const isAuthenticated = cookies().get("isAuthenticated")?.value === "true";
+
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-background`}>
-        <Navbar />
-        <ScrollToTop />
-        {children}
-        <Footer />
+      <body className={`${inter.className}`}>
+        {isAuthenticated ? (
+          <AuthLayout>
+            <ScrollToTop />
+            {children}
+            <Toaster position="top-center" />
+          </AuthLayout>
+        ) : (
+          <GuestLayout>
+            <ScrollToTop />
+            {children}
+            <Toaster position="top-center" />
+          </GuestLayout>
+        )}
       </body>
     </html>
   );

@@ -60,13 +60,15 @@ export default function Navbar() {
       {/* Navbar */}
       <header className="fixed inset-x-0 top-0 z-50 w-full border-b border-white border-opacity-20 bg-background bg-opacity-80 backdrop-blur-lg transition-colors duration-300">
         <div className="container mx-auto flex items-center justify-between px-4 py-4 xl:px-0">
-          <Image
-            src={logowhite}
-            alt="logo"
-            width={250}
-            height={40}
-            className="flex-shrink-0"
-          />
+          <Link href="/">
+            <Image
+              src={logowhite}
+              alt="logo"
+              width={250}
+              height={40}
+              className="flex-shrink-0"
+            />
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex lg:items-center lg:gap-10">

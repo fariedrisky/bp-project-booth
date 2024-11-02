@@ -10,7 +10,7 @@ import { FaTiktok } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="bg-foreground p-8 text-primary">
+    <footer className="border-t border-primary bg-foreground p-8 text-primary">
       <div className="container mx-auto grid grid-cols-1 gap-8 md:grid-cols-4">
         {/* Logo and Tagline */}
         <div>
