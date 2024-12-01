@@ -4,7 +4,7 @@ import { FaCircleCheck } from "react-icons/fa6";
 import Image from "next/image";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import OurClientsMarquee from "../animations/OurClientsMarquee";
+import OurClientsMarquee from "../../animations/OurClientsMarquee";
 
 export default function BpSection() {
   return (

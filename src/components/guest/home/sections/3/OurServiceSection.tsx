@@ -1,6 +1,10 @@
 import React from "react";
-import { Camera, Image, Box, Smartphone } from "lucide-react";
+import { SlScreenSmartphone } from "react-icons/sl";
 import { MdOutlinePanoramaWideAngle } from "react-icons/md";
+import { TbView360Arrow } from "react-icons/tb";
+import { GrRotateRight } from "react-icons/gr";
+import { LiaPersonBoothSolid } from "react-icons/lia";
+import { RiPolaroid2Line } from "react-icons/ri";
 
 const ServiceCard = ({
   icon: Icon,
@@ -39,22 +43,22 @@ export default function OurServiceSection() {
 
         <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           <ServiceCard
-            icon={Image}
+            icon={RiPolaroid2Line}
             title="Basic Booth"
             description="Cocok untuk event besar dan kecil, dengan ukuran foto 2R, 4R, Polaroid."
           />
           <ServiceCard
-            icon={Camera}
+            icon={LiaPersonBoothSolid}
             title="Mini Booth"
             description="Solusi untuk acara kecil dengan fitur boomerang dan GIF"
           />
           <ServiceCard
-            icon={Box}
+            icon={GrRotateRight}
             title="180 Booth"
             description="Efek foto dengan sudut pandang 180° yang futuristik menggunakan 6-12 kamera."
           />
           <ServiceCard
-            icon={Camera}
+            icon={TbView360Arrow}
             title="Spin 360"
             description="Booth terpopuler dengan fitur video 360° menggunakan iPhone dan GoPro."
           />
@@ -64,7 +68,7 @@ export default function OurServiceSection() {
             description="Booth dengan lensa sudut lebar untuk menangkap momen lebih luas dan detail."
           />
           <ServiceCard
-            icon={Smartphone}
+            icon={SlScreenSmartphone}
             title="Phone Booth"
             description="Booth modern untuk merekam video message kreatif dari para tamu."
           />
