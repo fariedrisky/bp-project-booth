@@ -5,6 +5,7 @@ import Image from "next/image";
 import { heroBackground, heroClient } from "@/data/images/heroImages";
 import { motion } from "framer-motion";
 import { slideInFromBottom } from "@/utils/motion";
+import { Button } from "@/components/ui/button";
 
 export default function HeroSection() {
   return (
@@ -65,21 +66,21 @@ export default function HeroSection() {
                 Professional Photo Booth Service
               </span>
             </div>
-            <h1 className="mb-4 text-3xl font-bold text-white sm:text-4xl md:text-5xl">
+            <h1 className="mb-4 font-serif text-3xl font-bold text-white sm:text-4xl md:text-5xl">
               Hadir Mengabadikan <br />
-              Setiap <span className="text-accent">Momen</span>
+              Setiap <span className="italic text-accent">Momen</span>
             </h1>
             <p className="mx-auto mb-6 max-w-sm text-sm text-gray-200 sm:max-w-md sm:text-base lg:mx-0">
               Photo booth modern yang menghadirkan kenangan tak terlupakan di
               setiap acara Anda
             </p>
             <div className="flex flex-col justify-center space-y-3 sm:flex-row sm:space-x-4 sm:space-y-0 lg:justify-start">
-              <button className="bg-accent px-4 py-2 text-sm font-bold text-white transition duration-300 hover:bg-accent sm:px-6">
+              <Button className="bg-accent px-4 py-2 text-sm font-bold text-white transition duration-300 hover:bg-accent/80 sm:px-6">
                 Lihat Produk
-              </button>
-              <button className="flex items-center justify-center border border-white bg-transparent px-4 py-2 text-sm font-bold text-white transition duration-300 hover:bg-white hover:bg-opacity-20 sm:px-6">
+              </Button>
+              <Button className="flex items-center justify-center border border-white bg-transparent px-4 py-2 text-sm font-bold text-white transition duration-300 hover:bg-white hover:bg-opacity-20 sm:px-6">
                 Kontak Kami <span className="ml-2">→</span>
-              </button>
+              </Button>
             </div>
           </motion.div>
         </div>

@@ -10,7 +10,7 @@ import { FaTiktok } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-primary bg-foreground p-8 text-primary">
+    <footer className="shadow-2xl border-t border-primary bg-foreground p-8 text-primary">
       <div className="container mx-auto grid grid-cols-1 gap-8 md:grid-cols-4">
         {/* Logo and Tagline */}
         <div>
@@ -35,7 +35,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <AiOutlineWhatsApp className="h-5 w-5" />
+                <AiOutlineWhatsApp className="h-5 w-5 transition duration-300 hover:text-accent" />
               </Link>
               <p>+62 851-5731-6767</p>
             </div>
@@ -45,7 +45,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <AiOutlineMail className="h-5 w-5" />
+                <AiOutlineMail className="h-5 w-5 transition duration-300 hover:text-accent" />
               </Link>
               <p>bp.project835@gmail.com</p>
             </div>
@@ -63,14 +63,14 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <AiOutlineInstagram className="h-6 w-6" />
+              <AiOutlineInstagram className="h-6 w-6 transition duration-300 hover:text-accent" />
             </Link>
             <Link
               href="https://www.tiktok.com/@bp.projectbooth"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <FaTiktok className="h-6 w-6" />
+              <FaTiktok className="h-6 w-6 transition duration-300 hover:text-accent" />
             </Link>
           </div>
           <span className="mt-2 block text-primary">BP Project Booth</span>

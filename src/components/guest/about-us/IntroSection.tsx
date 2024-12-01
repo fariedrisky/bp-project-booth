@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { heroBackground } from "@/data/images/heroImages";
 import { logowhite } from "@/data/images/logo";
-import { slideInFromLeftWithBounce } from "@/utils/motion"; // Pastikan path ini benar
+import { slideInFromLeftWithBounce } from "@/utils/motion";
 
 export default function IntroSection() {
   return (
@@ -26,12 +26,12 @@ export default function IntroSection() {
 
       {/* Content with motion effect */}
       <motion.div
-        className="container mx-auto flex flex-col items-center px-4 text-center"
+        className="container mx-auto flex flex-col items-center px-4"
         initial="offscreen"
         animate="onscreen"
-        variants={slideInFromLeftWithBounce(0.2)} // Delay 0.2 seconds
+        variants={slideInFromLeftWithBounce(0.2)}
       >
-        <h2 className="mb-4 text-2xl font-bold">
+        <h2 className="mb-8 text-2xl font-bold">
           <Image
             src={logowhite}
             alt="BP Project Booth"
@@ -40,18 +40,33 @@ export default function IntroSection() {
             className="mx-auto"
           />
         </h2>
-        <p className="max-w-4xl text-xl leading-relaxed">
-          Bp Project Booth adalah perusahaan yang bergerak di bidang photo
-          booth, dengan proses operasi yang didukung oleh teknologi modern.
-          Didirikan pada tahun 2018, kami telah berulang kali berhasil memenuhi
-          permintaan konsumen sesuai ekspektasi hingga saat ini. Tidak hanya
-          melayani event skala besar, Bp Project Booth juga menyesuaikan layanan
-          kami untuk event skala kecil seperti pesta ulang tahun, bridal shower,
-          dan pertunangan. Kehadiran photo booth memberikan nuansa yang unik
-          dalam setiap acara. Selain mengabadikan momen bahagia dalam bentuk
-          gambar, kehadiran kami turut meningkatkan citra acara, menjadikannya
-          lebih berkesan bagi penyelenggara dan tamu.
-        </p>
+
+        <div className="max-w-5xl space-y-6 text-justify text-2xl leading-relaxed">
+          <p>
+            Bp Project Booth merupakan sebuah perusahaan yang bergerak di bidang
+            Photo Booth, yang proses operasinya dikendalikan oleh teknologi
+            modern dan masa kini.
+          </p>
+
+          <p>
+            Didirikan pada tahun 2018, sudah berulang kali mampu memenuhi
+            permintaan sesuai ekspektasi konsumen sampai sekarang ini.
+          </p>
+
+          <p>
+            Tidak hanya pada event skala besar seperti Wedding atau
+            Brand/Corporate, Bp Booth juga bisa menyesuaikan operasinya pada
+            event skala kecil seperti Birthday Party, Bridal Shower, Engagement,
+            dsb.
+          </p>
+
+          <p>
+            Kehadiran Photo Booth menjadi warna tersendiri di dalam suatu acara.
+            Selain dapat mengabadikan momen kebahagiaan dalam bentuk gambar,
+            tentu citra acara tersebut menjadi lebih berkesan bagi penyelenggara
+            acara maupun tamu.
+          </p>
+        </div>
       </motion.div>
     </section>
   );

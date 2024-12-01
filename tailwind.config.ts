@@ -9,6 +9,9 @@ const config: Config = {
 	],
 	theme: {
 		extend: {
+			fontFamily: {
+				serif: ["var(--font-ibarra)"],
+			},
 			colors: {
 				background: '#000000',
 				foreground: '#FFFFFF',
@@ -21,15 +24,15 @@ const config: Config = {
 					foreground: 'hsl(var(--popover-foreground))'
 				},
 				primary: {
-					DEFAULT: '#000000', // Warna utama yang kamu minta
+					DEFAULT: '#000000',
 					foreground: 'hsl(var(--primary-foreground))'
 				},
 				secondary: {
-					DEFAULT: '#FFFFFF', // Warna sekunder yang kamu minta (putih)
+					DEFAULT: '#FFFFFF',
 					foreground: 'hsl(var(--secondary-foreground))'
 				},
 				accent: {
-					DEFAULT: '#C78D4E', // Warna aksen yang kamu minta (hitam)
+					DEFAULT: '#C78D4E',
 					foreground: 'hsl(var(--accent-foreground))'
 				},
 				muted: {
@@ -60,4 +63,5 @@ const config: Config = {
 	},
 	plugins: [require("tailwindcss-animate")],
 };
+
 export default config;
