@@ -1,5 +1,5 @@
-import IntroSection from "@/components/guest/about-us/section/1/IntroSection";
-import OurTeamSection from "@/components/guest/about-us/section/2/OurTeamSection";
+import IntroSection from "@/components/guest/about-us/sections/1/Introducing";
+import OurTeamSection from "@/components/guest/about-us/sections/2/OurTeam";
 import React from "react";
 
 export default function AboutUs() {

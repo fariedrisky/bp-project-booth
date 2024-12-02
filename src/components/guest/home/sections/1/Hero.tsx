@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { slideInFromBottom } from "@/utils/motion";
 import { Button } from "@/components/ui/button";
 
-export default function HeroSection() {
+export default function Hero() {
   return (
     <section
       id="hero-section"

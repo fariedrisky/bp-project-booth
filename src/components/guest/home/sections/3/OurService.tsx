@@ -26,7 +26,7 @@ const ServiceCard = ({
   </div>
 );
 
-export default function OurServiceSection() {
+export default function OurService() {
   return (
     <section id="our-service" className="bg-foreground px-4 py-12">
       <div className="container mx-auto w-full">

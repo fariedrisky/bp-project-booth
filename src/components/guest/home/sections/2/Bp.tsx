@@ -6,7 +6,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import OurClientsMarquee from "../../animations/OurClientsMarquee";
 
-export default function BpSection() {
+export default function Bp() {
   return (
     <>
       <section id="bp-section" className="bg-foreground py-16">
