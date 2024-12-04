@@ -2,9 +2,10 @@
 import React from "react";
 import BasicBooth from "./sections/01-BasicBooth";
 import MiniBooth from "./sections/02-MiniBooth";
-import { Booth180 } from "./sections/03-180Booth";
-import { WideAngleBooth } from "./sections/04-WideAngleBooth";
-import { PhoneBooth } from "./sections/05-PhoneBooth";
+import Booth180 from "./sections/03-180Booth";
+import { WideAngleBooth } from "./sections/05-WideAngleBooth";
+import { PhoneBooth } from "./sections/06-PhoneBooth";
+import Spin360 from "./sections/04-Spin360";
 
 const Service = () => {
   return (
@@ -12,6 +13,7 @@ const Service = () => {
       <BasicBooth />
       <MiniBooth />
       <Booth180 />
+      <Spin360 />
       <WideAngleBooth />
       <PhoneBooth />
     </div>

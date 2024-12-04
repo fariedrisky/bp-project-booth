@@ -1,15 +1,16 @@
 import React from "react";
 import Image from "next/image";
 import { heroBackground } from "@/data/images/heroImages";
-import { BoothCard } from "./BoothCard";
+import { ServiceCard } from "@/components/ui/ServiceCard";
 import { cn } from "@/lib/utils";
+import type { ServiceType } from "@/components/ui/ServiceCard";
 
-const boothTypes = [
+const boothTypes: ServiceType[] = [
   {
     id: "2r",
     title: "2R",
     description: "Basic Booth dengan ukuran 2R, cocok untuk berbagai acara",
-    size: "2R",
+    type: "2R",
     duration: "4 Jam",
     image: "/assets/images/services/2r.jpg",
     printOptions: [
@@ -36,7 +37,7 @@ const boothTypes = [
     id: "polaroid",
     title: "Polaroid",
     description: "Basic Booth dengan format Polaroid yang klasik",
-    size: "Polaroid",
+    type: "Polaroid",
     duration: "4 Jam",
     image: "/assets/images/services/2r.jpg",
     printOptions: [
@@ -63,7 +64,7 @@ const boothTypes = [
     id: "4r-portrait",
     title: "4R Portrait",
     description: "Basic Booth ukuran 4R format portrait",
-    size: "4R Portrait",
+    type: "4R Portrait",
     duration: "4 Jam",
     image: "/assets/images/services/2r.jpg",
     printOptions: [
@@ -110,14 +111,11 @@ const BasicBooth = () => {
             Polaroid.
           </p>
         </div>
-        <div
-          className={cn(
-            "grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3",
-            "lg:[&:has(>:nth-child(2):last-child)]:mx-auto lg:[&:has(>:nth-child(2):last-child)]:max-w-[800px] lg:[&:has(>:nth-child(2):last-child)]:grid-cols-2",
-          )}
-        >
+        <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {boothTypes.map((booth) => (
-            <BoothCard key={booth.id} booth={booth} />
+            <div key={booth.id} className="mx-auto w-full max-w-[389px]">
+              <ServiceCard service={booth} variant="basic" />
+            </div>
           ))}
         </div>
       </div>

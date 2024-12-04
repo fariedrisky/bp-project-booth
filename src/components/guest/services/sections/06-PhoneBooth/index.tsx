@@ -1,31 +1,22 @@
-import React from "react";
-import Image from "next/image";
+import ServiceCard, { ServiceType } from "@/components/ui/ServiceCard";
 import { heroBackground } from "@/data/images/heroImages";
-import { ServiceCard } from "@/components/ui/ServiceCard";
 import { cn } from "@/lib/utils";
-import type { ServiceType } from "@/components/ui/ServiceCard";
+import Image from "next/image";
 
-const booth180Types: ServiceType[] = [
+const phoneBoothTypes: ServiceType[] = [
   {
-    id: "180-6cam",
-    title: "Camera 180° (6 Kamera)",
-    description:
-      "Efek foto dengan sudut pandang 180° yang futuristik menggunakan 6 kamera",
+    id: "phone-booth-only",
+    title: "Phone Booth (Only)",
+    description: "Solusi booth sederhana dengan fokus pada pesan video",
     duration: "4 Jam",
-    type: "6 Kamera",
+    type: "Phone",
     image: "/assets/images/services/2r.jpg",
-    price: 8000000,
-    features: [
-      "Time Freeze Video",
-      "Custom Template",
-      "Media Sharing File",
-      "Props",
-      "4 Jam Durasi Acara",
-    ],
+    price: 2000000,
+    features: ["All File Message Video", "Media Sharing File"],
   },
 ];
 
-const Booth180 = () => {
+export const PhoneBooth = () => {
   return (
     <section className="py-8">
       <div className="container mx-auto px-4">
@@ -41,17 +32,16 @@ const Booth180 = () => {
         </div>
         <div className="mx-auto mb-8 max-w-2xl text-center">
           <h2 className="font-serif text-2xl font-bold md:text-3xl">
-            180° Booth
+            Phone Booth
           </h2>
           <p className="mt-2 text-gray-600">
-            Efek foto dengan sudut pandang 180° yang futuristik menggunakan
-            multiple kamera
+            Booth sederhana untuk mengabadikan pesan video
           </p>
         </div>
         <div className="mx-auto grid max-w-[400px] grid-cols-1 gap-6">
-          {booth180Types.map((booth) => (
+          {phoneBoothTypes.map((booth) => (
             <div key={booth.id} className="mx-auto w-full max-w-[389px]">
-              <ServiceCard service={booth} variant="180" />
+              <ServiceCard service={booth} variant="phone" />
             </div>
           ))}
         </div>
@@ -59,5 +49,3 @@ const Booth180 = () => {
     </section>
   );
 };
-
-export default Booth180;
