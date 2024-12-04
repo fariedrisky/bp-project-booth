@@ -71,14 +71,19 @@ const ServiceNav = () => {
         <div
           className={cn(
             "w-40 transition-all duration-300",
-            isOpen ? "translate-x-0 opacity-100" : "translate-x-8 opacity-0",
+            isOpen
+              ? "translate-x-0 opacity-100"
+              : "pointer-events-none translate-x-8 opacity-0",
           )}
         >
           <nav className="flex flex-col gap-1 bg-black/80 p-4 backdrop-blur-md">
             {navItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => scrollToSection(item.id)}
+                onClick={() => {
+                  scrollToSection(item.id);
+                  setIsOpen(false);
+                }}
                 className={cn(
                   "px-3 py-2 text-sm font-medium transition-all",
                   activeSection === item.id

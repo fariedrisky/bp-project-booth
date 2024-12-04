@@ -66,36 +66,31 @@ const spin360Types: ServiceType[] = [
 
 const Spin360 = () => {
   return (
-    <section className="py-8">
-      <div className="container mx-auto px-4">
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          <Image
-            src={heroBackground}
-            alt="Hero Background"
-            layout="fill"
-            objectFit="cover"
-            priority
-            className="opacity-20 mix-blend-lighten"
-          />
-        </div>
-        <div className="mx-auto mb-8 max-w-2xl text-center">
-          <h2 className="font-serif text-2xl font-bold md:text-3xl">
-            Spin 360°
-          </h2>
-          <p className="mt-2 text-gray-600">
-            Booth terpopuler dengan fitur video 360° menggunakan iPhone dan
-            GoPro
-          </p>
-        </div>
-        <div className="mx-auto grid max-w-[800px] grid-cols-1 gap-4 md:grid-cols-2">
-          {spin360Types.map((booth) => (
-            <div key={booth.id} className="mx-auto w-full max-w-[389px]">
-              <ServiceCard service={booth} variant="spin360" />
-            </div>
-          ))}
-        </div>
+    <div className="container mx-auto px-4">
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <Image
+          src={heroBackground}
+          alt="Hero Background"
+          layout="fill"
+          objectFit="cover"
+          priority
+          className="opacity-20 mix-blend-lighten"
+        />
       </div>
-    </section>
+      <div className="mx-auto mb-8 max-w-2xl text-center">
+        <h2 className="font-serif text-2xl font-bold md:text-3xl">Spin 360°</h2>
+        <p className="mt-2 text-gray-600">
+          Booth terpopuler dengan fitur video 360° menggunakan iPhone dan GoPro
+        </p>
+      </div>
+      <div className="mx-auto grid max-w-[800px] grid-cols-1 gap-4 md:grid-cols-2">
+        {spin360Types.map((booth) => (
+          <div key={booth.id} className="mx-auto w-full max-w-[389px]">
+            <ServiceCard service={booth} variant="spin360" />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 
