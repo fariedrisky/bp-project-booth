@@ -9,31 +9,26 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-// 180 Booth Component
-const booth180Services = [
+// Wide Angle Booth Component
+const wideAngleServices = [
   {
     id: 1,
-    title: "Camera 180 (6 Kamera)",
-    description:
-      "Efek foto dengan sudut pandang 180° yang futuristik menggunakan 6 kamera",
-    price: 8000000,
-    setup: "6 Camera Setup",
-    duration: "4 Hours",
-    additionalInfo: "180° View Experience",
+    title: "Wide Angle Booth",
+    description: "Booth dengan sudut lebar untuk foto group yang lebih luas",
+    price: 5000000,
+    prints: "Unlimited Polaroid Size",
+    features: "Wide Angle Setup",
+    additionalInfo: "Group Photography Optimized",
   },
 ];
 
-export const Booth180 = () => {
+export const WideAngleBooth = () => {
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
-        <h2 className="mb-8 text-3xl font-bold text-center font-serif">180 Booth</h2>
-        <p className="mb-8 text-gray-600 text-center">
-          Efek foto dengan sudut pandang 180° yang futuristik menggunakan 6-12
-          kamera.
-        </p>
+        <h2 className="mb-8 text-3xl font-bold">Wide Angle Booth</h2>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {booth180Services.map((service) => (
+          {wideAngleServices.map((service) => (
             <Card
               key={service.id}
               className="overflow-hidden transition-shadow hover:shadow-lg"
@@ -58,18 +53,12 @@ export const Booth180 = () => {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Setup</span>
-                    <span className="font-medium">{service.setup}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Duration</span>
-                    <span className="font-medium">{service.duration}</span>
+                    <span className="text-gray-600">Prints</span>
+                    <span className="font-medium">{service.prints}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">Features</span>
-                    <span className="font-medium">
-                      {service.additionalInfo}
-                    </span>
+                    <span className="font-medium">{service.features}</span>
                   </div>
                 </div>
               </CardContent>

@@ -3,7 +3,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 
-const TeamSection = () => {
+const OurTeam = () => {
   const categories = [
     "View all",
     "Management",
@@ -116,4 +116,4 @@ const TeamSection = () => {
   );
 };
 
-export default TeamSection;
+export default OurTeam;

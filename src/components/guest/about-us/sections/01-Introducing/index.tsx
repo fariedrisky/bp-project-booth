@@ -6,7 +6,7 @@ import { heroBackground } from "@/data/images/heroImages";
 import { logowhite } from "@/data/images/logo";
 import { slideInFromLeftWithBounce } from "@/utils/motion";
 
-export default function IntroSection() {
+export default function Introducing() {
   return (
     <section
       id="bp-section"

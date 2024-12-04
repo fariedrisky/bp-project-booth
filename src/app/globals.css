@@ -64,7 +64,6 @@ h6 {
 
 /* For the scrollbar thumb */
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px; /* Rounding the corners of the scrollbar thumb */
   background-color: darkgrey; /* The color of the scrollbar thumb */
 }
 
