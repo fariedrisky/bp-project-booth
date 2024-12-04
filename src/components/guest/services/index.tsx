@@ -11,8 +11,7 @@ import { ChevronLeft } from "lucide-react";
 
 const ServiceNav = () => {
   const [activeSection, setActiveSection] = React.useState("basic");
-  const [isHovered, setIsHovered] = React.useState(false);
-  const timeoutRef = React.useRef<NodeJS.Timeout>();
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -52,17 +51,8 @@ const ServiceNav = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleMouseEnter = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    timeoutRef.current = setTimeout(() => {
-      setIsHovered(false);
-    }, 300);
+  const toggleMenu = () => {
+    setIsOpen((prev) => !prev);
   };
 
   const navItems = [
@@ -75,17 +65,13 @@ const ServiceNav = () => {
   ];
 
   return (
-    <div
-      className="fixed right-0 top-1/2 z-50 -translate-y-1/2"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
+    <div className="fixed right-0 top-1/2 z-50 -translate-y-1/2">
       <div className="relative flex items-center justify-end">
         {/* Navigation Menu */}
         <div
           className={cn(
             "w-40 transition-all duration-300",
-            isHovered ? "translate-x-0 opacity-100" : "translate-x-8 opacity-0",
+            isOpen ? "translate-x-0 opacity-100" : "translate-x-8 opacity-0",
           )}
         >
           <nav className="flex flex-col gap-1 bg-black/80 p-4 backdrop-blur-md">
@@ -108,12 +94,10 @@ const ServiceNav = () => {
 
         {/* Toggle Button */}
         <button
-          className={cn(
-            "relative bg-accent p-1 text-white transition-all duration-300",
-            isHovered ? "opacity-0" : "opacity-100 hover:bg-accent/90",
-          )}
+          onClick={toggleMenu}
+          className="relative bg-accent p-1 text-white transition-all duration-300 hover:bg-accent/90"
         >
-          <ChevronLeft size={20} />
+          <ChevronLeft size={20} className={isOpen ? "rotate-180" : ""} />
         </button>
       </div>
     </div>
