@@ -13,7 +13,7 @@ const booth180Types: ServiceType[] = [
       "Efek foto dengan sudut pandang 180° yang futuristik menggunakan 6 kamera",
     duration: "4 Jam",
     type: "6 Kamera",
-    image: "/assets/images/services/2r.jpg",
+    image: "/assets/images/services/camera-180.jpg",
     price: 8000000,
     features: [
       "Time Freeze Video",

@@ -10,7 +10,7 @@ const phoneBoothTypes: ServiceType[] = [
     description: "Solusi booth sederhana dengan fokus pada pesan video",
     duration: "4 Jam",
     type: "Phone",
-    image: "/assets/images/services/2r.jpg",
+    image: "/assets/images/services/phone-booth.jpg",
     price: 2000000,
     features: ["All File Message Video", "Media Sharing File"],
   },

@@ -189,12 +189,12 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
       )}
     >
       <CardHeader className="p-0">
-        <div className="relative aspect-[4/3] w-full">
+        <div className="relative aspect-[1/1] w-full">
           <Image
             src={service.image}
             alt={service.title}
             fill
-            className="rounded-t-lg object-cover"
+            className="object-cover"
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
             quality={100}
           />

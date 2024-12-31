@@ -13,7 +13,7 @@ const spin360Types: ServiceType[] = [
       "Booth terpopuler dengan fitur video 360° menggunakan iPhone dan GoPro",
     type: "Spin 360°",
     duration: "3-4 Jam",
-    image: "/assets/images/services/2r.jpg",
+    image: "/assets/images/services/spin-360.jpg",
     durationOptions: [
       // Menggunakan durationOptions untuk pilihan durasi
       {
@@ -41,7 +41,7 @@ const spin360Types: ServiceType[] = [
     description: "Bundling package Spin 360° dengan cetak foto 2R",
     duration: "4 Jam",
     type: "Spin 360° + 2R",
-    image: "/assets/images/services/2r.jpg",
+    image: "/assets/images/services/spin-360-2r.jpg",
     printOptions: [
       {
         value: "400",
