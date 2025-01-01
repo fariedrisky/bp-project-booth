@@ -38,7 +38,7 @@ export interface ServiceType {
   price?: number;
 }
 
-type BoothVariant =
+export type BoothVariant =
   | "basic"
   | "mini"
   | "180"
@@ -48,7 +48,7 @@ type BoothVariant =
 
 interface ServiceCardProps {
   service: ServiceType;
-  variant?: BoothVariant;
+  variant?: BoothVariant | undefined;
   className?: string;
 }
 

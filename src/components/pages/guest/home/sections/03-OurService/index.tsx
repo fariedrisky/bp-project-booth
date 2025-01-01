@@ -17,7 +17,7 @@ const ServiceCard = ({
   description: string;
   button?: React.ReactNode; // Tetap opsional
 }) => (
-  <div className="bg-white p-6 transition duration-300 hover:scale-105 hover:drop-shadow-2xl">
+  <div className="cursor-pointer bg-white p-6 transition duration-300 hover:scale-105 hover:drop-shadow-2xl">
     {Icon && <Icon className="mb-4 h-12 w-12 text-primary" />}{" "}
     {/* Render hanya jika Icon tersedia */}
     <h3 className="mb-2 text-xl font-semibold text-primary">{title}</h3>

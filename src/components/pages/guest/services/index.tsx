@@ -8,6 +8,8 @@ import { PhoneBooth } from "./sections/06-PhoneBooth";
 import Spin360 from "./sections/04-Spin360";
 import { cn } from "@/lib/utils";
 import { ChevronLeft } from "lucide-react";
+import Image from "next/image";
+import { heroBackground } from "@/data/images/heroImages";
 
 const ServiceNav = () => {
   const [activeSection, setActiveSection] = React.useState("basic");
@@ -111,29 +113,40 @@ const ServiceNav = () => {
 
 const Service = () => {
   return (
-    <div className="container mx-auto px-4 py-16">
-      <ServiceNav />
-      <div className="space-y-24">
-        <section id="basic">
-          <BasicBooth />
-        </section>
-        <section id="mini">
-          <MiniBooth />
-        </section>
-        <section id="180">
-          <Booth180 />
-        </section>
-        <section id="spin360">
-          <Spin360 />
-        </section>
-        <section id="wideangle">
-          <WideAngleBooth />
-        </section>
-        <section id="phone">
-          <PhoneBooth />
-        </section>
+    <>
+      <div className="container mx-auto px-4 py-16">
+        {/* Background Image */}
+        <Image
+          src={heroBackground}
+          alt="Hero Background"
+          layout="fill"
+          objectFit="cover"
+          priority
+          className="opacity-20 mix-blend-lighten"
+        />
+        <ServiceNav />
+        <div className="space-y-24">
+          <section id="basic">
+            <BasicBooth />
+          </section>
+          <section id="mini">
+            <MiniBooth />
+          </section>
+          <section id="180">
+            <Booth180 />
+          </section>
+          <section id="spin360">
+            <Spin360 />
+          </section>
+          <section id="wideangle">
+            <WideAngleBooth />
+          </section>
+          <section id="phone">
+            <PhoneBooth />
+          </section>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

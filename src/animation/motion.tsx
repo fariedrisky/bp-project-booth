@@ -49,3 +49,30 @@ export function slideInFromLeftWithBounce(delay: number) {
     },
   };
 }
+
+export const fadeInUp = {
+  hidden: {
+    opacity: 0,
+    y: 30,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+    },
+  },
+};
+
+export const staggerContainer = {
+  hidden: {
+    opacity: 0,
+  },
+  visible: {
+    opacity: 1,
+    transition: {
+      delayChildren: 0.1,
+      staggerChildren: 0.1,
+    },
+  },
+};

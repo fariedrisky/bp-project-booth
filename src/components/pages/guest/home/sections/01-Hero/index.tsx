@@ -4,10 +4,13 @@ import React from "react";
 import Image from "next/image";
 import { heroBackground, heroClient } from "@/data/images/heroImages";
 import { motion } from "framer-motion";
-import { slideInFromBottom } from "@/utils/motion";
+import { slideInFromBottom } from "@/animation/motion";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function Hero() {
+  const router = useRouter();
+
   return (
     <section
       id="hero-section"
@@ -20,11 +23,7 @@ export default function Hero() {
         layout="fill"
         objectFit="cover"
         priority
-        style={{
-          backgroundBlendMode: "lighten",
-          opacity: "20%",
-          zIndex: -2,
-        }}
+        className="opacity-20 mix-blend-lighten"
       />
 
       {/* Hero Client Image */}
@@ -75,7 +74,12 @@ export default function Hero() {
               setiap acara Anda
             </p>
             <div className="flex flex-col justify-center space-y-3 sm:flex-row sm:space-x-4 sm:space-y-0 lg:justify-start">
-              <Button className="bg-accent px-4 py-2 text-sm font-bold text-white transition duration-300 hover:bg-accent/80 sm:px-6">
+              <Button
+                onClick={() => {
+                  router.push("/services");
+                }}
+                className="bg-accent px-4 py-2 text-sm font-bold text-white transition duration-300 hover:bg-accent/80 sm:px-6"
+              >
                 Lihat Produk
               </Button>
               <Button className="flex items-center justify-center border border-white bg-transparent px-4 py-2 text-sm font-bold text-white transition duration-300 hover:bg-white hover:bg-opacity-20 sm:px-6">

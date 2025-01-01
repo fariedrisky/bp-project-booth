@@ -1,129 +1,22 @@
 import React from "react";
-import Image from "next/image";
-import { heroBackground } from "@/data/images/heroImages";
+import { motion } from "framer-motion";
 import { ServiceCard } from "@/components/ui/ServiceCard";
-import { cn } from "@/lib/utils";
-import type { ServiceType } from "@/components/ui/ServiceCard";
+import boothTypes from "./data";
+import { fadeInUp, staggerContainer } from "@/animation/motion";
 
-const boothTypes: ServiceType[] = [
-  {
-    id: "2r",
-    title: "2R",
-    description: "Basic Booth dengan ukuran 2R, cocok untuk berbagai acara",
-    duration: "4 Jam",
-    image: "/assets/images/services/2r.jpg",
-    printOptions: [
-      {
-        value: "300",
-        label: "300 lembar",
-        price: 2000000,
-      },
-      {
-        value: "unlimited",
-        label: "Unlimited",
-        price: 3500000,
-      },
-    ],
-    features: [
-      "Unlimited Boomerang dan GIF",
-      "Custom Template",
-      "Frame Luar",
-      "Include Guest Book",
-      "Media Sharing File (Barcode Support)",
-    ],
-  },
-  {
-    id: "polaroid",
-    title: "Polaroid",
-    description: "Basic Booth dengan format Polaroid yang klasik",
-    duration: "4 Jam",
-    image: "/assets/images/services/polaroid.jpg",
-    printOptions: [
-      {
-        value: "300",
-        label: "300 lembar",
-        price: 2000000,
-      },
-      {
-        value: "unlimited",
-        label: "Unlimited",
-        price: 3500000,
-      },
-    ],
-    features: [
-      "Unlimited Boomerang dan GIF",
-      "Custom Template",
-      "Frame Luar",
-      "Include Guest Book",
-      "Media Sharing File (Barcode Support)",
-    ],
-  },
-  {
-    id: "4r-portrait",
-    title: "4R Portrait",
-    description: "Basic Booth ukuran 4R format portrait",
-    duration: "4 Jam",
-    image: "/assets/images/services/4r-portrait.jpg",
-    printOptions: [
-      {
-        value: "400",
-        label: "400 lembar",
-        price: 3500000,
-      },
-      {
-        value: "unlimited",
-        label: "Unlimited",
-        price: 4500000,
-      },
-    ],
-    features: [
-      "Unlimited Boomerang dan GIF",
-      "Custom Template",
-      "Frame Luar",
-      "Media Sharing File (Barcode Support)",
-    ],
-  },
-  {
-    id: "4r-landscape",
-    title: "4R Landscape",
-    description: "Basic Booth ukuran 4R format landscape",
-    duration: "4 Jam",
-    image: "/assets/images/services/4r-landscape.jpg",
-    printOptions: [
-      {
-        value: "400",
-        label: "400 lembar",
-        price: 3500000,
-      },
-      {
-        value: "unlimited",
-        label: "Unlimited",
-        price: 4500000,
-      },
-    ],
-    features: [
-      "Unlimited Boomerang dan GIF",
-      "Fitur Custom Template",
-      "Frame Luar",
-      "Media Sharing File (Barcode Support)",
-    ],
-  },
-];
-
-const BasicBooth = () => {
+const BasicBooth: React.FC = () => {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <Image
-          src={heroBackground}
-          alt="Hero Background"
-          layout="fill"
-          objectFit="cover"
-          priority
-          className="opacity-20 mix-blend-lighten"
-        />
-      </div>
-      <div className="mx-auto mb-8 max-w-2xl text-center">
+    <motion.div
+      variants={staggerContainer}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      className="container mx-auto px-4 py-8"
+    >
+      <motion.div
+        variants={fadeInUp}
+        className="mx-auto mb-8 max-w-2xl text-center"
+      >
         <h2 className="font-serif text-2xl font-bold md:text-3xl">
           Basic Booth
         </h2>
@@ -131,15 +24,24 @@ const BasicBooth = () => {
           Cocok untuk event besar dan kecil, dengan ukuran foto 2R, 4R, dan
           Polaroid.
         </p>
-      </div>
-      <div className="mx-auto grid max-w-[800px] grid-cols-1 gap-6 sm:grid-cols-2">
+      </motion.div>
+
+      <motion.div
+        variants={staggerContainer}
+        className="mx-auto grid max-w-[800px] grid-cols-1 gap-6 sm:grid-cols-2"
+      >
         {boothTypes.map((booth) => (
-          <div key={booth.id} className="mx-auto w-full max-w-[450px]">
+          <motion.div
+            key={booth.id}
+            variants={fadeInUp}
+            whileHover={{ y: -10 }}
+            className="relative mx-auto w-full max-w-[450px] overflow-hidden shadow-lg"
+          >
             <ServiceCard service={booth} variant="basic" />
-          </div>
+          </motion.div>
         ))}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

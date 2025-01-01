@@ -1,43 +1,22 @@
 import React from "react";
-import Image from "next/image";
-import { heroBackground } from "@/data/images/heroImages";
+import { motion } from "framer-motion";
 import { ServiceCard } from "@/components/ui/ServiceCard";
-import { cn } from "@/lib/utils";
-import type { ServiceType } from "@/components/ui/ServiceCard";
-
-const wideAngleTypes: ServiceType[] = [
-  {
-    id: "wide-angle-unlimited",
-    title: "Wide Angle Unlimited Polaroid",
-    description:
-      "Wide Angle Booth dengan format Polaroid dan memiliki fitur boomerang & GIF",
-    duration: "4 Jam",
-    image: "/assets/images/services/wide-angle.jpg",
-    price: 5000000,
-    features: [
-      "Lighting Pro",
-      "Guest Book",
-      "Custom Template",
-      "Media Sharing File",
-      "Unlimited Boomerang & GIF",
-    ],
-  },
-];
+import wideAngleTypes from "./data";
+import { fadeInUp, staggerContainer } from "@/animation/motion";
 
 export const WideAngleBooth = () => {
   return (
-    <div className="container mx-auto px-4">
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <Image
-          src={heroBackground}
-          alt="Hero Background"
-          layout="fill"
-          objectFit="cover"
-          priority
-          className="opacity-20 mix-blend-lighten"
-        />
-      </div>
-      <div className="mx-auto mb-8 max-w-2xl text-center">
+    <motion.div
+      variants={staggerContainer}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      className="container mx-auto px-4"
+    >
+      <motion.div
+        variants={fadeInUp}
+        className="mx-auto mb-8 max-w-2xl text-center"
+      >
         <h2 className="font-serif text-2xl font-bold md:text-3xl">
           Wide Angle Booth
         </h2>
@@ -45,14 +24,22 @@ export const WideAngleBooth = () => {
           Booth dengan sudut lebar yang sempurna untuk mengabadikan momen
           bersama
         </p>
-      </div>
-      <div className="mx-auto grid max-w-[400px] grid-cols-1 gap-6">
+      </motion.div>
+      <motion.div
+        variants={staggerContainer}
+        className="mx-auto grid max-w-[400px] grid-cols-1 gap-6"
+      >
         {wideAngleTypes.map((booth) => (
-          <div key={booth.id} className="mx-auto w-full max-w-[389px]">
+          <motion.div
+            key={booth.id}
+            variants={fadeInUp}
+            whileHover={{ y: -10 }}
+            className="mx-auto w-full max-w-[389px]"
+          >
             <ServiceCard service={booth} variant="wideangle" />
-          </div>
+          </motion.div>
         ))}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };

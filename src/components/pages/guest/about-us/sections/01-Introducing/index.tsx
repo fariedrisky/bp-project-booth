@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { heroBackground } from "@/data/images/heroImages";
 import { logowhite } from "@/data/images/logo";
-import { slideInFromLeftWithBounce } from "@/utils/motion";
+import { slideInFromLeftWithBounce } from "@/animation/motion";
 
 export default function Introducing() {
   return (

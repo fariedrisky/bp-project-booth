@@ -1,43 +1,22 @@
 import React from "react";
-import Image from "next/image";
-import { heroBackground } from "@/data/images/heroImages";
+import { motion } from "framer-motion";
 import { ServiceCard } from "@/components/ui/ServiceCard";
-import { cn } from "@/lib/utils";
-import type { ServiceType } from "@/components/ui/ServiceCard";
-
-const booth180Types: ServiceType[] = [
-  {
-    id: "180-6cam",
-    title: "Camera 180° (6 Kamera)",
-    description:
-      "Efek foto dengan sudut pandang 180° yang futuristik menggunakan 6 kamera",
-    duration: "4 Jam",
-    image: "/assets/images/services/camera-180.jpg",
-    price: 8000000,
-    features: [
-      "Time Freeze Video",
-      "Custom Template",
-      "Media Sharing File",
-      "Props",
-      "4 Jam Durasi Acara",
-    ],
-  },
-];
+import booth180Types from "./data";
+import { fadeInUp, staggerContainer } from "@/animation/motion";
 
 const Booth180 = () => {
   return (
-    <div className="container mx-auto px-4">
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <Image
-          src={heroBackground}
-          alt="Hero Background"
-          layout="fill"
-          objectFit="cover"
-          priority
-          className="opacity-20 mix-blend-lighten"
-        />
-      </div>
-      <div className="mx-auto mb-8 max-w-2xl text-center">
+    <motion.div
+      variants={staggerContainer}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      className="container mx-auto px-4"
+    >
+      <motion.div
+        variants={fadeInUp}
+        className="mx-auto mb-8 max-w-2xl text-center"
+      >
         <h2 className="font-serif text-2xl font-bold md:text-3xl">
           180° Booth
         </h2>
@@ -45,15 +24,23 @@ const Booth180 = () => {
           Efek foto dengan sudut pandang 180° yang futuristik menggunakan
           multiple kamera
         </p>
-      </div>
-      <div className="mx-auto grid max-w-[400px] grid-cols-1 gap-6">
+      </motion.div>
+      <motion.div
+        variants={staggerContainer}
+        className="mx-auto grid max-w-[400px] grid-cols-1 gap-6"
+      >
         {booth180Types.map((booth) => (
-          <div key={booth.id} className="mx-auto w-full max-w-[389px]">
+          <motion.div
+            key={booth.id}
+            variants={fadeInUp}
+            whileHover={{ y: -10 }}
+            className="mx-auto w-full max-w-[389px]"
+          >
             <ServiceCard service={booth} variant="180" />
-          </div>
+          </motion.div>
         ))}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
