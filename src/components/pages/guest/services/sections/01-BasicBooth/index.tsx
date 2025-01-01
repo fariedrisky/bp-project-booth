@@ -10,7 +10,6 @@ const boothTypes: ServiceType[] = [
     id: "2r",
     title: "2R",
     description: "Basic Booth dengan ukuran 2R, cocok untuk berbagai acara",
-    type: "2R",
     duration: "4 Jam",
     image: "/assets/images/services/2r.jpg",
     printOptions: [
@@ -37,7 +36,6 @@ const boothTypes: ServiceType[] = [
     id: "polaroid",
     title: "Polaroid",
     description: "Basic Booth dengan format Polaroid yang klasik",
-    type: "Polaroid",
     duration: "4 Jam",
     image: "/assets/images/services/polaroid.jpg",
     printOptions: [
@@ -64,7 +62,6 @@ const boothTypes: ServiceType[] = [
     id: "4r-portrait",
     title: "4R Portrait",
     description: "Basic Booth ukuran 4R format portrait",
-    type: "4R Portrait",
     duration: "4 Jam",
     image: "/assets/images/services/4r-portrait.jpg",
     printOptions: [
@@ -90,7 +87,6 @@ const boothTypes: ServiceType[] = [
     id: "4r-landscape",
     title: "4R Landscape",
     description: "Basic Booth ukuran 4R format landscape",
-    type: "4R Landscape",
     duration: "4 Jam",
     image: "/assets/images/services/4r-landscape.jpg",
     printOptions: [
@@ -136,9 +132,9 @@ const BasicBooth = () => {
           Polaroid.
         </p>
       </div>
-      <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mx-auto grid max-w-[800px] grid-cols-1 gap-6 sm:grid-cols-2">
         {boothTypes.map((booth) => (
-          <div key={booth.id} className="mx-auto w-full max-w-[389px]">
+          <div key={booth.id} className="mx-auto w-full max-w-[450px]">
             <ServiceCard service={booth} variant="basic" />
           </div>
         ))}

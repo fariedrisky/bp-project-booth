@@ -11,7 +11,6 @@ const miniBoothTypes: ServiceType[] = [
     title: "Mirror Booth Unlimited",
     description: "Self Service Mode dengan fitur lengkap untuk acara kecil",
     duration: "4 Jam",
-    type: "Mirror",
     image: "/assets/images/services/mirror-booth.jpg",
     price: 4000000,
     features: [
@@ -28,7 +27,6 @@ const miniBoothTypes: ServiceType[] = [
     title: "Karaoke Booth",
     description: "Media hiburan karaoke dengan fitur rekam video",
     duration: "4 Jam",
-    type: "Karaoke",
     image: "/assets/images/services/karaoke-booth.jpg",
     price: 2500000,
     features: [

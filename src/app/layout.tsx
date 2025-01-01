@@ -1,7 +1,7 @@
 import { DM_Sans, Ibarra_Real_Nova } from "next/font/google";
 import "./globals.css";
-import GuestLayout from "@/components/guest/layout";
-import AuthLayout from "@/components/auth/layout";
+import GuestLayout from "@/components/pages/guest/layout";
+import AuthLayout from "@/components/pages/auth/layout";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import { Toaster } from "sonner";
 import { cookies } from "next/headers";

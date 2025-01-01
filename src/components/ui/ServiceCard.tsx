@@ -6,17 +6,11 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import Select from "@/components/ui/select"; // Import custom Select component
 
 export interface DurationOption {
   value: string;
@@ -85,9 +79,8 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
         <Separator className="my-3 bg-gray-200 sm:my-4" />
         <div
           className={cn(
-            "space-y-3",
             ["basic", "180", "wideangle", "spin360"].includes(variant)
-              ? "h-auto sm:h-32 sm:space-y-4"
+              ? "h-auto"
               : "pb-0",
           )}
         >
@@ -99,24 +92,11 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
                     Durasi
                   </span>
                   <Select
+                    options={service.durationOptions}
                     value={selectedDuration}
-                    onValueChange={setSelectedDuration}
-                  >
-                    <SelectTrigger className="mt-1 w-full text-sm sm:text-base">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {service.durationOptions.map((option) => (
-                        <SelectItem
-                          key={option.value}
-                          value={option.value}
-                          className="text-sm sm:text-base"
-                        >
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    onChange={setSelectedDuration}
+                    className="mt-1"
+                  />
                 </div>
               ) : (
                 <>
@@ -129,40 +109,22 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
                 </>
               )}
             </div>
+
             <div>
               <span className="text-sm font-medium text-gray-600 sm:text-base">
-                Tipe
+                Cetak
               </span>
-              <p className="mt-0.5 text-sm sm:mt-1 sm:text-base">
-                {service.type}
-              </p>
+              {service.printOptions ? (
+                <Select
+                  options={service.printOptions}
+                  value={selectedPrint}
+                  onChange={setSelectedPrint}
+                  className="mt-1"
+                />
+              ) : (
+                <p className="mt-0.5 text-sm sm:mt-1 sm:text-base">-</p>
+              )}
             </div>
-          </div>
-
-          <div>
-            <span className="text-sm font-medium text-gray-600 sm:text-base">
-              Cetak
-            </span>
-            {service.printOptions ? (
-              <Select value={selectedPrint} onValueChange={setSelectedPrint}>
-                <SelectTrigger className="mt-1 w-full text-sm sm:text-base">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {service.printOptions.map((option) => (
-                    <SelectItem
-                      key={option.value}
-                      value={option.value}
-                      className="text-sm sm:text-base"
-                    >
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            ) : (
-              <p className="mt-0.5 text-sm sm:mt-1 sm:text-base">-</p>
-            )}
           </div>
         </div>
       </>

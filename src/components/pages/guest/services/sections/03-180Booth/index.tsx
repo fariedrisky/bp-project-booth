@@ -5,27 +5,26 @@ import { ServiceCard } from "@/components/ui/ServiceCard";
 import { cn } from "@/lib/utils";
 import type { ServiceType } from "@/components/ui/ServiceCard";
 
-const wideAngleTypes: ServiceType[] = [
+const booth180Types: ServiceType[] = [
   {
-    id: "wide-angle-unlimited",
-    title: "Wide Angle Unlimited Polaroid",
+    id: "180-6cam",
+    title: "Camera 180° (6 Kamera)",
     description:
-      "Wide Angle Booth dengan format Polaroid dan memiliki fitur boomerang & GIF",
+      "Efek foto dengan sudut pandang 180° yang futuristik menggunakan 6 kamera",
     duration: "4 Jam",
-    type: "Wide Angle",
-    image: "/assets/images/services/wide-angle.jpg",
-    price: 5000000,
+    image: "/assets/images/services/camera-180.jpg",
+    price: 8000000,
     features: [
-      "Lighting Pro",
-      "Guest Book",
+      "Time Freeze Video",
       "Custom Template",
       "Media Sharing File",
-      "Unlimited Boomerang & GIF",
+      "Props",
+      "4 Jam Durasi Acara",
     ],
   },
 ];
 
-export const WideAngleBooth = () => {
+const Booth180 = () => {
   return (
     <div className="container mx-auto px-4">
       <div className="absolute inset-0 -z-10 overflow-hidden">
@@ -40,20 +39,22 @@ export const WideAngleBooth = () => {
       </div>
       <div className="mx-auto mb-8 max-w-2xl text-center">
         <h2 className="font-serif text-2xl font-bold md:text-3xl">
-          Wide Angle Booth
+          180° Booth
         </h2>
         <p className="mt-2 text-gray-600">
-          Booth dengan sudut lebar yang sempurna untuk mengabadikan momen
-          bersama
+          Efek foto dengan sudut pandang 180° yang futuristik menggunakan
+          multiple kamera
         </p>
       </div>
       <div className="mx-auto grid max-w-[400px] grid-cols-1 gap-6">
-        {wideAngleTypes.map((booth) => (
+        {booth180Types.map((booth) => (
           <div key={booth.id} className="mx-auto w-full max-w-[389px]">
-            <ServiceCard service={booth} variant="wideangle" />
+            <ServiceCard service={booth} variant="180" />
           </div>
         ))}
       </div>
     </div>
   );
 };
+
+export default Booth180;

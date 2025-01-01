@@ -5,27 +5,26 @@ import { ServiceCard } from "@/components/ui/ServiceCard";
 import { cn } from "@/lib/utils";
 import type { ServiceType } from "@/components/ui/ServiceCard";
 
-const booth180Types: ServiceType[] = [
+const wideAngleTypes: ServiceType[] = [
   {
-    id: "180-6cam",
-    title: "Camera 180° (6 Kamera)",
+    id: "wide-angle-unlimited",
+    title: "Wide Angle Unlimited Polaroid",
     description:
-      "Efek foto dengan sudut pandang 180° yang futuristik menggunakan 6 kamera",
+      "Wide Angle Booth dengan format Polaroid dan memiliki fitur boomerang & GIF",
     duration: "4 Jam",
-    type: "6 Kamera",
-    image: "/assets/images/services/camera-180.jpg",
-    price: 8000000,
+    image: "/assets/images/services/wide-angle.jpg",
+    price: 5000000,
     features: [
-      "Time Freeze Video",
+      "Lighting Pro",
+      "Guest Book",
       "Custom Template",
       "Media Sharing File",
-      "Props",
-      "4 Jam Durasi Acara",
+      "Unlimited Boomerang & GIF",
     ],
   },
 ];
 
-const Booth180 = () => {
+export const WideAngleBooth = () => {
   return (
     <div className="container mx-auto px-4">
       <div className="absolute inset-0 -z-10 overflow-hidden">
@@ -40,22 +39,20 @@ const Booth180 = () => {
       </div>
       <div className="mx-auto mb-8 max-w-2xl text-center">
         <h2 className="font-serif text-2xl font-bold md:text-3xl">
-          180° Booth
+          Wide Angle Booth
         </h2>
         <p className="mt-2 text-gray-600">
-          Efek foto dengan sudut pandang 180° yang futuristik menggunakan
-          multiple kamera
+          Booth dengan sudut lebar yang sempurna untuk mengabadikan momen
+          bersama
         </p>
       </div>
       <div className="mx-auto grid max-w-[400px] grid-cols-1 gap-6">
-        {booth180Types.map((booth) => (
+        {wideAngleTypes.map((booth) => (
           <div key={booth.id} className="mx-auto w-full max-w-[389px]">
-            <ServiceCard service={booth} variant="180" />
+            <ServiceCard service={booth} variant="wideangle" />
           </div>
         ))}
       </div>
     </div>
   );
 };
-
-export default Booth180;

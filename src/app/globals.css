@@ -72,6 +72,8 @@ h6 {
   background: lightgrey; /* Color of the scrollbar track */
 }
 
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;
