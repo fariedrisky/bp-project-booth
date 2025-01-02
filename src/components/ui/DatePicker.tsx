@@ -173,7 +173,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
         <CalendarIcon className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
       </div>
 
-      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
 
       {isOpen && !disabled && (
         <div
