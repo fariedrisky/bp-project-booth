@@ -150,7 +150,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   return (
     <div className={cn("relative w-full", className)}>
       {label && (
-        <label className="mb-1 block text-sm font-medium text-gray-700">
+        <label className="mb-1 block text-xs font-medium text-gray-700">
           {label}
         </label>
       )}
@@ -161,44 +161,44 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           readOnly
           value={value ? format(value, "dd/MM/yyyy") : ""}
           placeholder={placeholder}
-          className="w-full cursor-pointer border border-gray-300 px-3 py-2 pr-10 text-sm text-primary focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100"
+          className="h-9 w-full cursor-pointer border border-gray-300 px-3 py-1.5 pr-8 text-sm text-primary focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100"
           onClick={() => !disabled && setIsOpen(true)}
           disabled={disabled}
           {...props}
         />
-        <CalendarIcon className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <CalendarIcon className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
       </div>
 
-      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
 
       {isOpen && !disabled && (
         <div
           ref={calendarRef}
-          className="absolute z-10 mt-1 w-[320px] bg-white p-4 shadow-lg ring-1 ring-black ring-opacity-5"
+          className="absolute z-10 mt-1 w-64 bg-white p-3 shadow-lg ring-1 ring-black ring-opacity-5"
         >
           {/* Calendar Header */}
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-2 flex items-center justify-between">
             <button
               type="button"
               onClick={() => navigateMonth("prev")}
-              className="p-1 hover:bg-gray-100"
+              className="p-0.5 hover:bg-gray-100"
             >
-              <ChevronLeft className="h-5 w-5 text-gray-600" />
+              <ChevronLeft className="h-4 w-4 text-gray-600" />
             </button>
-            <h2 className="text-base font-medium text-primary">
+            <h2 className="text-sm font-medium text-primary">
               {MONTHS[viewDate.getMonth()]} {viewDate.getFullYear()}
             </h2>
             <button
               type="button"
               onClick={() => navigateMonth("next")}
-              className="p-1 hover:bg-gray-100"
+              className="p-0.5 hover:bg-gray-100"
             >
-              <ChevronRight className="h-5 w-5 text-gray-600" />
+              <ChevronRight className="h-4 w-4 text-gray-600" />
             </button>
           </div>
 
           {/* Calendar Grid */}
-          <div className="grid grid-cols-7 gap-1">
+          <div className="grid grid-cols-7 gap-0.5">
             {/* Day headers */}
             {DAYS.map((day) => (
               <div
@@ -221,7 +221,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                   onClick={() => handleDateSelect(date)}
                   disabled={isDisabled || !isCurrentMonth}
                   className={cn(
-                    "flex h-8 w-8 items-center justify-center text-sm",
+                    "flex h-7 w-7 items-center justify-center text-xs",
                     isCurrentMonth ? "text-gray-900" : "text-gray-400",
                     !isDisabled &&
                       !isSelected &&

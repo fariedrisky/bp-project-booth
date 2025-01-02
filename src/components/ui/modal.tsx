@@ -9,14 +9,11 @@ interface ModalProps {
 export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
   useEffect(() => {
     if (isOpen) {
-      // Prevent scrolling on the body when modal is open
       document.body.style.overflow = "hidden";
     } else {
-      // Re-enable scrolling when modal is closed
       document.body.style.overflow = "unset";
     }
 
-    // Cleanup function to re-enable scrolling when component unmounts
     return () => {
       document.body.style.overflow = "unset";
     };
@@ -33,10 +30,8 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
       />
 
       {/* Modal Content */}
-      <div className="relative z-50 mx-auto h-screen w-full overflow-y-auto bg-white p-0 shadow-2xl sm:h-[95vh] sm:max-w-[600px]">
-        <div className="h-full overflow-y-auto px-6 py-6 sm:px-8">
-          {children}
-        </div>
+      <div className="relative z-50 w-full max-w-xl bg-white shadow-xl">
+        <div className="px-6 py-6">{children}</div>
       </div>
     </div>
   );

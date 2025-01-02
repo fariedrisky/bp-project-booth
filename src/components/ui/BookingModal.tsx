@@ -30,22 +30,25 @@ const BookingModal: React.FC<BookingModalProps> = ({
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const generatePDF = (data: typeof formData & { selectedProduct: string }) => {
+  const generatePDF = async (
+    data: typeof formData & { selectedProduct: string },
+  ) => {
     const doc = new jsPDF();
 
     // Add company logo or header
     doc.setFontSize(20);
     doc.setTextColor(0, 0, 0);
-    doc.text("Booking Details", 20, 20);
+    doc.text("Detail Pemesanan", 20, 20);
 
     // Add booking information
     doc.setFontSize(12);
     let yPosition = 40;
 
     // Add current date
-    const currentDate = new Date().toLocaleDateString();
-    doc.text(`Booking Date: ${currentDate}`, 20, yPosition);
+    const currentDate = new Date().toLocaleDateString("id-ID");
+    doc.text(`Tanggal Pemesanan: ${currentDate}`, 20, yPosition);
     yPosition += 10;
 
     // Add horizontal line
@@ -55,23 +58,26 @@ const BookingModal: React.FC<BookingModalProps> = ({
 
     // Customer Details Section
     doc.setFontSize(14);
-    doc.setFont("helvetica", "bold"); // Fixed: Specified font family
-    doc.text("Customer Details", 20, yPosition);
-    doc.setFont("helvetica", "normal"); // Fixed: Specified font family
+    doc.setFont("helvetica", "bold");
+    doc.text("Data Pemesan", 20, yPosition);
+    doc.setFont("helvetica", "normal");
     doc.setFontSize(12);
     yPosition += 10;
 
     const content = [
-      ["Full Name:", data.fullName],
-      ["Phone Number:", data.phoneNumber],
+      ["Nama Lengkap:", data.fullName],
+      ["Nomor Telepon:", data.phoneNumber],
       ["Email:", data.email],
       [
-        "Event Date:",
-        data.eventDate ? data.eventDate.toLocaleDateString() : "",
+        "Tanggal Acara:",
+        data.eventDate ? data.eventDate.toLocaleDateString("id-ID") : "",
       ],
-      ["Event Location:", data.eventLocation],
-      ["Selected Package:", data.selectedProduct],
-      ["Payment Type:", data.paymentType],
+      ["Lokasi Acara:", data.eventLocation],
+      ["Paket Dipilih:", data.selectedProduct],
+      [
+        "Jenis Pembayaran:",
+        data.paymentType === "full" ? "Pembayaran Penuh" : "Uang Muka (DP)",
+      ],
     ];
 
     content.forEach(([label, value]) => {
@@ -81,91 +87,137 @@ const BookingModal: React.FC<BookingModalProps> = ({
 
     // Add footer
     doc.setFontSize(10);
-    doc.text("Thank you for your booking!", 20, 270);
+    doc.text("Terima kasih atas pemesanan Anda!", 20, 270);
     doc.text(
-      "For any inquiries, please contact us at: +62 851-5731-6767",
+      "Untuk pertanyaan lebih lanjut, silakan hubungi kami di: +62 851-5731-6767",
       20,
       280,
     );
 
-    // Save the PDF
-    doc.save("booking-details.pdf");
+    // Convert PDF to blob with proper type
+    const pdfBlob = new Blob([doc.output("blob")], { type: "application/pdf" });
+
+    // Create FormData with proper filename
+    const formDataObj = new FormData();
+    const filename = `pemesanan-${data.fullName.replace(/\s+/g, "-")}.pdf`;
+    formDataObj.append("file", pdfBlob, filename);
+
+    try {
+      const response = await fetch("/api/upload-pdf", {
+        method: "POST",
+        body: formDataObj,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to upload PDF");
+      }
+
+      const { fileUrl } = await response.json();
+      return fileUrl;
+    } catch (error) {
+      console.error("Error uploading PDF:", error);
+      throw new Error("Gagal mengunggah dokumen pemesanan. Silakan coba lagi.");
+    }
+  };
+
+  // Update your handleSubmit function to handle errors better
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm() || isSubmitting) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const submissionData = {
+        ...formData,
+        selectedProduct: service.title,
+      };
+
+      // Generate and upload PDF
+      const pdfUrl = await generatePDF(submissionData);
+
+      // Format WhatsApp message with PDF URL
+      const whatsappMessage = formatWhatsAppMessage({
+        ...submissionData,
+        pdfUrl,
+      });
+
+      // Open WhatsApp with pre-filled message
+      window.open(
+        `https://wa.me/6285157316767?text=${whatsappMessage}`,
+        "_blank",
+      );
+
+      onClose();
+    } catch (error) {
+      console.error("Error during submission:", error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Terjadi kesalahan saat mengirim data. Silakan coba lagi.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const formatWhatsAppMessage = (
-    data: typeof formData & { selectedProduct: string },
+    data: typeof formData & { selectedProduct: string; pdfUrl: string },
   ) => {
     return encodeURIComponent(`
-*New Booking Request*
+*Permintaan Pemesanan Baru*
 ------------------------
-*Customer Details:*
-👤 Full Name: ${data.fullName}
-📱 Phone: ${data.phoneNumber}
+*Data Pemesan:*
+👤 Nama Lengkap: ${data.fullName}
+📱 Telepon: ${data.phoneNumber}
 📧 Email: ${data.email}
 
-*Event Details:*
-📅 Date: ${data.eventDate ? data.eventDate.toLocaleDateString() : ""}
-📍 Location: ${data.eventLocation}
+*Detail Acara:*
+📅 Tanggal: ${data.eventDate ? data.eventDate.toLocaleDateString("id-ID") : ""}
+📍 Lokasi: ${data.eventLocation}
 
-*Package Details:*
-📦 Selected Package: ${data.selectedProduct}
-💳 Payment Type: ${data.paymentType}
+*Detail Paket:*
+📦 Paket Dipilih: ${data.selectedProduct}
+💳 Jenis Pembayaran: ${data.paymentType === "full" ? "Pembayaran Penuh" : "Uang Muka (DP)"}
 
-Thank you for your booking! We will contact you shortly to confirm the details.
+📎 Detail Pemesanan (PDF): ${data.pdfUrl}
+
+Terima kasih atas pemesanan Anda! Kami akan segera menghubungi Anda untuk konfirmasi lebih lanjut.
 `);
   };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.fullName) newErrors.fullName = "Full name is required";
+    if (!formData.fullName) newErrors.fullName = "Nama lengkap wajib diisi";
     if (!formData.phoneNumber)
-      newErrors.phoneNumber = "Phone number is required";
-    if (!formData.email) newErrors.email = "Email is required";
-    if (!formData.eventDate) newErrors.eventDate = "Event date is required";
+      newErrors.phoneNumber = "Nomor telepon wajib diisi";
+    if (!formData.email) newErrors.email = "Email wajib diisi";
+    if (!formData.eventDate) newErrors.eventDate = "Tanggal acara wajib diisi";
     if (!formData.eventLocation)
-      newErrors.eventLocation = "Event location is required";
+      newErrors.eventLocation = "Lokasi acara wajib diisi";
     if (!formData.paymentType)
-      newErrors.paymentType = "Payment type is required";
+      newErrors.paymentType = "Jenis pembayaran wajib diisi";
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (formData.email && !emailRegex.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
+      newErrors.email = "Masukkan alamat email yang valid";
     }
 
     // Phone number validation (Indonesian format)
     const phoneRegex = /^(\+62|62|0)8[1-9][0-9]{6,9}$/;
     if (formData.phoneNumber && !phoneRegex.test(formData.phoneNumber)) {
-      newErrors.phoneNumber = "Please enter a valid Indonesian phone number";
+      newErrors.phoneNumber =
+        "Masukkan nomor telepon yang valid (format: 08xxxxxxxxxx)";
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (validateForm()) {
-      const submissionData = {
-        ...formData,
-        selectedProduct: service.title,
-      };
-
-      // Generate PDF
-      generatePDF(submissionData);
-
-      // Open WhatsApp with pre-filled message
-      const whatsappMessage = formatWhatsAppMessage(submissionData);
-      window.open(
-        `https://wa.me/6285157316767?text=${whatsappMessage}`,
-        "_blank",
-      );
-
-      console.log("Form submitted:", submissionData);
-      onClose();
-    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -174,7 +226,6 @@ Thank you for your booking! We will contact you shortly to confirm the details.
       ...prev,
       [name]: value,
     }));
-    // Clear error when user types
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -197,8 +248,8 @@ Thank you for your booking! We will contact you shortly to confirm the details.
   };
 
   const paymentOptions = [
-    { value: "full", label: "Full Payment" },
-    { value: "dp", label: "Down Payment (DP)" },
+    { value: "full", label: "Pembayaran Penuh" },
+    { value: "dp", label: "Uang Muka (DP)" },
   ];
 
   return (
@@ -216,23 +267,24 @@ Thank you for your booking! We will contact you shortly to confirm the details.
             {service.title}
           </h2>
           <p className="mt-1 text-sm text-gray-500">
-            Please fill in your details to book this service
+            Silakan isi data diri Anda untuk melakukan pemesanan
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1">
             <Label className="block text-sm font-medium text-gray-700">
-              Full Name
+              Nama Lengkap
             </Label>
             <Input
               name="fullName"
               value={formData.fullName}
               onChange={handleInputChange}
-              placeholder="Enter your full name"
+              placeholder="Masukkan nama lengkap"
               className={`h-9 w-full ${
                 errors.fullName ? "border-red-500" : "border-gray-200"
               }`}
+              disabled={isSubmitting}
             />
             {errors.fullName && (
               <p className="text-sm text-red-500">{errors.fullName}</p>
@@ -241,17 +293,18 @@ Thank you for your booking! We will contact you shortly to confirm the details.
 
           <div className="space-y-1">
             <Label className="block text-sm font-medium text-gray-700">
-              Phone Number
+              Nomor Telepon
             </Label>
             <Input
               name="phoneNumber"
               type="tel"
               value={formData.phoneNumber}
               onChange={handleInputChange}
-              placeholder="Enter your phone number (e.g., 0812345678)"
+              placeholder="Masukkan nomor telepon (contoh: 08123456789)"
               className={`h-9 w-full ${
                 errors.phoneNumber ? "border-red-500" : "border-gray-200"
               }`}
+              disabled={isSubmitting}
             />
             {errors.phoneNumber && (
               <p className="text-sm text-red-500">{errors.phoneNumber}</p>
@@ -267,10 +320,11 @@ Thank you for your booking! We will contact you shortly to confirm the details.
               type="email"
               value={formData.email}
               onChange={handleInputChange}
-              placeholder="Enter your email"
+              placeholder="Masukkan alamat email"
               className={`h-9 w-full ${
                 errors.email ? "border-red-500" : "border-gray-200"
               }`}
+              disabled={isSubmitting}
             />
             {errors.email && (
               <p className="text-sm text-red-500">{errors.email}</p>
@@ -279,30 +333,35 @@ Thank you for your booking! We will contact you shortly to confirm the details.
 
           <div className="space-y-1">
             <Label className="block text-sm font-medium text-gray-700">
-              Event Date
+              Tanggal Acara
             </Label>
             <DatePicker
               value={formData.eventDate}
               onChange={handleDateChange}
               minDate={new Date()}
-              placeholder="Select event date"
+              placeholder="Pilih tanggal acara"
               error={errors.eventDate}
               className={errors.eventDate ? "border-red-500" : ""}
+              disabled={isSubmitting}
             />
+            {errors.eventDate && (
+              <p className="text-sm text-red-500">{errors.eventDate}</p>
+            )}
           </div>
 
           <div className="space-y-1">
             <Label className="block text-sm font-medium text-gray-700">
-              Event Location
+              Lokasi Acara
             </Label>
             <Input
               name="eventLocation"
               value={formData.eventLocation}
               onChange={handleInputChange}
-              placeholder="Enter event location"
+              placeholder="Masukkan lokasi acara"
               className={`h-9 w-full ${
                 errors.eventLocation ? "border-red-500" : "border-gray-200"
               }`}
+              disabled={isSubmitting}
             />
             {errors.eventLocation && (
               <p className="text-sm text-red-500">{errors.eventLocation}</p>
@@ -311,7 +370,7 @@ Thank you for your booking! We will contact you shortly to confirm the details.
 
           <div className="space-y-1">
             <Label className="block text-sm font-medium text-gray-700">
-              Selected Package
+              Paket Dipilih
             </Label>
             <Input
               value={service.title}
@@ -322,7 +381,7 @@ Thank you for your booking! We will contact you shortly to confirm the details.
 
           <div className="space-y-1">
             <Label className="block text-sm font-medium text-gray-700">
-              Payment Type
+              Jenis Pembayaran
             </Label>
             <Select
               options={paymentOptions}
@@ -333,8 +392,9 @@ Thank you for your booking! We will contact you shortly to confirm the details.
                   setErrors((prev) => ({ ...prev, paymentType: "" }));
                 }
               }}
-              placeholder="Select payment type"
+              placeholder="Pilih jenis pembayaran"
               className={errors.paymentType ? "border-red-500" : ""}
+              disabled={isSubmitting}
             />
             {errors.paymentType && (
               <p className="text-sm text-red-500">{errors.paymentType}</p>
@@ -345,15 +405,17 @@ Thank you for your booking! We will contact you shortly to confirm the details.
             <Button
               type="button"
               onClick={onClose}
-              className="border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="border border-gray-200 bg-white px-4 py-2 text-sm font-medium !text-primary hover:bg-gray-50"
+              disabled={isSubmitting}
             >
-              Cancel
+              Batal
             </Button>
             <Button
               type="submit"
-              className="bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90"
+              className="bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 disabled:opacity-50"
+              disabled={isSubmitting}
             >
-              Submit Booking
+              {isSubmitting ? "Memproses..." : "Kirim Pemesanan"}
             </Button>
           </div>
         </form>
