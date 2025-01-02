@@ -6,6 +6,12 @@ import { HiMenuAlt3, HiOutlineX } from "react-icons/hi";
 import { usePathname } from "next/navigation";
 import { logowhite } from "@/data/images/logo";
 import { menu } from "@/data/HomeMenu";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  slideInFromBottom,
+  sideBar,
+  staggerContainer,
+} from "@/animation/motion";
 
 // Define the type for menu items
 type MenuItem = {
@@ -39,79 +45,148 @@ export default function Navbar() {
 
   const isActiveLink = (href: string) => currentPage === href;
 
+  const menuItemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.1,
+        duration: 0.3,
+      },
+    }),
+    exit: { opacity: 0, y: -20 },
+  };
+
   const renderMenuLinks = () =>
-    menu.map((link: MenuItem) => (
-      <Link
+    menu.map((link: MenuItem, index: number) => (
+      <motion.div
         key={link.href}
-        href={link.href}
-        className={`relative transition-colors duration-300 ${
-          isActiveLink(link.href)
-            ? "text-accent after:w-full"
-            : "text-white after:w-0 hover:after:w-full"
-        } after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-accent after:transition-all after:duration-300`}
-        onClick={() => isMobileMenuOpen && toggleMobileMenu()}
+        custom={index}
+        variants={menuItemVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
       >
-        {link.label}
-      </Link>
+        <Link
+          href={link.href}
+          className={`relative transition-colors duration-300 ${
+            isActiveLink(link.href)
+              ? "text-accent after:w-full"
+              : "text-white after:w-0 hover:after:w-full"
+          } after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-accent after:transition-all after:duration-300`}
+          onClick={() => isMobileMenuOpen && toggleMobileMenu()}
+        >
+          {link.label}
+        </Link>
+      </motion.div>
     ));
 
   return (
     <>
-      {/* Navbar */}
-      <header className="fixed inset-x-0 top-0 z-50 w-full border-b border-white border-opacity-20 bg-background bg-opacity-80 backdrop-blur-lg transition-colors duration-300">
+      <motion.header
+        className="fixed inset-x-0 top-0 z-50 w-full border-b border-white border-opacity-20 bg-background bg-opacity-80 backdrop-blur-lg transition-colors duration-300"
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <div className="container mx-auto flex items-center justify-between px-4 py-4 xl:px-0">
-          <Link href="/">
-            <Image
-              src={logowhite}
-              alt="logo"
-              width={250}
-              height={40}
-              className="flex-shrink-0"
-            />
-          </Link>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Link href="/">
+              <Image
+                src={logowhite}
+                alt="logo"
+                width={250}
+                height={40}
+                className="flex-shrink-0"
+              />
+            </Link>
+          </motion.div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex lg:items-center lg:gap-10">
+          <motion.nav
+            className="hidden lg:flex lg:items-center lg:gap-10"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+          >
             {renderMenuLinks()}
-          </nav>
+          </motion.nav>
 
           {/* Mobile Menu Toggle Button */}
-          <button
+          <motion.button
             className="text-white lg:hidden"
             onClick={toggleMobileMenu}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
             aria-label={
               isMobileMenuOpen ? "Close mobile menu" : "Open mobile menu"
             }
           >
-            {isMobileMenuOpen ? (
-              <HiOutlineX size={30} />
-            ) : (
-              <HiMenuAlt3 size={30} />
-            )}
-          </button>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={isMobileMenuOpen ? "close" : "open"}
+                initial={{ opacity: 0, rotate: -90 }}
+                animate={{ opacity: 1, rotate: 0 }}
+                exit={{ opacity: 0, rotate: 90 }}
+                transition={{ duration: 0.2 }}
+              >
+                {isMobileMenuOpen ? (
+                  <HiOutlineX size={30} />
+                ) : (
+                  <HiMenuAlt3 size={30} />
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </motion.button>
         </div>
-      </header>
+      </motion.header>
 
       {/* Mobile Menu Backdrop */}
-      <div
-        className={`fixed inset-0 z-30 backdrop-blur-md transition-opacity duration-300 ${
-          isMobileMenuOpen ? "opacity-100" : "pointer-events-none opacity-0"
-        }`}
-      />
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            className="fixed inset-0 z-30 backdrop-blur-md"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Mobile Navigation */}
-      <nav
-        className={`fixed inset-x-0 top-0 z-40 h-screen w-full bg-black bg-opacity-90 transition-transform duration-300 ease-in-out lg:hidden ${
-          isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"
-        }`}
-      >
-        <div className="container mx-auto flex h-full flex-col px-4 py-4">
-          {/* Mobile Menu Links */}
-          <div className="flex flex-grow flex-col items-center justify-center gap-10">
-            {renderMenuLinks()}
-          </div>
-        </div>
-      </nav>
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.nav
+            className="fixed inset-x-0 top-0 z-40 h-screen w-full bg-black bg-opacity-90 lg:hidden"
+            initial={{ y: "-100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "-100%" }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            <motion.div
+              className="container mx-auto flex h-full flex-col px-4 py-4"
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+            >
+              {/* Mobile Menu Links */}
+              <motion.div
+                className="flex flex-grow flex-col items-center justify-center gap-10"
+                variants={staggerContainer}
+              >
+                {renderMenuLinks()}
+              </motion.div>
+            </motion.div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
     </>
   );
 }

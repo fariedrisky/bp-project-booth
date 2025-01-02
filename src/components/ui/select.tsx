@@ -57,7 +57,7 @@ const Select = ({
   const selectedOption = options.find((opt) => opt.value === selectedValue);
 
   return (
-    <div ref={selectRef} className={`relative w-full ${className}`}>
+    <div ref={selectRef} className={`text-primary relative w-full ${className}`}>
       <button
         type="button"
         onClick={() => !disabled && setIsOpen(!isOpen)}

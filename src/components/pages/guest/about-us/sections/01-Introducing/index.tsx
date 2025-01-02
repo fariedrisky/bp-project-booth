@@ -4,16 +4,32 @@ import React from "react";
 import { motion } from "framer-motion";
 import { heroBackground } from "@/data/images/heroImages";
 import { logowhite } from "@/data/images/logo";
-import { slideInFromLeftWithBounce } from "@/animation/motion";
+import {
+  slideInFromLeftWithBounce,
+  staggerContainer,
+  textTyping,
+} from "@/animation/motion";
 
 export default function Introducing() {
+  const paragraphs = [
+    "Bp Project Booth adalah perusahaan yang bergerak di bidang Photo Booth dengan memanfaatkan teknologi modern. Kami hadir untuk memberikan pengalaman berbeda di setiap acara. Fokus kami adalah menjaga setiap detail agar menciptakan momen berkesan.",
+    "Sejak 2018, Bp Booth telah melayani berbagai klien dengan beragam kebutuhan acara. Kami selalu berkomitmen memberikan hasil terbaik dan memenuhi ekspektasi pelanggan. Pengalaman kami menjadi modal utama dalam menghadapi tantangan di setiap proyek.",
+    "Layanan kami mencakup acara besar dan kecil seperti pernikahan, acara perusahaan, dan ulang tahun. Fleksibilitas ini memungkinkan kami menyesuaikan konsep dengan tema acara yang berbeda. Kami selalu berusaha memberikan layanan personal dan sesuai kebutuhan klien.",
+    "Photo Booth yang kami sediakan menambah nilai estetika dan memperkuat identitas acara. Foto yang dihasilkan menjadi kenang-kenangan yang tak ternilai. Kehadiran Photo Booth menciptakan interaksi dan kesan mendalam bagi tamu dan penyelenggara.",
+  ];
+
   return (
     <section
       id="bp-section"
       className="relative flex min-h-screen items-center justify-center py-16 text-secondary"
     >
       {/* Background Image */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
+      <motion.div
+        className="absolute inset-0 -z-10 overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      >
         <Image
           src={heroBackground}
           alt="Hero Background"
@@ -22,16 +38,17 @@ export default function Introducing() {
           priority
           className="opacity-20 mix-blend-lighten"
         />
-      </div>
+      </motion.div>
 
       {/* Content with motion effect */}
       <motion.div
         className="container mx-auto flex flex-col items-center px-4"
-        initial="offscreen"
-        animate="onscreen"
-        variants={slideInFromLeftWithBounce(0.2)}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={staggerContainer}
       >
-        <h2 className="mb-8 text-2xl font-bold">
+        <motion.div className="mb-8" variants={slideInFromLeftWithBounce(0.2)}>
           <Image
             src={logowhite}
             alt="BP Project Booth"
@@ -39,34 +56,28 @@ export default function Introducing() {
             height={65}
             className="mx-auto"
           />
-        </h2>
+        </motion.div>
 
-        <div className="max-w-5xl space-y-6 text-justify text-2xl leading-relaxed">
-          <p>
-            Bp Project Booth merupakan sebuah perusahaan yang bergerak di bidang
-            Photo Booth, yang proses operasinya dikendalikan oleh teknologi
-            modern dan masa kini.
-          </p>
-
-          <p>
-            Didirikan pada tahun 2018, sudah berulang kali mampu memenuhi
-            permintaan sesuai ekspektasi konsumen sampai sekarang ini.
-          </p>
-
-          <p>
-            Tidak hanya pada event skala besar seperti Wedding atau
-            Brand/Corporate, Bp Booth juga bisa menyesuaikan operasinya pada
-            event skala kecil seperti Birthday Party, Bridal Shower, Engagement,
-            dsb.
-          </p>
-
-          <p>
-            Kehadiran Photo Booth menjadi warna tersendiri di dalam suatu acara.
-            Selain dapat mengabadikan momen kebahagiaan dalam bentuk gambar,
-            tentu citra acara tersebut menjadi lebih berkesan bagi penyelenggara
-            acara maupun tamu.
-          </p>
-        </div>
+        <motion.div
+          className="max-w-5xl space-y-6 text-justify text-xl leading-relaxed"
+          variants={staggerContainer}
+        >
+          {paragraphs.map((paragraph, index) => (
+            <motion.div
+              key={index}
+              className="overflow-hidden"
+              variants={staggerContainer}
+            >
+              <motion.p
+                variants={textTyping}
+                custom={index}
+                className="whitespace-pre-wrap"
+              >
+                {paragraph}
+              </motion.p>
+            </motion.div>
+          ))}
+        </motion.div>
       </motion.div>
     </section>
   );

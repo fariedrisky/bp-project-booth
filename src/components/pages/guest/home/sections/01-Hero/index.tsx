@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { slideInFromBottom } from "@/animation/motion";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Hero() {
   const router = useRouter();
@@ -78,13 +79,19 @@ export default function Hero() {
                 onClick={() => {
                   router.push("/services");
                 }}
-                className="bg-accent px-4 py-2 text-sm font-bold text-white transition duration-300 hover:bg-accent/80 sm:px-6"
+                className="hover:!bg-accent/80 !bg-accent px-4 py-2 text-sm font-bold text-white transition duration-300 sm:px-6"
               >
                 Lihat Produk
               </Button>
-              <Button className="flex items-center justify-center border border-white bg-transparent px-4 py-2 text-sm font-bold text-white transition duration-300 hover:bg-white hover:bg-opacity-20 sm:px-6">
-                Kontak Kami <span className="ml-2">→</span>
-              </Button>
+              <Link
+                href="https://wa.me/6285157316767"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button className="flex items-center justify-center border border-white bg-transparent px-4 py-2 text-sm font-bold text-white transition duration-300 hover:bg-white hover:bg-opacity-20 sm:px-6">
+                  Kontak Kami <span className="ml-2">→</span>
+                </Button>
+              </Link>
             </div>
           </motion.div>
         </div>

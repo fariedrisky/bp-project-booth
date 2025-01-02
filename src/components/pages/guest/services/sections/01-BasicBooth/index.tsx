@@ -1,10 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { ServiceCard } from "@/components/ui/ServiceCard";
+import { ServiceCard, ServiceType } from "@/components/ui/ServiceCard";
+import BookingModal from "@/components/ui/BookingModal";
 import boothTypes from "./data";
 import { fadeInUp, staggerContainer } from "@/animation/motion";
 
 const BasicBooth: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState<ServiceType | null>(
+    null,
+  );
+
+  const handleBookNow = (service: ServiceType) => {
+    setSelectedService(service);
+    setIsModalOpen(true);
+  };
+
   return (
     <motion.div
       variants={staggerContainer}
@@ -37,10 +48,25 @@ const BasicBooth: React.FC = () => {
             whileHover={{ y: -10 }}
             className="relative mx-auto w-full max-w-[450px] overflow-hidden shadow-lg"
           >
-            <ServiceCard service={booth} variant="basic" />
+            <ServiceCard
+              service={booth}
+              variant="basic"
+              onBookNow={handleBookNow}
+            />
           </motion.div>
         ))}
       </motion.div>
+
+      {selectedService && (
+        <BookingModal
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+            setSelectedService(null);
+          }}
+          service={selectedService}
+        />
+      )}
     </motion.div>
   );
 };

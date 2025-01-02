@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import Select from "@/components/ui/select"; // Import custom Select component
+import Select from "@/components/ui/select";
 
 export interface DurationOption {
   value: string;
@@ -36,6 +36,9 @@ export interface ServiceType {
   printOptions?: PrintOption[];
   features: string[];
   price?: number;
+  selectedDuration?: DurationOption;
+  selectedPrint?: PrintOption;
+  totalPrice?: number;
 }
 
 export type BoothVariant =
@@ -50,12 +53,14 @@ interface ServiceCardProps {
   service: ServiceType;
   variant?: BoothVariant | undefined;
   className?: string;
+  onBookNow: (service: ServiceType) => void;
 }
 
 export const ServiceCard: React.FC<ServiceCardProps> = ({
   service,
   variant = "basic",
   className = "",
+  onBookNow,
 }) => {
   const [selectedPrint, setSelectedPrint] = useState(
     service.printOptions?.[0]?.value,
@@ -70,6 +75,19 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
   const currentDurationOption = service.durationOptions?.find(
     (option) => option.value === selectedDuration,
   );
+
+  const handleBookNow = () => {
+    onBookNow({
+      ...service,
+      selectedDuration: currentDurationOption,
+      selectedPrint: currentPrintOption,
+      totalPrice:
+        currentDurationOption?.price ||
+        currentPrintOption?.price ||
+        service.price ||
+        0,
+    });
+  };
 
   const renderSpecifications = () => {
     if (!service.duration) return null;
@@ -211,6 +229,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
           <Button
             variant="default"
             className="h-10 w-full px-6 font-medium shadow-sm hover:bg-accent/90 sm:w-auto"
+            onClick={handleBookNow}
           >
             Book Now
           </Button>

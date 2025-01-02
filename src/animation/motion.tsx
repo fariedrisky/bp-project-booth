@@ -76,3 +76,19 @@ export const staggerContainer = {
     },
   },
 };
+
+export const textTyping = {
+  hidden: {
+    clipPath: "inset(0 100% 0 0)",
+    opacity: 0,
+  },
+  visible: (i: number) => ({
+    clipPath: "inset(0 0% 0 0)",
+    opacity: 1,
+    transition: {
+      duration: 0.8,
+      delay: i * 0.3,
+      ease: "easeInOut",
+    },
+  }),
+};

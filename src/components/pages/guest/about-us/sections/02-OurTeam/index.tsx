@@ -1,20 +1,15 @@
+"use client";
 import React from "react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
+import { motion } from "framer-motion";
+import {
+  fadeInUp,
+  staggerContainer,
+  slideInFromBottom,
+} from "@/animation/motion";
 
 const OurTeam = () => {
-  const categories = [
-    "View all",
-    "Management",
-    "Product",
-    "Design",
-    "Marketing",
-    "Sales",
-    "Customer Success",
-    "Operations",
-  ];
-
   const teamMembers = [
     {
       name: "Emmy Rosum",
@@ -58,61 +53,76 @@ const OurTeam = () => {
     },
   ];
 
+  const TeamMemberCard = ({
+    member,
+    index,
+  }: {
+    member: any;
+    index: number;
+  }) => (
+    <motion.div variants={fadeInUp} custom={index}>
+      <Card className="overflow-hidden rounded-none border-0 shadow-sm transition-shadow hover:shadow-md">
+        <CardContent className="p-0">
+          <motion.div
+            className="relative aspect-square"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Image
+              src={member.imageSrc}
+              alt={member.name}
+              fill
+              className="h-full w-full object-cover"
+            />
+          </motion.div>
+          <motion.div
+            className="bg-white p-4 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <h3 className="text-lg font-medium">{member.name}</h3>
+            <p className="text-sm text-gray-600">{member.position}</p>
+          </motion.div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+
   return (
-    <div className="mx-auto max-w-7xl px-4 py-16">
+    <motion.div
+      className="mx-auto max-w-7xl px-4 py-16"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={staggerContainer}
+    >
       {/* Header */}
-      <div className="mb-16 text-center">
+      <motion.div
+        className="mb-16 text-center"
+        variants={slideInFromBottom(0.2)}
+      >
         <h1 className="mb-4 font-serif text-4xl">
-          Meet the team that makes
+          Tim Kreatif Kami
           <br />
-          the <span className="italic">magic</span> happen
+          Pengabadi <span className="italic">Momen Spesial</span>
         </h1>
         <p className="text-gray-600">
-          Meet our diverse team of world-class creators, designers, and problem
-          solvers.
+          Bertemu dengan tim kreatif kami yang berdedikasi untuk menghadirkan
+          pengalaman photo booth terbaik di setiap acara Anda.
         </p>
-      </div>
-
-      {/* Category Tabs */}
-      <Tabs defaultValue="View all" className="mb-12">
-        <TabsList className="flex flex-wrap justify-center gap-2 rounded-none">
-          {categories.map((category) => (
-            <TabsTrigger
-              key={category}
-              value={category}
-              className="rounded-none px-4 py-2 hover:bg-gray-100"
-            >
-              {category}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
+      </motion.div>
 
       {/* Team Grid */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <motion.div
+        className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
+        variants={staggerContainer}
+      >
         {teamMembers.map((member, index) => (
-          <Card
-            key={index}
-            className="overflow-hidden rounded-none border-0 shadow-sm transition-shadow hover:shadow-md"
-          >
-            <CardContent className="p-0">
-              <div className="relative aspect-square">
-                <Image
-                  src={member.imageSrc}
-                  alt={member.name}
-                  fill
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="bg-white p-4 text-center">
-                <h3 className="text-lg font-medium">{member.name}</h3>
-                <p className="text-sm text-gray-600">{member.position}</p>
-              </div>
-            </CardContent>
-          </Card>
+          <TeamMemberCard key={index} member={member} index={index} />
         ))}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
