@@ -102,7 +102,9 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const dateStr = e.target.value;
-    const parsedDate = parse(dateStr, "dd/MM/yyyy", new Date());
+    const parsedDate = parse(dateStr, "EEEE, d MMMM yyyy", new Date(), {
+      locale: id,
+    });
 
     if (isValid(parsedDate) && !isDateDisabled(parsedDate)) {
       onChange?.(parsedDate);
@@ -159,7 +161,9 @@ export const DatePicker: React.FC<DatePickerProps> = ({
         <input
           type="text"
           readOnly
-          value={value ? format(value, "dd/MM/yyyy") : ""}
+          value={
+            value ? format(value, "EEEE, d MMMM yyyy", { locale: id }) : ""
+          }
           placeholder={placeholder}
           className="h-9 w-full cursor-pointer border border-gray-300 px-3 py-1.5 pr-8 text-sm text-primary focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100"
           onClick={() => !disabled && setIsOpen(true)}

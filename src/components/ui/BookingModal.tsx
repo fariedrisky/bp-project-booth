@@ -7,7 +7,6 @@ import { ServiceType } from "./ServiceCard";
 import { X } from "lucide-react";
 import Label from "./label";
 import DatePicker from "./DatePicker";
-import jsPDF from "jspdf";
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -32,96 +31,27 @@ const BookingModal: React.FC<BookingModalProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const generatePDF = async (
+  const formatWhatsAppMessage = (
     data: typeof formData & { selectedProduct: string },
   ) => {
-    const doc = new jsPDF();
+    return encodeURIComponent(`
+*Permintaan Pemesanan Baru*
+------------------------
+*Data Pemesan:*
+Nama Lengkap: ${data.fullName}
+Telepon: ${data.phoneNumber}
+Email: ${data.email}
 
-    // Add company logo or header
-    doc.setFontSize(20);
-    doc.setTextColor(0, 0, 0);
-    doc.text("Detail Pemesanan", 20, 20);
+*Detail Acara:*
+Tanggal: ${data.eventDate ? data.eventDate.toLocaleDateString("id-ID") : ""}
+Lokasi: ${data.eventLocation}
 
-    // Add booking information
-    doc.setFontSize(12);
-    let yPosition = 40;
-
-    // Add current date
-    const currentDate = new Date().toLocaleDateString("id-ID");
-    doc.text(`Tanggal Pemesanan: ${currentDate}`, 20, yPosition);
-    yPosition += 10;
-
-    // Add horizontal line
-    doc.setLineWidth(0.5);
-    doc.line(20, yPosition, 190, yPosition);
-    yPosition += 10;
-
-    // Customer Details Section
-    doc.setFontSize(14);
-    doc.setFont("helvetica", "bold");
-    doc.text("Data Pemesan", 20, yPosition);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(12);
-    yPosition += 10;
-
-    const content = [
-      ["Nama Lengkap:", data.fullName],
-      ["Nomor Telepon:", data.phoneNumber],
-      ["Email:", data.email],
-      [
-        "Tanggal Acara:",
-        data.eventDate ? data.eventDate.toLocaleDateString("id-ID") : "",
-      ],
-      ["Lokasi Acara:", data.eventLocation],
-      ["Paket Dipilih:", data.selectedProduct],
-      [
-        "Jenis Pembayaran:",
-        data.paymentType === "full" ? "Pembayaran Penuh" : "Uang Muka (DP)",
-      ],
-    ];
-
-    content.forEach(([label, value]) => {
-      doc.text(`${label} ${value}`, 20, yPosition);
-      yPosition += 10;
-    });
-
-    // Add footer
-    doc.setFontSize(10);
-    doc.text("Terima kasih atas pemesanan Anda!", 20, 270);
-    doc.text(
-      "Untuk pertanyaan lebih lanjut, silakan hubungi kami di: +62 851-5731-6767",
-      20,
-      280,
-    );
-
-    // Convert PDF to blob with proper type
-    const pdfBlob = new Blob([doc.output("blob")], { type: "application/pdf" });
-
-    // Create FormData with proper filename
-    const formDataObj = new FormData();
-    const filename = `pemesanan-${data.fullName.replace(/\s+/g, "-")}.pdf`;
-    formDataObj.append("file", pdfBlob, filename);
-
-    try {
-      const response = await fetch("/api/upload-pdf", {
-        method: "POST",
-        body: formDataObj,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to upload PDF");
-      }
-
-      const { fileUrl } = await response.json();
-      return fileUrl;
-    } catch (error) {
-      console.error("Error uploading PDF:", error);
-      throw new Error("Gagal mengunggah dokumen pemesanan. Silakan coba lagi.");
-    }
+*Detail Paket:*
+Paket Dipilih: ${data.selectedProduct}
+Jenis Pembayaran: ${data.paymentType === "full" ? "Pembayaran Penuh (Full)" : "Uang Muka (DP)"}
+`);
   };
 
-  // Update your handleSubmit function to handle errors better
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -137,14 +67,8 @@ const BookingModal: React.FC<BookingModalProps> = ({
         selectedProduct: service.title,
       };
 
-      // Generate and upload PDF
-      const pdfUrl = await generatePDF(submissionData);
-
-      // Format WhatsApp message with PDF URL
-      const whatsappMessage = formatWhatsAppMessage({
-        ...submissionData,
-        pdfUrl,
-      });
+      // Format WhatsApp message
+      const whatsappMessage = formatWhatsAppMessage(submissionData);
 
       // Open WhatsApp with pre-filled message
       window.open(
@@ -163,31 +87,6 @@ const BookingModal: React.FC<BookingModalProps> = ({
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const formatWhatsAppMessage = (
-    data: typeof formData & { selectedProduct: string; pdfUrl: string },
-  ) => {
-    return encodeURIComponent(`
-*Permintaan Pemesanan Baru*
-------------------------
-*Data Pemesan:*
-👤 Nama Lengkap: ${data.fullName}
-📱 Telepon: ${data.phoneNumber}
-📧 Email: ${data.email}
-
-*Detail Acara:*
-📅 Tanggal: ${data.eventDate ? data.eventDate.toLocaleDateString("id-ID") : ""}
-📍 Lokasi: ${data.eventLocation}
-
-*Detail Paket:*
-📦 Paket Dipilih: ${data.selectedProduct}
-💳 Jenis Pembayaran: ${data.paymentType === "full" ? "Pembayaran Penuh" : "Uang Muka (DP)"}
-
-📎 Detail Pemesanan (PDF): ${data.pdfUrl}
-
-Terima kasih atas pemesanan Anda! Kami akan segera menghubungi Anda untuk konfirmasi lebih lanjut.
-`);
   };
 
   const validateForm = () => {
@@ -248,7 +147,7 @@ Terima kasih atas pemesanan Anda! Kami akan segera menghubungi Anda untuk konfir
   };
 
   const paymentOptions = [
-    { value: "full", label: "Pembayaran Penuh" },
+    { value: "full", label: "Pembayaran Penuh (Full)" },
     { value: "dp", label: "Uang Muka (DP)" },
   ];
 
