@@ -104,7 +104,14 @@ const ServiceNav = () => {
           onClick={toggleMenu}
           className="relative p-1 text-white transition-all duration-300 hover:text-accent"
         >
-          <ChevronLeft size={50} className={isOpen ? "rotate-180" : ""} />
+          <ChevronLeft
+            className={`hidden md:block ${isOpen ? "rotate-180" : ""}`}
+            size={50}
+          />
+          <ChevronLeft
+            className={`block md:hidden ${isOpen ? "rotate-180" : ""}`}
+            size={20}
+          />
         </button>
       </div>
     </div>
