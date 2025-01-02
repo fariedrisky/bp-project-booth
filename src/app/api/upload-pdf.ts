@@ -18,11 +18,6 @@ const initializeUploadDirectory = async () => {
 // Initialize directory when module loads
 initializeUploadDirectory();
 
-// Configure route segment
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
-export const maxDuration = 60;
-
 export async function POST(request: Request) {
     try {
         // Ensure request size is not too large (5MB limit)

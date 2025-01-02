@@ -5,7 +5,6 @@ const nextConfig = {
   experimental: {
     serverActions: true,
   },
-  // Add configuration for handling uploads
   async headers() {
     return [
       {
@@ -18,6 +17,9 @@ const nextConfig = {
         ],
       },
     ];
+  },
+  webpack(config) {
+    return config;
   },
 };
 
