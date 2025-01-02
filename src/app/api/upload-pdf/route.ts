@@ -1,24 +1,11 @@
 // src/app/api/upload-pdf/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
+import { NextResponse } from 'next/server';
+import { put } from '@vercel/blob';
+import { nanoid } from 'nanoid';
 
-// Configure the upload directory
-const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'pdfs');
+export const runtime = 'edge';
 
-// Initialize upload directory
-const initializeUploadDirectory = async () => {
-    try {
-        await mkdir(uploadDir, { recursive: true });
-    } catch (error) {
-        console.error('Error creating upload directory:', error);
-    }
-};
-
-// Initialize directory when module loads
-initializeUploadDirectory();
-
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
     try {
         const formData = await request.formData();
         const file = formData.get('file') as File;
@@ -38,26 +25,21 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Generate a secure filename
-        const fileName = `booking-${Date.now()}-${Math.random().toString(36).substring(2)}.pdf`;
-        const filePath = path.join(uploadDir, fileName);
+        // Generate unique filename
+        const uniqueId = nanoid();
+        const fileName = `booking-${uniqueId}.pdf`;
 
-        // Convert file to buffer and save it
-        const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
+        // Upload to Vercel Blob
+        const blob = await put(fileName, file, {
+            access: 'public',
+            addRandomSuffix: false
+        });
 
-        // Write file to disk
-        await writeFile(filePath, buffer);
-
-        // Generate the public URL
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-        const fileUrl = `${baseUrl}/uploads/pdfs/${fileName}`;
-
-        return NextResponse.json({ fileUrl }, { status: 200 });
+        return NextResponse.json({ fileUrl: blob.url }, { status: 200 });
     } catch (error) {
         console.error('Upload error:', error);
         return NextResponse.json(
-            { error: 'Error uploading file' },
+            { error: 'Gagal mengunggah dokumen pemesanan. Silakan coba lagi.' },
             { status: 500 }
         );
     }
