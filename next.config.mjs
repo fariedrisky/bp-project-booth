@@ -9,7 +9,6 @@ const nextConfig = {
   async headers() {
     return [
       {
-        // Allow access to files in the uploads directory
         source: "/uploads/:path*",
         headers: [
           {
@@ -19,14 +18,6 @@ const nextConfig = {
         ],
       },
     ];
-  },
-  // Configure webpack to handle PDF files
-  webpack(config) {
-    config.module.rules.push({
-      test: /\.pdf$/,
-      type: "asset/resource",
-    });
-    return config;
   },
 };
 

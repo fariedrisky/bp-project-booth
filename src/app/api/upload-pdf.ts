@@ -1,57 +1,78 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import formidable, { Files } from 'formidable';
-import fs from 'fs';
+// app/api/upload-pdf/route.ts
+import { NextResponse } from 'next/server';
+import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 
-export const config = {
-    api: {
-        bodyParser: false,
-    },
+// Configure the upload directory
+const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'pdfs');
+
+// Initialize upload directory
+const initializeUploadDirectory = async () => {
+    try {
+        await mkdir(uploadDir, { recursive: true });
+    } catch (error) {
+        console.error('Error creating upload directory:', error);
+    }
 };
 
-const uploadDir = path.join(process.cwd(), 'public/uploads');
+// Initialize directory when module loads
+initializeUploadDirectory();
 
-// Ensure upload directory exists
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
+// Configure route segment
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ message: 'Method not allowed' });
-    }
-
+export async function POST(request: Request) {
     try {
-        const options: formidable.Options = {
-            uploadDir,
-            filename: (_name, _ext, part) => {
-                const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-                return `${uniqueSuffix}${path.extname(part.originalFilename || '')}`;
-            },
-            multiples: false,
-        };
-
-        const form = formidable(options);
-
-        const [_fields, files] = await new Promise<[formidable.Fields, formidable.Files]>((resolve, reject) => {
-            form.parse(req, (err, fields, files) => {
-                if (err) reject(err);
-                resolve([fields, files]);
-            });
-        });
-
-        const fileArray = files.file;
-        if (!fileArray || !Array.isArray(fileArray) || fileArray.length === 0) {
-            throw new Error('No file uploaded');
+        // Ensure request size is not too large (5MB limit)
+        const contentLength = parseInt(request.headers.get('content-length') || '0', 10);
+        if (contentLength > 5 * 1024 * 1024) { // 5MB in bytes
+            return NextResponse.json(
+                { error: 'File too large. Maximum size is 5MB.' },
+                { status: 413 }
+            );
         }
 
-        const file = fileArray[0];
-        const fileName = path.basename(file.filepath);
-        const fileUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/uploads/${fileName}`;
+        const formData = await request.formData();
+        const file = formData.get('file') as File;
 
-        res.status(200).json({ fileUrl });
+        if (!file) {
+            return NextResponse.json(
+                { error: 'No file uploaded' },
+                { status: 400 }
+            );
+        }
+
+        // Validate file type
+        if (file.type !== 'application/pdf') {
+            return NextResponse.json(
+                { error: 'Invalid file type. Only PDF files are allowed.' },
+                { status: 400 }
+            );
+        }
+
+        // Generate a secure filename
+        const fileName = `booking-${Date.now()}-${Math.random().toString(36).substring(2)}.pdf`;
+        const filePath = path.join(uploadDir, fileName);
+
+        // Convert file to buffer and save it
+        const bytes = await file.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+
+        // Write file to disk
+        await writeFile(filePath, buffer);
+
+        // Generate the public URL
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+        const fileUrl = `${baseUrl}/uploads/pdfs/${fileName}`;
+
+        return NextResponse.json({ fileUrl }, { status: 200 });
     } catch (error) {
         console.error('Upload error:', error);
-        res.status(500).json({ error: 'Error processing upload' });
+        return NextResponse.json(
+            { error: 'Error uploading file' },
+            { status: 500 }
+        );
     }
 }
