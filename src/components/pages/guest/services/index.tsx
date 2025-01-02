@@ -102,9 +102,9 @@ const ServiceNav = () => {
         {/* Toggle Button */}
         <button
           onClick={toggleMenu}
-          className="relative bg-accent p-1 text-white transition-all duration-300 hover:bg-accent/90"
+          className="relative p-1 text-white transition-all duration-300 hover:text-accent"
         >
-          <ChevronLeft size={20} className={isOpen ? "rotate-180" : ""} />
+          <ChevronLeft size={50} className={isOpen ? "rotate-180" : ""} />
         </button>
       </div>
     </div>
