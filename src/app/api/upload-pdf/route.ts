@@ -1,5 +1,5 @@
-// app/api/upload-pdf/route.ts
-import { NextResponse } from 'next/server';
+// src/app/api/upload-pdf/route.ts
+import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 
@@ -18,7 +18,7 @@ const initializeUploadDirectory = async () => {
 // Initialize directory when module loads
 initializeUploadDirectory();
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();
         const file = formData.get('file') as File;
@@ -62,11 +62,3 @@ export async function POST(request: Request) {
         );
     }
 }
-
-export const config = {
-    api: {
-        bodyParser: {
-            sizeLimit: '5mb',
-        },
-    },
-};
