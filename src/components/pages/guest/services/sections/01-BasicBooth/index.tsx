@@ -22,7 +22,7 @@ const BasicBooth: React.FC = () => {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "-100px" }}
-      className="container mx-auto px-4 py-8"
+      className="container mx-auto px-4 py-12"
     >
       <motion.div
         variants={fadeInUp}

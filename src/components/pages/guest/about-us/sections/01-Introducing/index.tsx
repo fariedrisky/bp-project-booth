@@ -21,7 +21,7 @@ export default function Introducing() {
   return (
     <section
       id="bp-section"
-      className="relative flex min-h-screen items-center justify-center py-16 text-secondary"
+      className="relative min-h-screen w-full pb-16 pt-24 text-secondary md:pt-32"
     >
       {/* Background Image */}
       <motion.div
@@ -42,24 +42,26 @@ export default function Introducing() {
 
       {/* Content with motion effect */}
       <motion.div
-        className="container mx-auto flex flex-col items-center px-4"
+        className="container mx-auto flex flex-col items-center px-4 sm:px-6"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
         variants={staggerContainer}
       >
-        <motion.div className="mb-8" variants={slideInFromLeftWithBounce(0.2)}>
+        <motion.div
+          className="mb-8 mt-8 sm:mb-12"
+          variants={slideInFromLeftWithBounce(0.2)}
+        >
           <Image
             src={logowhite}
             alt="BP Project Booth"
-            width={467}
-            height={65}
-            className="mx-auto"
+            width={150}
+            className="mx-auto sm:w-[200px]"
           />
         </motion.div>
 
         <motion.div
-          className="max-w-5xl space-y-6 text-justify text-xl leading-relaxed"
+          className="max-w-5xl space-y-4 text-justify text-base leading-relaxed sm:space-y-6 sm:text-lg lg:text-xl"
           variants={staggerContainer}
         >
           {paragraphs.map((paragraph, index) => (
@@ -71,7 +73,7 @@ export default function Introducing() {
               <motion.p
                 variants={textTyping}
                 custom={index}
-                className="whitespace-pre-wrap"
+                className="whitespace-pre-wrap px-1 sm:px-0"
               >
                 {paragraph}
               </motion.p>

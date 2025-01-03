@@ -72,13 +72,13 @@ const ServiceNav = () => {
         {/* Navigation Menu */}
         <div
           className={cn(
-            "w-40 transition-all duration-300",
+            "absolute right-12 w-40 transition-all duration-300",
             isOpen
-              ? "translate-x-0 opacity-100"
+              ? "pointer-events-auto translate-x-0 opacity-100"
               : "pointer-events-none translate-x-8 opacity-0",
           )}
         >
-          <nav className="flex flex-col gap-1 bg-black/80 p-4 backdrop-blur-md">
+          <nav className="flex flex-col gap-3 bg-black/80 p-4 backdrop-blur-md">
             {navItems.map((item) => (
               <button
                 key={item.id}
@@ -87,7 +87,7 @@ const ServiceNav = () => {
                   setIsOpen(false);
                 }}
                 className={cn(
-                  "px-3 py-2 text-sm font-medium transition-all",
+                  "rounded-sm px-4 py-2.5 text-sm font-medium transition-all",
                   activeSection === item.id
                     ? "bg-accent text-white"
                     : "text-gray-300 hover:bg-accent/10",
@@ -102,7 +102,7 @@ const ServiceNav = () => {
         {/* Toggle Button */}
         <button
           onClick={toggleMenu}
-          className="relative p-1 text-white transition-all duration-300 hover:text-accent"
+          className="relative z-[51] p-2 text-white transition-all duration-300 hover:text-accent"
         >
           <ChevronLeft
             className={`hidden md:block ${isOpen ? "rotate-180" : ""}`}

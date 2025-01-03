@@ -100,8 +100,7 @@ export default function Navbar() {
               <Image
                 src={logowhite}
                 alt="logo"
-                width={250}
-                height={40}
+                width={120}
                 className="flex-shrink-0"
               />
             </Link>

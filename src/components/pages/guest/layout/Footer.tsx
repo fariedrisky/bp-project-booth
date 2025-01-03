@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { logo } from "@/data/images/logo";
@@ -33,8 +33,7 @@ export default function Footer() {
           <Image
             src={logo}
             alt="BP Project Booth"
-            width={250}
-            height={40}
+            width={120}
             className="mb-2"
           />
         </motion.div>

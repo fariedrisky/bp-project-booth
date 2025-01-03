@@ -79,7 +79,7 @@ export default function Hero() {
                 onClick={() => {
                   router.push("/services");
                 }}
-                className="hover:!bg-accent/80 !bg-accent px-4 py-2 text-sm font-bold text-white transition duration-300 sm:px-6"
+                className="!bg-accent px-4 py-2 text-sm font-bold text-white transition duration-300 hover:!bg-accent/80 sm:px-6"
               >
                 Lihat Produk
               </Button>
@@ -88,7 +88,7 @@ export default function Hero() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Button className="flex items-center justify-center border border-white bg-transparent px-4 py-2 text-sm font-bold text-white transition duration-300 hover:bg-white hover:bg-opacity-20 sm:px-6">
+                <Button className="flex w-full items-center justify-center border border-white bg-transparent px-4 py-2 text-sm font-bold text-white transition duration-300 hover:bg-white hover:bg-opacity-20 sm:px-6">
                   Kontak Kami <span className="ml-2">→</span>
                 </Button>
               </Link>
