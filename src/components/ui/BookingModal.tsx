@@ -401,6 +401,7 @@ ${priceInfo}
               ) : (
                 <>
                   <Input
+                    inputMode="numeric"
                     name="dpAmount"
                     value={formattedDpAmount} // Tampilkan angka dengan format
                     onChange={handleDpAmountChange} // Simpan angka mentah ke state
