@@ -359,7 +359,7 @@ ${priceInfo}
               Paket Dipilih
             </Label>
             <Input
-              value={`${service.title}${service.selectedDuration ? ` - Durasi ${service.selectedDuration.label}` : ""}${service.selectedPrint ? ` - ${service.selectedPrint.label || "Cetak"}` : ""}`}
+              value={`${service.title}${service.selectedDuration ? ` - Durasi ${service.selectedDuration.label}` : ""}${service.selectedPrint ? ` - Cetak ${service.selectedPrint.label}` : ""}`}
               disabled
               className="h-9 w-full cursor-not-allowed border border-gray-200 bg-gray-50"
             />
