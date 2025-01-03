@@ -130,6 +130,7 @@ ${priceInfo}
       newErrors.phoneNumber = "Nomor telepon wajib diisi";
     if (!formData.email) newErrors.email = "Email wajib diisi";
     if (!formData.eventDate) newErrors.eventDate = "Tanggal acara wajib diisi";
+    if (!formData.eventTime) newErrors.eventTime = "Jam acara wajib diisi";
     if (!formData.eventLocation)
       newErrors.eventLocation = "Lokasi acara wajib diisi";
     if (!formData.paymentType)
@@ -329,6 +330,9 @@ ${priceInfo}
               onChange={handleTimeChange}
               placeholder="Pilih jam acara"
             />
+            {errors.eventTime && (
+              <p className="text-sm text-red-500">{errors.eventTime}</p>
+            )}
           </div>
 
           <div className="space-y-1">
