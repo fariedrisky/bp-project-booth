@@ -134,28 +134,6 @@ const TimePicker: React.FC<TimePickerProps> = ({
     }
   };
 
-  // Modify handleManualHourChange
-  const handleManualHourChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (/^\d{0,2}$/.test(value)) {
-      setManualHour(value);
-      const numValue = parseInt(value || "0");
-      setSelectedHour(numValue);
-      handleTimeChange(numValue, selectedMinute);
-    }
-  };
-
-  // Modify handleManualMinuteChange
-  const handleManualMinuteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (/^\d{0,2}$/.test(value)) {
-      setManualMinute(value);
-      const numValue = parseInt(value || "0");
-      setSelectedMinute(numValue);
-      handleTimeChange(selectedHour, numValue);
-    }
-  };
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -169,6 +147,26 @@ const TimePicker: React.FC<TimePickerProps> = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleHourInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\D/g, "").slice(0, 2);
+    setManualHour(val);
+    const num = parseInt(val);
+    if (!isNaN(num) && num >= 0 && num <= 23) {
+      setSelectedHour(num);
+      handleTimeChange(num, selectedMinute);
+    }
+  };
+
+  const handleMinuteInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\D/g, "").slice(0, 2);
+    setManualMinute(val);
+    const num = parseInt(val);
+    if (!isNaN(num) && num >= 0 && num <= 59) {
+      setSelectedMinute(num);
+      handleTimeChange(selectedHour, num);
+    }
+  };
 
   return (
     <div className={cn("relative", className)} ref={clockRef}>
@@ -198,37 +196,27 @@ const TimePicker: React.FC<TimePickerProps> = ({
           <div className="mb-4 flex justify-center space-x-1 text-2xl">
             <input
               type="text"
+              inputMode="numeric"
               value={manualHour}
-              onChange={(e) => {
-                const val = e.target.value.replace(/\D/g, "").slice(0, 2);
-                setManualHour(val);
-                const num = parseInt(val);
-                if (!isNaN(num)) {
-                  setSelectedHour(num);
-                  handleTimeChange(num, selectedMinute);
-                }
-              }}
+              onChange={handleHourInput}
+              onBlur={() =>
+                setManualHour(selectedHour.toString().padStart(2, "0"))
+              }
               className={cn(
                 "w-12 cursor-pointer rounded px-2 text-center",
                 isSelectingHour ? "bg-blue-100 text-blue-500" : "text-gray-600",
               )}
               onClick={() => setIsSelectingHour(true)}
             />
-
             <span className="text-gray-900">:</span>
-
             <input
               type="text"
+              inputMode="numeric"
               value={manualMinute}
-              onChange={(e) => {
-                const val = e.target.value.replace(/\D/g, "").slice(0, 2);
-                setManualMinute(val);
-                const num = parseInt(val);
-                if (!isNaN(num)) {
-                  setSelectedMinute(num);
-                  handleTimeChange(selectedHour, num);
-                }
-              }}
+              onChange={handleMinuteInput}
+              onBlur={() =>
+                setManualMinute(selectedMinute.toString().padStart(2, "0"))
+              }
               className={cn(
                 "w-12 cursor-pointer rounded px-2 text-center",
                 !isSelectingHour
