@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import { heroBackground } from "@/data/images/heroImages";
+import { motion, Variants } from "framer-motion";
 
 const ServiceNav = () => {
   const [activeSection, setActiveSection] = React.useState("basic");
@@ -66,8 +67,39 @@ const ServiceNav = () => {
     { id: "phone", label: "Phone Booth" },
   ];
 
+  const buttonVariants: Variants = {
+    initial: {
+      x: 0,
+      opacity: 1,
+    },
+    hover: {
+      x: isOpen ? -8 : 8,
+      opacity: [1, 0.7, 1],
+      transition: {
+        x: {
+          duration: 0.3,
+          repeat: Infinity,
+          repeatType: "reverse",
+        },
+        opacity: {
+          duration: 1,
+          repeat: Infinity,
+          repeatType: "reverse",
+        },
+      },
+    },
+  };
+
+  const iconVariants: Variants = {
+    initial: { rotate: 0 },
+    open: {
+      rotate: 180,
+      transition: { duration: 0.3 },
+    },
+  };
+
   return (
-    <div className="fixed right-0 top-1/2 z-50 -translate-y-1/2">
+    <div className="fixed right-0 top-1/2 z-20 -translate-y-1/2">
       <div className="relative flex items-center justify-end">
         {/* Navigation Menu */}
         <div
@@ -100,19 +132,21 @@ const ServiceNav = () => {
         </div>
 
         {/* Toggle Button */}
-        <button
+        <motion.button
           onClick={toggleMenu}
-          className="relative z-[51] p-2 text-white transition-all duration-300 hover:text-accent"
+          className="relative p-2 text-white transition-all duration-300 hover:text-accent"
+          variants={buttonVariants}
+          initial="initial"
+          whileHover="hover"
         >
-          <ChevronLeft
-            className={`hidden md:block ${isOpen ? "rotate-180" : ""}`}
-            size={50}
-          />
-          <ChevronLeft
-            className={`block md:hidden ${isOpen ? "rotate-180" : ""}`}
-            size={20}
-          />
-        </button>
+          <motion.div
+            variants={iconVariants}
+            animate={isOpen ? "open" : "initial"}
+          >
+            <ChevronLeft className="hidden md:block" size={50} />
+            <ChevronLeft className="block md:hidden" size={20} />
+          </motion.div>
+        </motion.button>
       </div>
     </div>
   );

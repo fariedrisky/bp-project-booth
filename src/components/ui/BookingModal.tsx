@@ -7,6 +7,7 @@ import { ServiceType } from "./ServiceCard";
 import { X } from "lucide-react";
 import Label from "./label";
 import DatePicker from "./DatePicker";
+import TimePicker from "./TimePicker";
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
     phoneNumber: "",
     email: "",
     eventDate: null as Date | null,
+    eventTime: null as Date | null,
     eventLocation: "",
     paymentType: "",
     dpAmount: "",
@@ -31,6 +33,22 @@ const BookingModal: React.FC<BookingModalProps> = ({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const formatTanggal = (date: Date): string => {
+    return date.toLocaleDateString("id-ID", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
+  const formatWaktu = (date: Date): string => {
+    return date.toLocaleTimeString("id-ID", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   const formatWhatsAppMessage = (
     data: typeof formData & { selectedProduct: string },
@@ -53,7 +71,8 @@ Telepon: ${data.phoneNumber}
 Email: ${data.email}
 
 *Detail Acara:*
-Tanggal: ${data.eventDate ? data.eventDate.toLocaleDateString("id-ID") : ""}
+Tanggal: ${data.eventDate ? formatTanggal(data.eventDate) : ""}
+Jam: ${data.eventTime ? formatWaktu(data.eventTime) : ""}
 Lokasi: ${data.eventLocation}
 
 *Detail Paket:*
@@ -174,6 +193,19 @@ ${priceInfo}
     }
   };
 
+  const handleTimeChange = (date: Date | null) => {
+    setFormData((prev) => ({
+      ...prev,
+      eventTime: date,
+    }));
+    if (errors.eventTime) {
+      setErrors((prev) => ({
+        ...prev,
+        eventTime: "",
+      }));
+    }
+  };
+
   const paymentOptions = [
     { value: "full", label: "Pembayaran Penuh (Full)" },
     { value: "dp", label: "Uang Muka (DP)" },
@@ -285,6 +317,17 @@ ${priceInfo}
               error={errors.eventDate}
               className={errors.eventDate ? "border-red-500" : ""}
               disabled={isSubmitting}
+            />
+          </div>
+
+          <div className="space-y-1">
+            <Label className="block text-sm font-medium text-gray-700">
+              Jam Acara
+            </Label>
+            <TimePicker
+              value={formData.eventTime}
+              onChange={handleTimeChange}
+              placeholder="Pilih jam acara"
             />
           </div>
 
