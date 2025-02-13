@@ -11,11 +11,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { logo } from "@/data/images/logo";
-import useAuth from "@/hooks/useAuth";
 
 const Sidebar = () => {
-  const { handleLogout } = useAuth();
-
   const menuItems = [
     {
       title: "Dashboard",
@@ -66,7 +63,6 @@ const Sidebar = () => {
           <Button
             variant="ghost"
             className="w-full justify-start gap-3 text-red-500 hover:bg-red-50 hover:text-red-600"
-            onClick={handleLogout}
           >
             <LogOut size={20} />
             Logout
