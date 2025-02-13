@@ -6,7 +6,7 @@ interface GuestLayoutProps {
   children: ReactNode;
 }
 
-function GuestLayout({ children }: GuestLayoutProps) {
+export default function GuestLayout({ children }: GuestLayoutProps) {
   return (
     <>
       <Navbar />
@@ -15,5 +15,3 @@ function GuestLayout({ children }: GuestLayoutProps) {
     </>
   );
 }
-
-export default GuestLayout;

@@ -5,12 +5,12 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 import { Check } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/components/ui/Separator";
 import { cn } from "@/lib/utils";
-import Select from "@/components/ui/select";
+import Select from "@/components/ui/Select";
 
 export interface DurationOption {
   value: string;

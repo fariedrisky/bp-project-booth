@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import Image from "next/image";
 import { logo1x1 } from "@/data/images/logo";
 import useAuth from "@/hooks/useAuth";

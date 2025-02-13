@@ -3,7 +3,7 @@
 import { FaCircleCheck } from "react-icons/fa6";
 import Image from "next/image";
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import OurClientsMarquee from "../../animations/OurClientsMarquee";
 import { motion } from "framer-motion";
 import {

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { heroBackground, heroClient } from "@/data/images/heroImages";
 import { motion } from "framer-motion";
 import { slideInFromBottom } from "@/animation/motion";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 

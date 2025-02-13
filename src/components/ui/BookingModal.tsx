@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Modal } from "./modal";
-import { Input } from "./input";
-import Select from "./select";
-import { Button } from "./button";
+import { Modal } from "./Modal";
+import { Input } from "./Input";
+import Select from "./Select";
+import { Button } from "./Button";
 import { ServiceType } from "./ServiceCard";
 import { X } from "lucide-react";
-import Label from "./label";
+import Label from "./Label";
 import DatePicker from "./DatePicker";
 import TimePicker from "./TimePicker";
 

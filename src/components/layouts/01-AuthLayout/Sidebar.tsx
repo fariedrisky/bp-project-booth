@@ -9,7 +9,7 @@ import {
   FileText,
   LogOut,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { logo } from "@/data/images/logo";
 import useAuth from "@/hooks/useAuth";
 

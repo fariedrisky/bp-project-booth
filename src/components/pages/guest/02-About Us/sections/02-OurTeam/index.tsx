@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/Card";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {

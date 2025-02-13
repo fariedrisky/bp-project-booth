@@ -7,7 +7,7 @@ interface AuthLayoutProps {
   children: ReactNode;
 }
 
-function AuthLayout({ children }: AuthLayoutProps) {
+export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
     <>
       <div className="flex h-screen bg-gray-100">
@@ -21,5 +21,3 @@ function AuthLayout({ children }: AuthLayoutProps) {
     </>
   );
 }
-
-export default AuthLayout;
