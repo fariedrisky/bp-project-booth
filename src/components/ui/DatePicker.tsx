@@ -113,6 +113,8 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     }
   };
 
+  console.log("handleInputChange", handleInputChange);
+
   const navigateMonth = (direction: "prev" | "next") => {
     setViewDate(
       direction === "prev" ? subMonths(viewDate, 1) : addMonths(viewDate, 1),

@@ -7,11 +7,7 @@ import { usePathname } from "next/navigation";
 import { logowhite } from "@/data/images/logo";
 import { menu } from "@/data/HomeMenu";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  slideInFromBottom,
-  sideBar,
-  staggerContainer,
-} from "@/animation/motion";
+import { staggerContainer } from "@/animation/motion";
 
 // Define the type for menu items
 type MenuItem = {
