@@ -39,7 +39,7 @@ export interface ServiceType {
   selectedDuration?: DurationOption;
   selectedPrint?: PrintOption;
   totalPrice?: number;
-  templateImage?: string;
+  templateImage?: string[];
   templateOptions?: { value: string; label: string }[];
 }
 

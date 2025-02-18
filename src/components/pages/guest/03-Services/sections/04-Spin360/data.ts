@@ -35,7 +35,7 @@ const spin360Types: ServiceType[] = [
         description: "Bundling package Spin 360° dengan cetak foto 2R",
         duration: "4 Jam",
         image: "/assets/images/services/spin-360-2r.jpg",
-        templateImage: "/assets/images/template-options/2r.jpg",
+        templateImage: ["/assets/images/template-options/2r.jpg"],
         templateOptions: [
             { value: "S1", label: "Template S1" },
             { value: "S2", label: "Template S2" },

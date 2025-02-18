@@ -7,7 +7,7 @@ const boothTypes: ServiceType[] = [
         description: "Basic Booth dengan ukuran 2R, cocok untuk berbagai acara",
         duration: "4 Jam",
         image: "/assets/images/services/2r.jpg",
-        templateImage: "/assets/images/template-options/2r.jpg",
+        templateImage: ["/assets/images/template-options/2r.jpg"],
         templateOptions: [
             { value: "S1", label: "Template S1" },
             { value: "S2", label: "Template S2" },
@@ -44,7 +44,10 @@ const boothTypes: ServiceType[] = [
         description: "Basic Booth dengan format Polaroid yang klasik",
         duration: "4 Jam",
         image: "/assets/images/services/polaroid.jpg",
-        templateImage: "/assets/images/template-options/polaroid.jpg",
+        templateImage: [
+            "/assets/images/template-options/polaroid.jpg",
+            "/assets/images/template-options/polaroid-result.jpg"
+        ],
         templateOptions: [
             { value: "POL1", label: "Template POL1" },
             { value: "POL2", label: "Template POL2" },
@@ -75,7 +78,7 @@ const boothTypes: ServiceType[] = [
         description: "Basic Booth ukuran 4R format portrait",
         duration: "4 Jam",
         image: "/assets/images/services/4r-portrait.jpg",
-        templateImage: "/assets/images/template-options/4r-portrait.jpg",
+        templateImage: ["/assets/images/template-options/4r-portrait.jpg"],
         templateOptions: [
             { value: "P1", label: "Template P1" },
             { value: "P2", label: "Template P2" },
@@ -113,7 +116,7 @@ const boothTypes: ServiceType[] = [
         description: "Basic Booth ukuran 4R format landscape",
         duration: "4 Jam",
         image: "/assets/images/services/4r-landscape.jpg",
-        templateImage: "/assets/images/template-options/4r-landscape.jpg",
+        templateImage: ["/assets/images/template-options/4r-landscape.jpg"],
         templateOptions: [
             { value: "L1", label: "Template L1" },
             { value: "L2", label: "Template L2" },
