@@ -182,7 +182,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
           readOnly
           value={value ? `${manualHour}:${manualMinute}` : ""}
           placeholder={placeholder}
-          className="h-9 w-full cursor-pointer border border-gray-300 px-3 py-1.5 pr-8 text-sm text-primary focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100"
+          className="h-9 w-full cursor-pointer border border-gray-300 px-3 py-1.5 pr-8 text-sm text-primary focus:border-accent focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100"
           onClick={() => !disabled && setIsOpen(!isOpen)}
           disabled={disabled}
         />
