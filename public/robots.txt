@@ -1,0 +1,17 @@
+# robots.txt untuk BP Project Booth
+User-agent: *
+Allow: /
+
+# Blokir halaman admin jika ada
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /login/
+Disallow: /private/
+
+# Blokir file yang tidak perlu diindeks
+Disallow: /*.json$
+Disallow: /*.js$
+Disallow: /*.css$
+
+# Host sitemap
+Sitemap: https://bp-projectbooth.com/sitemap.xml
