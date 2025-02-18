@@ -103,9 +103,6 @@ export default function Hero() {
             >
               <Button className="group relative flex w-full items-center justify-center border border-white/30 bg-transparent px-8 py-3 text-base font-semibold text-white backdrop-blur-sm transition duration-300 hover:border-white hover:bg-white/10 sm:px-10">
                 Kontak Kami{" "}
-                <span className="ml-2 transition-transform duration-300 group-hover:translate-x-1">
-                  →
-                </span>
               </Button>
             </Link>
           </motion.div>
