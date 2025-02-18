@@ -1,101 +1,139 @@
 "use client";
 
-import React from "react";
-import Image from "next/image";
-import { heroBackground, heroClient } from "@/data/images/heroImages";
+import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { slideInFromBottom } from "@/animation/motion";
+import { fadeInUp, staggerContainer, textTyping } from "@/animation/motion";
 import { Button } from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function Hero() {
   const router = useRouter();
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = 0.8; // Sedikit diperlambat untuk efek yang lebih elegan
+    }
+  }, []);
 
   return (
     <section
       id="hero-section"
-      className="relative h-screen w-full overflow-hidden"
+      className="relative h-screen w-full overflow-hidden bg-black"
     >
-      {/* Background Image */}
-      <Image
-        src={heroBackground}
-        alt="Hero Background"
-        layout="fill"
-        objectFit="cover"
-        priority
-        className="opacity-20 mix-blend-lighten"
-      />
+      {/* Overlay gradient untuk memperindah background video */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/70 via-black/40 to-black/90"></div>
 
-      {/* Hero Client Image */}
-      <motion.div
-        className="absolute right-[-50px] z-[-1] hidden -translate-y-1/2 transform lg:block"
-        initial="offscreen"
-        whileInView="onscreen"
-        variants={slideInFromBottom(0.3)}
+      {/* Background Video dengan efek zoom yang halus */}
+      <video
+        ref={videoRef}
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 h-full w-full scale-105 transform-gpu object-cover opacity-40"
+        style={{
+          filter: "saturate(1.2) contrast(1.1)",
+          animation: "slowZoom 40s infinite alternate ease-in-out",
+        }}
       >
-        <div className="relative h-[125vh] w-[800px] overflow-hidden">
-          <Image
-            src={heroClient}
-            alt="Hero Client"
-            className="rotate-6 object-cover" // Ubah dari object-contain menjadi object-cover
-            style={{
-              filter: "drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))",
-              width: "800px", // Mengunci lebar
-              height: "125vh", // Mengunci tinggi
-            }}
-          />
-        </div>
-      </motion.div>
+        <source src="/assets/videos/hero.mp4" type="video/mp4" />
+      </video>
 
-      {/* Content Section */}
-      <div className="relative h-full w-full">
-        <div className="flex h-full items-center justify-center px-4 lg:justify-start lg:px-16">
+      {/* Content Section di tengah */}
+      <div className="relative z-20 flex h-full w-full items-center justify-center">
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+          className="max-w-4xl px-6 pt-0 text-center"
+        >
           <motion.div
-            className="w-full max-w-md p-6 text-center sm:max-w-lg sm:p-8 md:max-w-xl lg:max-w-2xl lg:text-left"
-            style={{
-              background:
-                "linear-gradient(to right, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0))",
-            }}
-            initial="offscreen"
-            whileInView="onscreen"
-            variants={slideInFromBottom(0.3)}
+            variants={fadeInUp}
+            className="mb-6 inline-block rounded-full bg-opacity-10 bg-gradient-to-r from-accent/80 to-accent px-6 py-3 backdrop-blur-md"
           >
-            <div className="mb-4">
-              <span className="inline-block rounded-full bg-accent bg-opacity-10 px-3 py-1 text-xs text-accent sm:px-4 sm:py-2 sm:text-sm">
-                Professional Photo Booth Service
-              </span>
-            </div>
-            <h1 className="mb-4 font-serif text-3xl font-bold text-white sm:text-4xl md:text-5xl">
-              Hadir Mengabadikan <br />
-              Setiap <span className="italic text-accent">Momen</span>
-            </h1>
-            <p className="mx-auto mb-6 max-w-sm text-sm text-gray-200 sm:max-w-md sm:text-base lg:mx-0">
-              Photo booth modern yang menghadirkan kenangan tak terlupakan di
-              setiap acara Anda
-            </p>
-            <div className="flex flex-col justify-center space-y-3 sm:flex-row sm:space-x-4 sm:space-y-0 lg:justify-start">
-              <Button
-                onClick={() => {
-                  router.push("/services");
-                }}
-                className="!bg-accent px-4 py-2 text-sm font-bold text-white transition duration-300 hover:!bg-accent/80 sm:px-6"
-              >
-                Lihat Produk
-              </Button>
-              <Link
-                href="https://wa.me/6285157316767"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button className="flex w-full items-center justify-center border border-white bg-transparent px-4 py-2 text-sm font-bold text-white transition duration-300 hover:bg-white hover:bg-opacity-20 sm:px-6">
-                  Kontak Kami <span className="ml-2">→</span>
-                </Button>
-              </Link>
-            </div>
+            <span className="text-sm font-medium tracking-wide text-white sm:text-base">
+              Professional Photo Booth Service
+            </span>
           </motion.div>
-        </div>
+
+          <motion.h1
+            variants={fadeInUp}
+            className="mb-6 font-serif text-4xl font-bold leading-tight text-white sm:text-5xl md:text-6xl"
+          >
+            <motion.span custom={0} variants={textTyping}>
+              Hadir Mengabadikan <br />
+            </motion.span>
+            <motion.span custom={1} variants={textTyping}>
+              Setiap{" "}
+              <span className="relative italic text-accent">
+                Momen
+                <span className="absolute -bottom-1 left-0 h-[3px] w-full bg-accent/30"></span>
+              </span>
+            </motion.span>
+          </motion.h1>
+
+          <motion.p
+            variants={fadeInUp}
+            className="mx-auto mb-10 max-w-xl text-base text-gray-200 sm:text-lg"
+          >
+            Photo booth modern yang menghadirkan kenangan tak terlupakan di
+            setiap acara Anda dengan teknologi terkini dan desain yang elegan
+          </motion.p>
+
+          <motion.div
+            variants={fadeInUp}
+            className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-6 sm:space-y-0"
+          >
+            <Button
+              onClick={() => {
+                router.push("/services");
+              }}
+              className="group relative !bg-accent px-8 py-3 text-base font-semibold text-white transition-all duration-300 hover:!bg-accent/90 sm:px-10"
+            >
+              <span className="relative z-10">Lihat Produk</span>
+              <span className="absolute bottom-0 left-0 h-full w-0 bg-white/20 transition-all duration-300 group-hover:w-full"></span>
+            </Button>
+
+            <Link
+              href="https://wa.me/6285157316767"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button className="group relative flex w-full items-center justify-center border border-white/30 bg-transparent px-8 py-3 text-base font-semibold text-white backdrop-blur-sm transition duration-300 hover:border-white hover:bg-white/10 sm:px-10">
+                Kontak Kami{" "}
+                <span className="ml-2 transition-transform duration-300 group-hover:translate-x-1">
+                  →
+                </span>
+              </Button>
+            </Link>
+          </motion.div>
+
+          {/* Ornamen dekoratif */}
+          <motion.div
+            variants={fadeInUp}
+            className="absolute -bottom-10 left-1/2 h-[1px] w-[200px] -translate-x-1/2 bg-gradient-to-r from-transparent via-accent/50 to-transparent"
+          ></motion.div>
+        </motion.div>
       </div>
+
+      {/* Particles overlay effect */}
+      <div className="pointer-events-none absolute inset-0 z-10 bg-[url('/assets/images/noise-pattern.png')] opacity-30 mix-blend-soft-light"></div>
     </section>
   );
 }
+
+{
+  /* Tambahkan keyframes untuk efek zoom lambat */
+}
+<style jsx global>{`
+  @keyframes slowZoom {
+    from {
+      transform: scale(1.05);
+    }
+    to {
+      transform: scale(1.15);
+    }
+  }
+`}</style>;

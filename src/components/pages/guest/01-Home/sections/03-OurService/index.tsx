@@ -67,7 +67,7 @@ export default function OurService() {
           />
           <ServiceCard
             icon={LiaPersonBoothSolid}
-            title="Mini Booth"
+            title="Photobox"
             description="Solusi untuk acara kecil dengan fitur boomerang dan GIF"
           />
           <ServiceCard

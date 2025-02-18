@@ -39,6 +39,8 @@ export interface ServiceType {
   selectedDuration?: DurationOption;
   selectedPrint?: PrintOption;
   totalPrice?: number;
+  templateImage?: string;
+  templateOptions?: { value: string; label: string }[];
 }
 
 export type BoothVariant =

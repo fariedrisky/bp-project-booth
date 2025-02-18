@@ -59,7 +59,7 @@ h6 {
 
 /* For the entire scrollbar */
 ::-webkit-scrollbar {
-  width: 12px; /* Adjust the width of the scrollbar */
+  width: 8px; /* Adjust the width of the scrollbar */
 }
 
 /* For the scrollbar thumb */
@@ -70,6 +70,7 @@ h6 {
 /* For the scrollbar track */
 ::-webkit-scrollbar-track {
   background: lightgrey; /* Color of the scrollbar track */
+  
 }
 
 
