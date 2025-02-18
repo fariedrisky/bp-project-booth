@@ -38,7 +38,6 @@ export default function Bp() {
                 alt="BP Project Booth"
                 width={500}
                 height={500}
-                className="rounded-lg"
                 loading="lazy"
               />
             </div>
