@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import BasicBooth from "./sections/01-BasicBooth";
-import MiniBooth from "./sections/02-MiniBooth";
+import PhotoBox from "./sections/02-PhotoBox";
 import Booth180 from "./sections/03-180Booth";
 import { WideAngleBooth } from "./sections/05-WideAngleBooth";
 import { PhoneBooth } from "./sections/06-PhoneBooth";
@@ -29,7 +29,7 @@ const ServiceNav = () => {
     const handleScroll = () => {
       const sections = [
         "basic",
-        "mini",
+        "photobox",
         "180",
         "spin360",
         "wideangle",
@@ -60,7 +60,7 @@ const ServiceNav = () => {
 
   const navItems = [
     { id: "basic", label: "Basic Booth" },
-    { id: "mini", label: "Mini Booth" },
+    { id: "photobox", label: "Mini Booth" },
     { id: "180", label: "180° Booth" },
     { id: "spin360", label: "Spin 360°" },
     { id: "wideangle", label: "Wide Angle" },
@@ -170,8 +170,8 @@ const Service = () => {
           <section id="basic">
             <BasicBooth />
           </section>
-          <section id="mini">
-            <MiniBooth />
+          <section id="photobox">
+            <PhotoBox />
           </section>
           <section id="180">
             <Booth180 />

@@ -1,6 +1,6 @@
 import { ServiceType } from "@/components/ui/ServiceCard";
 
-const miniBoothTypes: ServiceType[] = [
+const photoBoxTypes: ServiceType[] = [
     {
         id: "mirror-booth",
         title: "Mirror Booth Unlimited",
@@ -35,4 +35,4 @@ const miniBoothTypes: ServiceType[] = [
     },
 ];
 
-export default miniBoothTypes;
+export default photoBoxTypes;

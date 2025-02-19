@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { ServiceCard, ServiceType } from "@/components/ui/ServiceCard";
 import BookingModal from "@/components/ui/BookingModal";
-import miniBoothTypes from "./data";
+import photoBoxTypes from "./data";
 import { fadeInUp, staggerContainer } from "@/animation/motion";
 
-const MiniBooth: React.FC = () => {
+const PhotoBox: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<ServiceType | null>(
     null,
@@ -28,9 +28,7 @@ const MiniBooth: React.FC = () => {
         variants={fadeInUp}
         className="mx-auto mb-8 max-w-2xl text-center"
       >
-        <h2 className="font-serif text-2xl font-bold md:text-3xl">
-          Mini Booth
-        </h2>
+        <h2 className="font-serif text-2xl font-bold md:text-3xl">Photo Box</h2>
         <p className="mt-2 text-gray-600">
           Solusi untuk acara kecil dengan fitur boomerang dan GIF.
         </p>
@@ -40,7 +38,7 @@ const MiniBooth: React.FC = () => {
         variants={staggerContainer}
         className="mx-auto grid max-w-[800px] grid-cols-1 gap-6 md:grid-cols-2"
       >
-        {miniBoothTypes.map((booth) => (
+        {photoBoxTypes.map((booth) => (
           <motion.div
             key={booth.id}
             variants={fadeInUp}
@@ -70,4 +68,4 @@ const MiniBooth: React.FC = () => {
   );
 };
 
-export default MiniBooth;
+export default PhotoBox;
