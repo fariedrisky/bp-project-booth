@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import Navbar from "./Navbar";
+import Header from "./01-Header";
 import Footer from "./Footer";
 
 interface GuestLayoutProps {
@@ -9,7 +9,7 @@ interface GuestLayoutProps {
 export default function GuestLayout({ children }: GuestLayoutProps) {
   return (
     <>
-      <Navbar />
+      <Header />
       <main>{children}</main>
       <Footer />
     </>

@@ -1,11 +1,12 @@
+"use client";
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { ServiceCard, ServiceType } from "@/components/ui/ServiceCard";
 import BookingModal from "@/components/ui/BookingModal";
-import photoBoxTypes from "./data";
+import wideAngleTypes from "./data";
 import { fadeInUp, staggerContainer } from "@/animation/motion";
 
-const PhotoBox: React.FC = () => {
+export default function WideAngleBooth() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<ServiceType | null>(
     null,
@@ -17,28 +18,32 @@ const PhotoBox: React.FC = () => {
   };
 
   return (
+    <div className="py-24">
+      {" "}
     <motion.div
       variants={staggerContainer}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "-100px" }}
-      className="container mx-auto px-4"
+      className="container mx-auto px-4 py-12"
     >
       <motion.div
         variants={fadeInUp}
         className="mx-auto mb-8 max-w-2xl text-center"
       >
-        <h2 className="font-serif text-2xl font-bold md:text-3xl">Photo Box</h2>
+        <h2 className="font-serif text-2xl font-bold md:text-3xl">
+          Wide Angle Booth
+        </h2>
         <p className="mt-2 text-gray-600">
-          Solusi untuk acara kecil dengan fitur boomerang dan GIF.
+          Booth dengan sudut lebar yang sempurna untuk mengabadikan momen
+          bersama
         </p>
       </motion.div>
-
       <motion.div
         variants={staggerContainer}
-        className="mx-auto grid max-w-[800px] grid-cols-1 gap-6 md:grid-cols-2"
+        className="mx-auto grid max-w-[400px] grid-cols-1 gap-6"
       >
-        {photoBoxTypes.map((booth) => (
+        {wideAngleTypes.map((booth) => (
           <motion.div
             key={booth.id}
             variants={fadeInUp}
@@ -47,7 +52,7 @@ const PhotoBox: React.FC = () => {
           >
             <ServiceCard
               service={booth}
-              variant="mini"
+              variant="wideangle"
               onBookNow={handleBookNow}
             />
           </motion.div>
@@ -65,7 +70,6 @@ const PhotoBox: React.FC = () => {
         />
       )}
     </motion.div>
+    </div>
   );
-};
-
-export default PhotoBox;
+}
