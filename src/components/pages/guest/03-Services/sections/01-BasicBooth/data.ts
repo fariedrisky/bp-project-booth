@@ -6,7 +6,10 @@ const boothTypes: ServiceType[] = [
         title: "2R",
         description: "Basic Booth dengan ukuran 2R, cocok untuk berbagai acara",
         duration: "4 Jam",
-        image: "/assets/images/services/2r.jpg",
+        image: [
+            "/assets/images/services/2r.jpg",
+            "/assets/images/services/2r-2.jpg"
+        ],
         templateImage: [
             "/assets/images/template-options/2r.jpg",
             "/assets/images/template-options/result.jpg",
@@ -47,7 +50,10 @@ const boothTypes: ServiceType[] = [
         title: "Polaroid",
         description: "Basic Booth dengan format Polaroid yang klasik",
         duration: "4 Jam",
-        image: "/assets/images/services/polaroid.jpg",
+        image: [
+            "/assets/images/services/polaroid.jpg",
+            "/assets/images/services/polaroid-2.jpg"
+        ],
         templateImage: [
             "/assets/images/template-options/polaroid.jpg",
             "/assets/images/template-options/polaroid-result.jpg",
@@ -82,7 +88,11 @@ const boothTypes: ServiceType[] = [
         title: "4R Portrait",
         description: "Basic Booth ukuran 4R format portrait",
         duration: "4 Jam",
-        image: "/assets/images/services/4r-portrait.jpg",
+        image: [
+            "/assets/images/services/4r-portrait.jpg",
+            "/assets/images/services/4r-portrait-2.jpg",
+            "/assets/images/services/4r-portrait-3.jpg"
+        ],
         templateImage: [
             "/assets/images/template-options/4r-portrait.jpg",
             "/assets/images/template-options/result.jpg",
@@ -124,7 +134,7 @@ const boothTypes: ServiceType[] = [
         title: "4R Landscape",
         description: "Basic Booth ukuran 4R format landscape",
         duration: "4 Jam",
-        image: "/assets/images/services/4r-landscape.jpg",
+        image: ["/assets/images/services/4r-landscape.jpg"],
         templateImage: [
             "/assets/images/template-options/4r-landscape.jpg",
             "/assets/images/template-options/result.jpg",

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   Card,
@@ -31,7 +31,7 @@ export interface ServiceType {
   size?: string;
   type?: string;
   duration?: string;
-  image: string;
+  image: string[];
   durationOptions?: DurationOption[];
   printOptions?: PrintOption[];
   features: string[];
@@ -70,6 +70,20 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
   const [selectedDuration, setSelectedDuration] = useState(
     service.durationOptions?.[0]?.value,
   );
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Auto-rotate images every 5 seconds
+  useEffect(() => {
+    if (service.image.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) =>
+        prevIndex === service.image.length - 1 ? 0 : prevIndex + 1,
+      );
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [service.image.length]);
 
   const currentPrintOption = service.printOptions?.find(
     (option) => option.value === selectedPrint,
@@ -171,15 +185,21 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
       )}
     >
       <CardHeader className="p-0">
-        <div className="relative aspect-[1/1] w-full">
-          <Image
-            src={service.image}
-            alt={service.title}
-            fill
-            className="object-cover"
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-            quality={100}
-          />
+        <div className="relative aspect-[1/1] w-full overflow-hidden">
+          {service.image.map((img, index) => (
+            <Image
+              key={`${img}-${index}`}
+              src={img}
+              alt={`${service.title} - Image ${index + 1}`}
+              fill
+              className={`object-contain transition-opacity duration-500 bg-[#181818] ${
+                currentImageIndex === index ? "opacity-100" : "opacity-0"
+              }`}
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+              quality={100}
+              priority={index === 0}
+            />
+          ))}
         </div>
       </CardHeader>
 
