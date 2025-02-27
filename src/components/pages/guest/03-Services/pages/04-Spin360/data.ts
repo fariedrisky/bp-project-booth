@@ -17,16 +17,19 @@ const spin360Types: ServiceType[] = [
             },
             {
                 value: "4h",
-                label: "4 Jam",
+                label: "4 Jam - 5 Jam",
                 price: 2500000,
             },
         ],
         features: [
-            "Lighting",
+            "Crew Stand By",
             "Device iPhone",
-            "Custom Template",
-            "Media Sharing File",
-            "Props",
+            "Custom Template & Sound",
+            "Lighting Set",
+            "Album Online",
+            "Media Sharing File (Barcode Support)",
+            "Props (Boleh Direquest)",
+            "Available Keluar Kota (Ask Admin)"
         ],
     },
     {

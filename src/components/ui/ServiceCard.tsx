@@ -7,7 +7,6 @@ import {
   CardHeader,
 } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Check } from "lucide-react";
 import { Separator } from "@/components/ui/Separator";
 import { cn } from "@/lib/utils";
 import Select from "@/components/ui/Select";
@@ -71,6 +70,20 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
     service.durationOptions?.[0]?.value,
   );
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isUnlimited, setIsUnlimited] = useState(false);
+
+  // Set default duration to the longest one when unlimited print is selected
+  useEffect(() => {
+    if (selectedPrint === "unlimited" && service.durationOptions) {
+      // Find the longest duration (assuming the last one is the longest)
+      const longestDuration =
+        service.durationOptions[service.durationOptions.length - 1].value;
+      setSelectedDuration(longestDuration);
+      setIsUnlimited(true);
+    } else {
+      setIsUnlimited(false);
+    }
+  }, [selectedPrint, service.durationOptions]);
 
   // Auto-rotate images every 5 seconds
   useEffect(() => {
@@ -92,16 +105,17 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
     (option) => option.value === selectedDuration,
   );
 
+  // For services like Polaroid that don't have durationOptions but have a fixed duration
+  const basePrice = service.durationOptions
+    ? currentDurationOption?.price
+    : service.price || currentPrintOption?.price || 0;
+
   const handleBookNow = () => {
     onBookNow({
       ...service,
       selectedDuration: currentDurationOption,
       selectedPrint: currentPrintOption,
-      totalPrice:
-        currentDurationOption?.price ||
-        currentPrintOption?.price ||
-        service.price ||
-        0,
+      totalPrice: (isUnlimited ? currentPrintOption?.price : basePrice) || 0,
     });
   };
 
@@ -110,7 +124,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
 
     return (
       <>
-        <Separator className="my-3 bg-gray-200 sm:my-4" />
+        <Separator className="my-2 bg-gray-200 sm:my-3" />
         <div
           className={cn(
             ["basic", "180", "wideangle", "spin360"].includes(variant)
@@ -130,7 +144,13 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
                     value={selectedDuration}
                     onChange={setSelectedDuration}
                     className="mt-1"
+                    disabled={isUnlimited}
                   />
+                  {isUnlimited && (
+                    <p className="mt-1 text-xs italic text-gray-500">
+                      Durasi tetap 4 jam dengan paket unlimited
+                    </p>
+                  )}
                 </div>
               ) : (
                 <>
@@ -165,22 +185,10 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
     );
   };
 
-  const getVariantSpecificStyles = (variant: BoothVariant) => {
-    switch (variant) {
-      case "mini":
-      case "phone":
-        return "sm:h-auto";
-      case "spin360":
-        return "sm:h-40";
-      default:
-        return "sm:h-48";
-    }
-  };
-
   return (
     <Card
       className={cn(
-        "group flex h-full flex-col overflow-hidden shadow-sm transition-all hover:shadow-md",
+        "group mx-auto flex h-full max-w-[520px] flex-col overflow-hidden shadow-sm transition-all hover:shadow-md",
         className,
       )}
     >
@@ -192,7 +200,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
               src={img}
               alt={`${service.title} - Image ${index + 1}`}
               fill
-              className={`object-contain transition-opacity duration-500 bg-[#181818] ${
+              className={`bg-[#181818] object-contain transition-opacity duration-500 ${
                 currentImageIndex === index ? "opacity-100" : "opacity-0"
               }`}
               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
@@ -204,7 +212,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
       </CardHeader>
 
       <CardContent className="flex flex-grow flex-col p-4 sm:p-6">
-        <div className="h-auto sm:h-24">
+        <div className="h-auto sm:h-20">
           <h3 className="line-clamp-1 font-serif text-lg font-semibold sm:text-2xl">
             {service.title}
           </h3>
@@ -217,15 +225,18 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
 
         <Separator className="my-3 bg-gray-200 sm:my-4" />
 
-        <div className={cn("h-auto", getVariantSpecificStyles(variant))}>
+        <div className="h-auto min-h-[150px]">
           <h4 className="text-sm font-medium text-gray-600 sm:text-base">
             Fitur:
           </h4>
-          <div className="mt-2 grid gap-2">
+          <div className="grid grid-cols-2 gap-1">
             {service.features.map((feature, index) => (
-              <div key={index} className="flex items-start gap-2">
-                <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent" />
-                <span className="line-clamp-1 text-sm text-gray-600 sm:text-base">
+              <div
+                key={index}
+                className="flex items-center rounded border border-gray-200 px-2 py-1"
+              >
+                <span className="mr-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-accent"></span>
+                <span className="overflow-hidden text-xs text-gray-600">
                   {feature}
                 </span>
               </div>
@@ -241,16 +252,13 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
             <p className="font-serif text-xl font-bold sm:text-2xl">
               Rp{" "}
               {(
-                currentDurationOption?.price ||
-                currentPrintOption?.price ||
-                service.price ||
-                0
+                (isUnlimited ? currentPrintOption?.price : basePrice) || 0
               ).toLocaleString("id-ID")}
             </p>
           </div>
           <Button
             variant="default"
-            className="h-10 w-full px-6 font-medium shadow-sm hover:bg-accent/90 sm:w-auto"
+            className="h-10 w-full px-6 font-medium shadow-sm !transition-colors !duration-300 hover:bg-accent/90 sm:w-auto"
             onClick={handleBookNow}
           >
             Book Now

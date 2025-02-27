@@ -10,11 +10,15 @@ const booth180Types: ServiceType[] = [
         image: ["/assets/images/services/camera-180.jpg"],
         price: 8000000,
         features: [
-            "Time Freeze Video",
+            "Crew Stand By",
+            "4 Jam Durasi Reguler (Add on Durasi Ask Admin)",
+            "Include 6 Camera",
+            "Lighting Set",
+            "Unlimited Time Freeze Video",
             "Custom Template",
-            "Media Sharing File",
-            "Props",
-            "4 Jam Durasi Acara",
+            "Album Online",
+            "Media Sharing File (Barcode Support)",
+            "Props (Boleh Direquest)"
         ],
     },
 ];

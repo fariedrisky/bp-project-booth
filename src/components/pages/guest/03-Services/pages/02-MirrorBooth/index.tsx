@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { ServiceCard, ServiceType } from "@/components/ui/ServiceCard";
 import BookingModal from "@/components/ui/BookingModal";
-import photoBoxTypes from "./data";
+import mirrorBoothTypes from "./data";
 import { fadeInUp, staggerContainer } from "@/animation/motion";
 
-const PhotoBox: React.FC = () => {
+export default function MirrorBooth() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<ServiceType | null>(
     null,
@@ -32,18 +32,18 @@ const PhotoBox: React.FC = () => {
           className="mx-auto mb-8 max-w-2xl text-center"
         >
           <h2 className="font-serif text-2xl font-bold md:text-3xl">
-            Photo Box
+            Mirror Booth
           </h2>
           <p className="mt-2 text-gray-600">
-            Solusi untuk acara kecil dengan fitur boomerang dan GIF.
+            Elegan, Interaktif, dan Memorable
           </p>
         </motion.div>
 
         <motion.div
           variants={staggerContainer}
-          className="mx-auto grid max-w-[800px] grid-cols-1 gap-6 md:grid-cols-2"
+          className="mx-auto grid max-w-[400px] grid-cols-1 gap-6"
         >
-          {photoBoxTypes.map((booth) => (
+          {mirrorBoothTypes.map((booth) => (
             <motion.div
               key={booth.id}
               variants={fadeInUp}
@@ -72,6 +72,4 @@ const PhotoBox: React.FC = () => {
       </motion.div>
     </div>
   );
-};
-
-export default PhotoBox;
+}

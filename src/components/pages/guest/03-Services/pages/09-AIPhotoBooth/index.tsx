@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { ServiceCard, ServiceType } from "@/components/ui/ServiceCard";
 import BookingModal from "@/components/ui/BookingModal";
-import booth180Types from "./data";
+import aiPhotoboothTypes from "./data";
 import { fadeInUp, staggerContainer } from "@/animation/motion";
 
-export default function Booth180() {
+export default function AIPhotoBooth() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<ServiceType | null>(
     null,
@@ -32,18 +32,17 @@ export default function Booth180() {
           className="mx-auto mb-8 max-w-2xl text-center"
         >
           <h2 className="font-serif text-2xl font-bold md:text-3xl">
-            180° Booth
+            AI Photobooth
           </h2>
           <p className="mt-2 text-gray-600">
-            Efek foto dengan sudut pandang 180° yang futuristik menggunakan
-            multiple kamera
+            Pengalaman Foto Interaktif dengan Teknologi AI
           </p>
         </motion.div>
         <motion.div
           variants={staggerContainer}
           className="mx-auto grid max-w-[400px] grid-cols-1 gap-6"
         >
-          {booth180Types.map((booth) => (
+          {aiPhotoboothTypes.map((booth) => (
             <motion.div
               key={booth.id}
               variants={fadeInUp}
@@ -52,7 +51,7 @@ export default function Booth180() {
             >
               <ServiceCard
                 service={booth}
-                variant="180"
+                variant="phone"
                 onBookNow={handleBookNow}
               />
             </motion.div>

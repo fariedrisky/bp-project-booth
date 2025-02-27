@@ -68,6 +68,10 @@ const DesktopNavigation: React.FC<NavigationProps> = ({
       {menu.map((item, index) => {
         const isSubmenuOpen = expandedItems.includes(index);
 
+        // Determine if the item is a service dropdown that needs position adjustment
+        const isServiceDropdown =
+          item.label === "Services" || item.url.includes("services");
+
         return (
           <div key={item.url} className="relative">
             <motion.div
@@ -86,12 +90,14 @@ const DesktopNavigation: React.FC<NavigationProps> = ({
               />
             </motion.div>
 
-            {/* Submenu */}
+            {/* Submenu with conditional position adjustment */}
             {item.submenu && (
               <AnimatePresence>
                 {isSubmenuOpen && (
                   <motion.div
-                    className="absolute left-0 z-50 mt-2 w-48 origin-top-left bg-background bg-opacity-80 p-2 shadow-lg ring-1 ring-black ring-opacity-5 backdrop-blur-lg focus:outline-none"
+                    className={`absolute z-50 mt-2 ${
+                      isServiceDropdown ? "left-0 right-auto" : "left-0"
+                    } w-56 origin-top-left bg-background bg-opacity-80 p-2 shadow-lg ring-1 ring-black ring-opacity-5 backdrop-blur-lg focus:outline-none`}
                     variants={submenuVariants}
                     initial="hidden"
                     animate="visible"
@@ -105,12 +111,13 @@ const DesktopNavigation: React.FC<NavigationProps> = ({
                         >
                           <Link
                             href={subItem.url}
-                            className={`block px-4 py-2 text-sm ${
+                            className={`flex items-center rounded px-4 py-2 text-sm transition-colors ${
                               isActiveLink(subItem.url)
                                 ? "text-accent"
                                 : "text-gray-300 hover:text-accent"
                             }`}
                           >
+                            <span className="mr-4 inline-block h-1 w-1 flex-shrink-0 rounded-full bg-current opacity-70"></span>
                             {subItem.label}
                           </Link>
                         </motion.div>

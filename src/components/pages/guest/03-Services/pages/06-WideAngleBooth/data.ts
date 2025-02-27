@@ -10,11 +10,19 @@ const wideAngleTypes: ServiceType[] = [
         image: ["/assets/images/services/wide-angle.jpg"],
         price: 5000000,
         features: [
-            "Lighting Pro",
-            "Guest Book",
+            "Crew Stand By",
+            "4 Jam Durasi Reguler (Add on Durasi Ask Admin)",
+            "Boleh Custom Warna Backdrop",
+            "Lighting Set",
+            "Wide Lensa",
+            "Unlimited Boomerang & Gif Fitur",
             "Custom Template",
-            "Media Sharing File",
-            "Unlimited Boomerang & GIF",
+            "Frame Luar (Custom Frame Ask Admin)",
+            "Media Sharing File (Barcode Support)",
+            "Album Online",
+            "Include Guest Memories",
+            "Props (Boleh Direquest)",
+            "Available Keluar Kota (Ask Admin)"
         ],
     },
 ];

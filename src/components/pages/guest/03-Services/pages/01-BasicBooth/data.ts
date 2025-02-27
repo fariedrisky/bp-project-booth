@@ -5,7 +5,19 @@ const boothTypes: ServiceType[] = [
         id: "2r",
         title: "2R",
         description: "Basic Booth dengan ukuran 2R, cocok untuk berbagai acara",
-        duration: "4 Jam",
+        duration: "3-4 Jam",
+        durationOptions: [
+            {
+                value: "3h",
+                label: "3 Jam",
+                price: 2000000,
+            },
+            {
+                value: "4h",
+                label: "4 Jam",
+                price: 2500000,
+            },
+        ],
         image: [
             "/assets/images/services/2r.jpg",
             "/assets/images/services/2r-2.jpg"
@@ -38,18 +50,36 @@ const boothTypes: ServiceType[] = [
             },
         ],
         features: [
-            "Unlimited Boomerang dan GIF",
+            "Crew Stand By",
+            "Lighting Set",
+            "Unlimited Boomerang & Gif Fitur",
             "Custom Template",
-            "Frame Luar",
-            "Include Guest Book",
+            "Frame Luar Ready (Custom Frame Ask Admin)",
+            "Include Guest Memories",
             "Media Sharing File (Barcode Support)",
+            "Album Online",
+            "Props (Boleh Direquest)",
+            "Add on Backdrop Polos (Ask Admin)",
+            "Available Keluar Kota (Ask Admin)"
         ],
     },
     {
         id: "polaroid",
         title: "Polaroid",
         description: "Basic Booth dengan format Polaroid yang klasik",
-        duration: "4 Jam",
+        duration: "3-4 Jam",
+        durationOptions: [
+            {
+                value: "3h",
+                label: "3 Jam",
+                price: 2000000,
+            },
+            {
+                value: "4h",
+                label: "4 Jam",
+                price: 2500000,
+            },
+        ],
         image: [
             "/assets/images/services/polaroid.jpg",
             "/assets/images/services/polaroid-2.jpg"
@@ -76,11 +106,17 @@ const boothTypes: ServiceType[] = [
             },
         ],
         features: [
-            "Unlimited Boomerang dan GIF",
+            "Crew Stand By",
+            "Lighting Set",
+            "Unlimited Boomerang & Gif Fitur",
             "Custom Template",
-            "Frame Luar",
-            "Include Guest Book",
+            "Frame Luar Ready (Custom Frame Ask Admin)",
+            "Include Guest Memories",
             "Media Sharing File (Barcode Support)",
+            "Album Online",
+            "Props (Boleh Direquest)",
+            "Add on Backdrop Polos (Ask Admin)",
+            "Available Keluar Kota (Ask Admin)"
         ],
     },
     {
@@ -123,10 +159,18 @@ const boothTypes: ServiceType[] = [
             },
         ],
         features: [
-            "Unlimited Boomerang dan GIF",
+            "Crew Stand By",
+            "4 Jam Durasi Reguler (Add on Durasi Ask Admin)",
+            "Lighting Set",
+            "Unlimited Boomerang & Gif Fitur",
             "Custom Template",
-            "Frame Luar",
+            "Frame Luar Ready (Custom Frame Ask Admin)",
             "Media Sharing File (Barcode Support)",
+            "Props (Boleh Direquest)",
+            "Tidak Include Guest Memories",
+            "Album Online",
+            "Add on Backdrop Polos (Ask Admin)",
+            "Available Keluar Kota (Ask Admin)"
         ],
     },
     {
@@ -166,10 +210,18 @@ const boothTypes: ServiceType[] = [
             },
         ],
         features: [
-            "Unlimited Boomerang dan GIF",
-            "Fitur Custom Template",
-            "Frame Luar",
+            "Crew Stand By",
+            "4 Jam Durasi Reguler (Add on Durasi Ask Admin)",
+            "Lighting Set",
+            "Unlimited Boomerang & Gif Fitur",
+            "Custom Template",
+            "Frame Luar Ready (Custom Frame Ask Admin)",
             "Media Sharing File (Barcode Support)",
+            "Props (Boleh Direquest)",
+            "Tidak Include Guest Memories",
+            "Album Online",
+            "Add on Backdrop Polos (Ask Admin)",
+            "Available Keluar Kota (Ask Admin)"
         ],
     },
 ];

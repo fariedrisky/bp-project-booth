@@ -124,25 +124,30 @@ const MobileNavigation: React.FC<MobileNavigationProps> = ({
                             <AnimatePresence>
                               {isSubmenuOpen && (
                                 <motion.div
-                                  className="mt-4 space-y-4"
+                                  className="mt-4 space-y-3"
                                   variants={submenuVariants}
                                   initial="hidden"
                                   animate="visible"
                                   exit="exit"
                                 >
                                   {item.submenu?.map((subItem) => (
-                                    <Link
+                                    <div
                                       key={subItem.url}
-                                      href={subItem.url}
-                                      className={`block text-center text-xl ${
-                                        isActiveLink(subItem.url)
-                                          ? "text-accent"
-                                          : "text-gray-300 hover:text-white"
-                                      }`}
-                                      onClick={toggleMobileMenu}
+                                      className="text-center"
                                     >
-                                      {subItem.label}
-                                    </Link>
+                                      <Link
+                                        href={subItem.url}
+                                        className={`text-base ${
+                                          isActiveLink(subItem.url)
+                                            ? "text-accent"
+                                            : "text-gray-300 hover:text-white"
+                                        }`}
+                                        onClick={toggleMobileMenu}
+                                      >
+                                        <span className="mr-2 inline-block h-1 w-1 rounded-full bg-current opacity-70"></span>
+                                        {subItem.label}
+                                      </Link>
+                                    </div>
                                   ))}
                                 </motion.div>
                               )}

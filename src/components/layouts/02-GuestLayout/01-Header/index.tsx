@@ -52,7 +52,7 @@ export default function Header() {
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="container mx-auto flex items-center justify-between px-4 py-4 xl:px-4">
+        <div className="container mx-auto flex items-center justify-between px-6 py-4 md:px-8 lg:px-12 xl:max-w-7xl">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}

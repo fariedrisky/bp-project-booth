@@ -61,7 +61,7 @@ const Select = ({
       <button
         type="button"
         onClick={() => !disabled && setIsOpen(!isOpen)}
-        className={`flex h-9 w-full items-center justify-between border border-gray-200 bg-white px-3 py-2 text-sm transition-colors ${disabled ? "cursor-not-allowed opacity-50" : "hover:border-gray-300"} focus:outline-none focus:ring-1 focus:ring-accent`}
+        className={`flex h-9 w-full items-center hover:bg-gray-50 justify-between border border-gray-200 bg-white px-3 py-2 text-sm transition-colors ${disabled ? "cursor-not-allowed opacity-50" : "hover:border-gray-300"} focus:outline-none focus:ring-1 focus:ring-accent`}
         disabled={disabled}
       >
         <span className="truncate">
