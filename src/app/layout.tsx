@@ -1,9 +1,9 @@
-import { DM_Sans, Ibarra_Real_Nova } from "next/font/google";
+import { Plus_Jakarta_Sans, Ibarra_Real_Nova } from "next/font/google";
 import "./globals.css";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import { Toaster } from "sonner";
 
-const dm_sans = DM_Sans({
+const plus_jakarta_sans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
@@ -78,7 +78,7 @@ export default function RootLayout({
         />
         <link rel="canonical" href="https://bp-projectbooth.com" />
       </head>
-      <body className={`${dm_sans.className} ${ibarra_real_nova.variable}`}>
+      <body className={`${plus_jakarta_sans.className} ${ibarra_real_nova.variable}`}>
         <Toaster position="top-center" />
         <script
           type="application/ld+json"
