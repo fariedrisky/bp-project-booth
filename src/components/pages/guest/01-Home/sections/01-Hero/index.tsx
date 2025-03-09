@@ -4,11 +4,9 @@ import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { fadeInUp, staggerContainer, textTyping } from "@/animation/motion";
 import { Button } from "@/components/ui/Button";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function Hero() {
-  const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -16,6 +14,14 @@ export default function Hero() {
       videoRef.current.playbackRate = 0.8; // Sedikit diperlambat untuk efek yang lebih elegan
     }
   }, []);
+
+  // Function to scroll to the Our Service section
+  const scrollToServices = () => {
+    const servicesSection = document.getElementById("our-service");
+    if (servicesSection) {
+      servicesSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <section
@@ -87,9 +93,7 @@ export default function Hero() {
             className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-6 sm:space-y-0"
           >
             <Button
-              onClick={() => {
-                router.push("/services");
-              }}
+              onClick={scrollToServices}
               className="group relative !bg-accent px-8 py-3 text-base font-semibold text-white transition-all duration-300 hover:!bg-accent/90 sm:px-10"
             >
               <span className="relative z-10">Lihat Produk</span>
