@@ -87,47 +87,60 @@ export default function Bp() {
     <>
       <motion.section
         id="bp-section"
-        className="bg-foreground py-16"
+        className="bg-foreground py-8 md:py-16"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
         variants={staggerContainer}
       >
         <div className="container mx-auto flex flex-col items-center px-4 md:flex-row">
+          {/* Image Column - Keep current desktop size */}
           <motion.div
-            className="mb-8 md:mb-0 md:w-1/2"
+            className="mb-8 w-full md:mb-0 md:w-[38%] xl:w-[36%]"
             initial="offscreen"
             whileInView="onscreen"
             viewport={{ once: true }}
             variants={slideInFromLeftWithBounce(0.2)}
           >
-             <div className="relative">
+            <div className="relative mx-auto w-full">
               {isLoading ? (
-                // Loading state
-                <div className="flex h-[500px] w-[500px] items-center justify-center bg-gray-200">
+                // Loading state with responsive height
+                <div className="flex h-[400px] w-full items-center justify-center bg-gray-200">
                   <span>Loading...</span>
                 </div>
+              ) : images.length > 0 ? (
+                // Image carousel with exact proportions matching screenshot
+                <div className="relative aspect-[3/4] w-full overflow-hidden">
+                  {images.map((image, index) => (
+                    <div 
+                      key={image}
+                      className={`absolute inset-0 h-full w-full transition-opacity duration-1000 ${
+                        index === currentImageIndex ? "opacity-100" : "opacity-0"
+                      }`}
+                    >
+                      <Image
+                        src={image}
+                        alt={`BP Project Booth ${index + 1}`}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 768px) 38vw, 450px"
+                        priority={index === 0}
+                        loading={index === 0 ? "eager" : "lazy"}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
               ) : (
-                // Image carousel with fade transition
-                <div className="relative h-[700px] w-[500px] overflow-hidden">
-                {images.map((image, index) => (
-                  <Image
-                    key={image}
-                    src={image}
-                    alt={`BP Project Booth ${index + 1}`}
-                    width={500}
-                    height={700}
-                    loading="lazy"
-                    className={`absolute left-0 top-0 h-[700px] w-[500px] object-cover transition-opacity duration-1000 ${
-                      index === currentImageIndex ? "opacity-100" : "opacity-0"
-                    }`}
-                  />
-                ))}
-              </div>
+                // Fallback if no images
+                <div className="flex h-[400px] w-full items-center justify-center rounded bg-gray-100">
+                  <span>No images available</span>
+                </div>
               )}
             </div>
           </motion.div>
-          <div className="!text-primary md:w-1/2 md:pl-12">
+          
+          {/* Text Column - Adjusted to match current layout */}
+          <div className="!text-primary w-full md:w-[62%] xl:w-[64%] md:pl-12 lg:pl-16">
             <motion.h2
               className="tracking-wid mb-2 text-base uppercase"
               variants={fadeInUp}
@@ -169,13 +182,13 @@ export default function Bp() {
         </div>
         <motion.div
           id="our-client"
-          className="bg-foreground py-10"
+          className="bg-foreground py-8 md:py-10"
           initial="offscreen"
           whileInView="onscreen"
           viewport={{ once: true }}
           variants={slideInFromBottom(0.3)}
         >
-          <h2 className="mb-8 text-center text-2xl font-bold text-primary">
+          <h2 className="mb-6 md:mb-8 text-center text-2xl font-bold text-primary">
             Our Clients
           </h2>
           <OurClientsMarquee />
