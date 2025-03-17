@@ -204,7 +204,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
               }
               className={cn(
                 "w-12 cursor-pointer rounded px-2 text-center",
-                isSelectingHour ? "bg-blue-100 text-blue-500" : "text-gray-600",
+                isSelectingHour ? "bg-accent/10 text-accent" : "text-gray-600",
               )}
               onClick={() => setIsSelectingHour(true)}
             />
@@ -220,7 +220,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
               className={cn(
                 "w-12 cursor-pointer rounded px-2 text-center",
                 !isSelectingHour
-                  ? "bg-blue-100 text-blue-500"
+                  ? "bg-accent/10 text-accent"
                   : "text-gray-600",
               )}
               onClick={() => setIsSelectingHour(false)}
@@ -248,7 +248,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
                     y2={marker.y2}
                     stroke={
                       marker.isSelected
-                        ? "#3b82f6"
+                        ? "#C78D4E"
                         : i % 5 === 0
                           ? "#6b7280"
                           : "#9ca3af"
@@ -276,7 +276,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
                       className={cn(
                         "text-sm",
                         isSelected
-                          ? "fill-blue-500 font-bold"
+                          ? "fill-accent font-bold"
                           : "fill-gray-600",
                       )}
                     >
@@ -298,7 +298,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
                       className={cn(
                         "text-xs",
                         isSelected
-                          ? "fill-blue-500 font-bold"
+                          ? "fill-accent font-bold"
                           : "fill-gray-400",
                       )}
                     >
@@ -322,7 +322,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
                       className={cn(
                         "text-sm",
                         selectedMinute === minute
-                          ? "fill-blue-500 font-bold"
+                          ? "fill-accent font-bold"
                           : "fill-gray-600",
                       )}
                     >
@@ -355,10 +355,10 @@ const TimePicker: React.FC<TimePickerProps> = ({
                     ).y
                   : calculateHandPosition(selectedMinute, false).y
               }
-              stroke="#3b82f6"
+              stroke="#C78D4E"
               strokeWidth="2"
             />
-            <circle cx="100" cy="100" r="4" fill="#3b82f6" />
+            <circle cx="100" cy="100" r="4" fill="#C78D4E" />
           </svg>
 
           <div className="mt-4 flex justify-end space-x-2">
@@ -373,7 +373,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
                 handleTimeChange(selectedHour, selectedMinute);
                 setIsOpen(false);
               }}
-              className="rounded bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600"
+              className="rounded bg-primary px-4 py-2 text-sm text-white hover:bg-accent"
             >
               OK
             </button>

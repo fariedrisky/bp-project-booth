@@ -233,9 +233,9 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                       !isSelected &&
                       isCurrentMonth &&
                       "hover:bg-gray-100",
-                    isSelected && "bg-blue-500 text-white",
+                    isSelected && "bg-accent text-white",
                     isDisabled && "cursor-not-allowed opacity-50",
-                    isToday && !isSelected && "border border-blue-500",
+                    isToday && !isSelected && "border border-accent",
                   )}
                 >
                   {date.getDate()}

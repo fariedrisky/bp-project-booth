@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "../Input";
 import Label from "../Label";
 import DatePicker from "../DatePicker";
@@ -12,6 +12,22 @@ export default function EventDetails({
   isSubmitting,
   setErrors,
 }: SectionProps) {
+  const [showLocationNotice, setShowLocationNotice] = useState(false);
+  
+  useEffect(() => {
+    // Check if location doesn't include Banda Aceh or Medan
+    if (formData.eventLocation && formData.eventLocation.trim() !== "") {
+      const location = formData.eventLocation.toLowerCase();
+      const isBandaAcehOrMedan = 
+        location.includes("banda aceh") || 
+        location.includes("medan");
+      
+      setShowLocationNotice(!isBandaAcehOrMedan);
+    } else {
+      setShowLocationNotice(false);
+    }
+  }, [formData.eventLocation]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -99,6 +115,11 @@ export default function EventDetails({
         />
         {errors.eventLocation && (
           <p className="text-sm text-red-500">{errors.eventLocation}</p>
+        )}
+        {showLocationNotice && (
+          <p className="mt-2 text-xs text-red-500">
+          Untuk perjalanan ke luar kota selain Banda Aceh dan Medan, akan ada tambahan biaya akomodasi dan transportasi. Besaran biaya akan diinformasikan lebih lanjut.
+          </p>
         )}
       </div>
     </>

@@ -46,7 +46,6 @@ export default function PhoneBooth() {
             <motion.div
               key={booth.id}
               variants={fadeInUp}
-              whileHover={{ y: -10 }}
               className="mx-auto w-full max-w-[389px]"
             >
               <ServiceCard

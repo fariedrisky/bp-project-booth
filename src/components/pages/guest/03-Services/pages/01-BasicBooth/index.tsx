@@ -49,7 +49,6 @@ export default function BasicBooth() {
             <motion.div
               key={booth.id}
               variants={fadeInUp}
-              whileHover={{ y: -10 }}
               className="relative mx-auto w-full max-w-[450px] overflow-hidden shadow-lg"
             >
               <ServiceCard
