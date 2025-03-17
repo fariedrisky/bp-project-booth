@@ -117,7 +117,7 @@ export default function EventDetails({
           <p className="text-sm text-red-500">{errors.eventLocation}</p>
         )}
         {showLocationNotice && (
-          <p className="mt-2 text-xs text-red-500">
+          <p className="mt-2 text-xs text-red-500 text-justify">
           Untuk perjalanan ke luar kota selain Banda Aceh dan Medan, akan ada tambahan biaya akomodasi dan transportasi. Besaran biaya akan diinformasikan lebih lanjut.
           </p>
         )}
