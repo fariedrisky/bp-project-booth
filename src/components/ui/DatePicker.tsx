@@ -100,20 +100,6 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const dateStr = e.target.value;
-    const parsedDate = parse(dateStr, "EEEE, d MMMM yyyy", new Date(), {
-      locale: id,
-    });
-
-    if (isValid(parsedDate) && !isDateDisabled(parsedDate)) {
-      onChange?.(parsedDate);
-    } else {
-      onChange?.(null);
-    }
-  };
-
-
   const navigateMonth = (direction: "prev" | "next") => {
     setViewDate(
       direction === "prev" ? subMonths(viewDate, 1) : addMonths(viewDate, 1),
