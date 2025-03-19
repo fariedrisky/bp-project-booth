@@ -6,7 +6,12 @@ const wideAngleTypes: ServiceType[] = [
         title: "Wide Angle Unlimited Polaroid",
         description:
             "Wide Angle Booth dengan format Polaroid dan memiliki fitur boomerang & GIF",
-        duration: "4 Jam",
+        durationOptions: [
+            {
+                value: "4h",
+                label: "4 Jam",
+            },
+        ],
         image: ["/assets/images/services/wide-angle.jpg"],
         price: 5000000,
         features: [

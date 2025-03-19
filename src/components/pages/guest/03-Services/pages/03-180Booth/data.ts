@@ -6,7 +6,12 @@ const booth180Types: ServiceType[] = [
         title: "Camera 180° (6 Kamera)",
         description:
             "Efek foto dengan sudut pandang 180° yang futuristik menggunakan 6 kamera",
-        duration: "4 Jam",
+        durationOptions: [
+            {
+                value: "4h",
+                label: "4 Jam",
+            },
+        ],
         image: ["/assets/images/services/camera-180.jpg"],
         price: 8000000,
         features: [

@@ -5,7 +5,12 @@ const aiPhotoboothTypes: ServiceType[] = [
     id: "ai-photobooth",
     title: "AI Photobooth",
     description: "Layanan photo booth dengan teknologi AI dan cetak foto unlimited ukuran 4R",
-    duration: "4 Jam",
+    durationOptions: [
+      {
+        value: "4h",
+        label: "4 Jam",
+      },
+    ],
     image: ["/assets/images/services/ai-photobooth.jpg"],
     price: 7000000,
     features: [

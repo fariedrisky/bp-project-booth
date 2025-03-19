@@ -7,20 +7,18 @@ interface TimePickerProps {
   onChange?: (date: Date | null) => void;
   className?: string;
   placeholder?: string;
-  label?: string;
-  error?: string;
   disabled?: boolean;
+  timezone?: string;
 }
 
-const TimePicker: React.FC<TimePickerProps> = ({
+export default function TimePicker({
   value = null,
   onChange,
   className,
   placeholder,
-  label,
-  error,
   disabled,
-}) => {
+  timezone,
+}: TimePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedHour, setSelectedHour] = useState(
     value ? value.getHours() : 0,
@@ -36,6 +34,8 @@ const TimePicker: React.FC<TimePickerProps> = ({
     selectedMinute.toString().padStart(2, "0"),
   );
   const clockRef = useRef<HTMLDivElement>(null);
+  const hourInputRef = useRef<HTMLInputElement>(null);
+  const minuteInputRef = useRef<HTMLInputElement>(null);
 
   const handleTimeChange = (hours: number, minutes: number) => {
     setManualHour(hours.toString().padStart(2, "0"));
@@ -69,10 +69,11 @@ const TimePicker: React.FC<TimePickerProps> = ({
       y: 100 + radius * Math.sin(angle),
     };
   };
+
   const calculateMarkerPosition = (minute: number, isLong: boolean = false) => {
     const angle = (minute / 60) * 2 * Math.PI - Math.PI / 2;
-    const outerRadius = 90; // Increased outer radius
-    const innerRadius = isLong ? 78 : 84; // Adjusted inner radius for better spacing
+    const outerRadius = 90;
+    const innerRadius = isLong ? 78 : 84;
     return {
       x1: 100 + innerRadius * Math.cos(angle),
       y1: 100 + innerRadius * Math.sin(angle),
@@ -88,10 +89,10 @@ const TimePicker: React.FC<TimePickerProps> = ({
 
     if (isHour) {
       angle = ((value % 12) / 12) * 2 * Math.PI - Math.PI / 2;
-      radius = value > 12 ? 60 : 75; // Different radius for 24-hour format
+      radius = value > 12 ? 60 : 75;
     } else {
       angle = (value / 60) * 2 * Math.PI - Math.PI / 2;
-      radius = 65; // Adjusted radius for minutes to avoid overlap
+      radius = 65;
     }
 
     return {
@@ -118,14 +119,12 @@ const TimePicker: React.FC<TimePickerProps> = ({
 
       let finalHour;
       if (isInner) {
-        // Handle lingkaran dalam (13-24/00)
         if (hourValue === 0) {
-          finalHour = 0; // Set ke 00:00
+          finalHour = 0;
         } else {
           finalHour = hourValue + 12;
         }
       } else {
-        // Handle lingkaran luar (1-12)
         finalHour = hourValue === 0 ? 12 : hourValue;
       }
 
@@ -148,82 +147,152 @@ const TimePicker: React.FC<TimePickerProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Enhanced hour input with validation (rejects hours >= 24)
   const handleHourInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value.replace(/\D/g, "").slice(0, 2);
-    setManualHour(val);
-    const num = parseInt(val);
+    // Get the actual user input value directly from the event
+    const inputValue = e.target.value;
+
+    // Always select the entire input on focus to ensure we replace everything
+    if (hourInputRef.current) {
+      hourInputRef.current.select();
+    }
+
+    // Extract only numbers from the input
+    const numericValue = inputValue.replace(/\D/g, "");
+
+    // Handle empty/backspace case
+    if (numericValue === "") {
+      setManualHour("");
+      return;
+    }
+
+    // Process numeric input
+    const hourValue = numericValue.slice(-2); // Take last 2 digits if they type more
+
+    // Validate that hour is within valid range (0-23)
+    const num = parseInt(hourValue);
     if (!isNaN(num) && num >= 0 && num <= 23) {
+      setManualHour(hourValue);
       setSelectedHour(num);
       handleTimeChange(num, selectedMinute);
+    } else {
+      // If invalid input (hour >= 24), keep the previous value
+      // This effectively ignores the input
     }
   };
 
+  // Enhanced minute input with validation (rejects minutes >= 60)
   const handleMinuteInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value.replace(/\D/g, "").slice(0, 2);
-    setManualMinute(val);
-    const num = parseInt(val);
+    // Get the actual user input value directly from the event
+    const inputValue = e.target.value;
+
+    // Always select the entire input on focus for complete replacement
+    if (minuteInputRef.current) {
+      minuteInputRef.current.select();
+    }
+
+    // Extract only numbers from the input
+    const numericValue = inputValue.replace(/\D/g, "");
+
+    // Handle empty/backspace case
+    if (numericValue === "") {
+      setManualMinute("");
+      return;
+    }
+
+    // Process numeric input
+    const minuteValue = numericValue.slice(-2); // Take last 2 digits if they type more
+
+    // Validate that minute is within valid range (0-59)
+    const num = parseInt(minuteValue);
     if (!isNaN(num) && num >= 0 && num <= 59) {
+      setManualMinute(minuteValue);
       setSelectedMinute(num);
       handleTimeChange(selectedHour, num);
+    } else {
+      // If invalid input (minute >= 60), keep the previous value
+      // This effectively ignores the input
     }
   };
 
   return (
     <div className={cn("relative", className)} ref={clockRef}>
-      {label && (
-        <label className="mb-1 block text-xs font-medium text-gray-700">
-          {label}
-        </label>
-      )}
-
       <div className="relative">
-        <input
-          type="text"
-          readOnly
-          value={value ? `${manualHour}:${manualMinute}` : ""}
-          placeholder={placeholder}
-          className="h-9 w-full cursor-pointer border border-gray-300 px-3 py-1.5 pr-8 text-sm text-primary focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent disabled:cursor-not-allowed disabled:bg-gray-100"
-          onClick={() => !disabled && setIsOpen(!isOpen)}
-          disabled={disabled}
-        />
-        <Clock className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <div className="relative">
+          <input
+            type="text"
+            readOnly
+            value={
+              value
+                ? `${manualHour}:${manualMinute}${timezone ? ` ${timezone.toUpperCase()}` : ""}`
+                : ""
+            }
+            placeholder={placeholder}
+            className="h-9 w-full cursor-pointer border border-gray-300 px-3 py-1.5 pr-8 text-sm text-primary focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent disabled:cursor-not-allowed disabled:bg-gray-100"
+            onClick={() => !disabled && setIsOpen(!isOpen)}
+            disabled={disabled}
+          />
+          <Clock className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        </div>
       </div>
 
-      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
-
       {isOpen && !disabled && (
-        <div className="absolute z-50 mt-2 rounded-lg bg-white p-4 shadow-lg">
-          <div className="mb-4 flex justify-center space-x-1 text-2xl">
+        <div className="absolute z-50 mt-2 bg-white p-4 shadow-lg">
+          <div className="mb-4 flex justify-center space-x-1 text-xl">
             <input
+              ref={hourInputRef}
               type="text"
               inputMode="numeric"
               value={manualHour}
               onChange={handleHourInput}
-              onBlur={() =>
-                setManualHour(selectedHour.toString().padStart(2, "0"))
-              }
+              onFocus={() => {
+                setIsSelectingHour(true);
+                // Force selection of all text on focus
+                setTimeout(() => hourInputRef.current?.select(), 0);
+              }}
+              onBlur={() => {
+                // Format with leading zeros on blur
+                if (manualHour !== "") {
+                  setManualHour(selectedHour.toString().padStart(2, "0"));
+                }
+              }}
               className={cn(
-                "w-12 cursor-pointer rounded px-2 text-center",
+                "w-12 cursor-pointer px-2 text-center",
                 isSelectingHour ? "bg-accent/10 text-accent" : "text-gray-600",
               )}
-              onClick={() => setIsSelectingHour(true)}
+              onClick={() => {
+                setIsSelectingHour(true);
+                // Force selection of all text on click
+                setTimeout(() => hourInputRef.current?.select(), 0);
+              }}
             />
             <span className="text-gray-900">:</span>
             <input
+              ref={minuteInputRef}
               type="text"
               inputMode="numeric"
               value={manualMinute}
               onChange={handleMinuteInput}
-              onBlur={() =>
-                setManualMinute(selectedMinute.toString().padStart(2, "0"))
-              }
+              onFocus={() => {
+                setIsSelectingHour(false);
+                // Force selection of all text on focus
+                setTimeout(() => minuteInputRef.current?.select(), 0);
+              }}
+              onBlur={() => {
+                // Format with leading zeros on blur
+                if (manualMinute !== "") {
+                  setManualMinute(selectedMinute.toString().padStart(2, "0"));
+                }
+              }}
               className={cn(
-                "w-12 cursor-pointer rounded px-2 text-center",
-                !isSelectingHour
-                  ? "bg-accent/10 text-accent"
-                  : "text-gray-600",
+                "w-12 cursor-pointer px-2 text-center",
+                !isSelectingHour ? "bg-accent/10 text-accent" : "text-gray-600",
               )}
-              onClick={() => setIsSelectingHour(false)}
+              onClick={() => {
+                setIsSelectingHour(false);
+                // Force selection of all text on click
+                setTimeout(() => minuteInputRef.current?.select(), 0);
+              }}
             />
           </div>
 
@@ -264,7 +333,6 @@ const TimePicker: React.FC<TimePickerProps> = ({
               <>
                 {Array.from({ length: 12 }, (_, i) => i + 1).map((hour) => {
                   const pos = calculateNumberPosition(hour);
-                  // Perhatikan perubahan di sini - hapus selectedHour === 0
                   const isSelected = selectedHour === hour;
                   return (
                     <text
@@ -275,9 +343,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
                       dominantBaseline="middle"
                       className={cn(
                         "text-sm",
-                        isSelected
-                          ? "fill-accent font-bold"
-                          : "fill-gray-600",
+                        isSelected ? "fill-accent font-bold" : "fill-gray-600",
                       )}
                     >
                       {hour}
@@ -297,9 +363,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
                       dominantBaseline="middle"
                       className={cn(
                         "text-xs",
-                        isSelected
-                          ? "fill-accent font-bold"
-                          : "fill-gray-400",
+                        isSelected ? "fill-accent font-bold" : "fill-gray-400",
                       )}
                     >
                       {displayHour}
@@ -364,7 +428,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
           <div className="mt-4 flex justify-end space-x-2">
             <button
               onClick={() => setIsOpen(false)}
-              className="rounded px-4 py-2 text-sm text-gray-600 hover:bg-gray-100"
+              className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100"
             >
               Cancel
             </button>
@@ -373,7 +437,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
                 handleTimeChange(selectedHour, selectedMinute);
                 setIsOpen(false);
               }}
-              className="rounded bg-primary px-4 py-2 text-sm text-white hover:bg-accent"
+              className="bg-primary px-4 py-2 text-sm text-white hover:bg-accent"
             >
               OK
             </button>
@@ -382,6 +446,4 @@ const TimePicker: React.FC<TimePickerProps> = ({
       )}
     </div>
   );
-};
-
-export default TimePicker;
+}

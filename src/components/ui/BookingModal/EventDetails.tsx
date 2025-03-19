@@ -4,15 +4,22 @@ import Label from "../Label";
 import DatePicker from "../DatePicker";
 import TimePicker from "../TimePicker";
 import { SectionProps } from "./types";
+import { calculateEndTime } from "@/utils/time-utils";
 
 export default function EventDetails({
   formData,
   setFormData,
   errors,
+  service,
   isSubmitting,
   setErrors,
 }: SectionProps) {
   const [showLocationNotice, setShowLocationNotice] = useState(false);
+  const [closeBoothTime, setCloseBoothTime] = useState("");
+
+  console.log(service, "service");
+
+
   
   useEffect(() => {
     // Check if location doesn't include Banda Aceh or Medan
@@ -27,6 +34,17 @@ export default function EventDetails({
       setShowLocationNotice(false);
     }
   }, [formData.eventLocation]);
+
+  // Calculate close booth time when open booth time or duration changes
+  useEffect(() => {
+    const endTime = calculateEndTime(
+      formData.openBoothTime,
+      service.selectedDuration?.value,
+      "WIB"
+    );
+    
+    setCloseBoothTime(endTime);
+  }, [formData.openBoothTime, service.selectedDuration]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -58,15 +76,16 @@ export default function EventDetails({
   const handleTimeChange = (date: Date | null) => {
     setFormData((prev) => ({
       ...prev,
-      eventTime: date,
+      openBoothTime: date,
     }));
-    if (errors.eventTime) {
+    if (errors.openBoothTime) {
       setErrors((prev) => ({
         ...prev,
-        eventTime: "",
+        openBoothTime: "",
       }));
     }
   };
+
 
   return (
     <>
@@ -87,16 +106,28 @@ export default function EventDetails({
 
       <div className="space-y-1">
         <Label className="block text-sm font-medium text-gray-700">
-          Jam Acara
+          Jam Open Booth
         </Label>
         <TimePicker
-          value={formData.eventTime}
+          value={formData.openBoothTime}
           onChange={handleTimeChange}
-          placeholder="Pilih jam acara"
+          placeholder="Pilih jam open booth"
+          timezone="WIB"
         />
-        {errors.eventTime && (
-          <p className="text-sm text-red-500">{errors.eventTime}</p>
+        {errors.openBoothTime && (
+          <p className="text-sm text-red-500">{errors.openBoothTime}</p>
         )}
+      </div>
+
+      <div className="space-y-1">
+        <Label className="block text-sm font-medium text-gray-700">
+          Jam Close Booth
+        </Label>
+        <Input
+          value={closeBoothTime ? closeBoothTime : "-"}
+          disabled
+          className="h-9 w-full cursor-not-allowed border border-gray-200 bg-gray-50"
+        />
       </div>
 
       <div className="space-y-1">

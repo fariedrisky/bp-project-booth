@@ -5,7 +5,12 @@ const photoBoxTypes: ServiceType[] = [
         id: "photo-box-2r-unlimited",
         title: "Photo Box 2R Unlimited",
         description: "Layanan photo box dengan cetak foto unlimited ukuran 2R",
-        duration: "5 Jam",
+        durationOptions: [
+            {
+                value: "5h",
+                label: "5 Jam",
+            },
+        ],
         image: ["/assets/images/services/photo-box-2r.jpg"],
         price: 8000000,
         features: [

@@ -14,7 +14,7 @@ import Select from "@/components/ui/Select";
 export interface DurationOption {
   value: string;
   label: string;
-  price: number;
+  price?: number;
 }
 
 export interface PrintOption {
@@ -29,7 +29,6 @@ export interface ServiceType {
   description: string;
   size?: string;
   type?: string;
-  duration?: string;
   image: string[];
   durationOptions?: DurationOption[];
   printOptions?: PrintOption[];
@@ -105,10 +104,11 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
     (option) => option.value === selectedDuration,
   );
 
-  // For services like Polaroid that don't have durationOptions but have a fixed duration
-  const basePrice = service.durationOptions
-    ? currentDurationOption?.price
-    : service.price || currentPrintOption?.price || 0;
+  // Calculate base price from duration option (if multiple) or print option
+  const basePrice =
+    service.durationOptions && service.durationOptions.length > 1
+      ? currentDurationOption?.price
+      : service.price || service.printOptions?.[0]?.price || 0;
 
   const handleBookNow = () => {
     onBookNow({
@@ -120,7 +120,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
   };
 
   const renderSpecifications = () => {
-    if (!service.duration) return null;
+    if (!service.durationOptions) return null;
 
     return (
       <>
@@ -134,11 +134,11 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
         >
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
             <div>
-              {service.durationOptions ? (
+              <span className="text-sm font-medium text-gray-600 sm:text-base">
+                Durasi
+              </span>
+              {service.durationOptions.length > 1 ? (
                 <div>
-                  <span className="text-sm font-medium text-gray-600 sm:text-base">
-                    Durasi
-                  </span>
                   <Select
                     options={service.durationOptions}
                     value={selectedDuration}
@@ -153,14 +153,9 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
                   )}
                 </div>
               ) : (
-                <>
-                  <span className="text-sm font-medium text-gray-600 sm:text-base">
-                    Durasi
-                  </span>
-                  <p className="mt-0.5 text-sm sm:mt-1 sm:text-base">
-                    {service.duration}
-                  </p>
-                </>
+                <p className="mt-0.5 text-sm sm:mt-1 sm:text-base">
+                  {service.durationOptions[0].label}
+                </p>
               )}
             </div>
 

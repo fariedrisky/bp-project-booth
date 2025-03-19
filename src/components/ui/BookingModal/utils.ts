@@ -17,6 +17,24 @@ export const formatWaktu = (date: Date): string => {
     });
 };
 
+// Format opening time and closing time together with WIB
+export const formatBoothTime = (openBoothTime: Date | null, closeBoothTime: string): string => {
+    if (!openBoothTime) return "-";
+
+    const formattedOpenTime = formatWaktu(openBoothTime);
+
+    // If we don't have a closing time, just return the opening time with WIB
+    if (!closeBoothTime || closeBoothTime === "-") {
+        return `${formattedOpenTime} WIB`;
+    }
+
+    // We need to extract just the time part from the closeBoothTime since it might already include "WIB"
+    const closeTimeOnly = closeBoothTime.replace(" WIB", "");
+
+    // Return the formatted range with a single WIB at the end
+    return `${formattedOpenTime} - ${closeTimeOnly} WIB`;
+};
+
 export const formatWhatsAppMessage = (
     data: FormData & { selectedProduct: string },
     service: ServiceType
@@ -24,8 +42,27 @@ export const formatWhatsAppMessage = (
     const priceInfo =
         data.paymentType === "full"
             ? `Harga: Rp ${Number(service.totalPrice)?.toLocaleString("id-ID")}`
-            : `Uang Muka: Rp ${data.dpAmount ? Number(data.dpAmount).toLocaleString("id-ID") : ""
-            }`;
+            : `Uang Muka: Rp ${data.dpAmount ? Number(data.dpAmount).toLocaleString("id-ID") : ""}`;
+
+    // Calculate close booth time based on open booth time and duration
+    let closeTime = "";
+    if (data.openBoothTime && service.selectedDuration?.value) {
+        // Use the calculateEndTime utility if available
+        if (typeof calculateEndTime === 'function') {
+            closeTime = calculateEndTime(data.openBoothTime, service.selectedDuration.value);
+        } else {
+            // Fallback implementation if the utility isn't available
+            const closeDate = new Date(data.openBoothTime);
+            const durationHours = parseInt(service.selectedDuration.value.replace('h', ''), 10);
+            closeDate.setHours(closeDate.getHours() + durationHours);
+            closeTime = formatWaktu(closeDate);
+        }
+    }
+
+    // Format the booth time range
+    const boothTimeRange = data.openBoothTime
+        ? `${formatWaktu(data.openBoothTime)} - ${closeTime} WIB`
+        : "";
 
     return encodeURIComponent(`
 *Permintaan Pemesanan Baru*
@@ -37,7 +74,7 @@ Email: ${data.email}
 
 *Detail Acara:*
 Tanggal: ${data.eventDate ? formatTanggal(data.eventDate) : ""}
-Jam: ${data.eventTime ? formatWaktu(data.eventTime) : ""}
+Jam Open Booth - Close Booth: ${boothTimeRange}
 Lokasi: ${data.eventLocation}
 
 *Detail Paket:*
@@ -63,7 +100,7 @@ export const validateForm = (
         newErrors.phoneNumber = "Nomor telepon wajib diisi";
     if (!formData.email) newErrors.email = "Email wajib diisi";
     if (!formData.eventDate) newErrors.eventDate = "Tanggal acara wajib diisi";
-    if (!formData.eventTime) newErrors.eventTime = "Jam acara wajib diisi";
+    if (!formData.openBoothTime) newErrors.openBoothTime = "Jam acara wajib diisi";
     if (!formData.eventLocation)
         newErrors.eventLocation = "Lokasi acara wajib diisi";
     if (!formData.paymentType)
@@ -79,11 +116,11 @@ export const validateForm = (
         newErrors.dpAmount = "Jumlah uang muka wajib diisi";
     } else if (formData.paymentType === "dp") {
         const dpValue = parseInt(formData.dpAmount);
-        const minimumDp = service.totalPrice! * 0.3;
+        const minimumDp = service.totalPrice! * 0.5;
         if (isNaN(dpValue) || dpValue <= 0) {
             newErrors.dpAmount = "Jumlah uang muka harus lebih dari 0";
         } else if (dpValue < minimumDp) {
-            newErrors.dpAmount = `Uang muka minimal 30% dari harga total (Rp ${Math.ceil(
+            newErrors.dpAmount = `Uang muka minimal 50% dari harga total (Rp ${Math.ceil(
                 minimumDp
             ).toLocaleString("id-ID")})`;
         } else if (dpValue >= service.totalPrice!) {
@@ -107,3 +144,7 @@ export const validateForm = (
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
 };
+
+// Function signature for calculateEndTime - this is just for TypeScript to recognize the function
+// The actual implementation should be imported from @/utils/time-utils
+declare function calculateEndTime(startTime: Date | null, durationString: string | undefined, timezone?: string): string;

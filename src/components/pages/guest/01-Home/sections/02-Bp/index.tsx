@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import {
   slideInFromBottom,
   slideInFromLeftWithBounce,
+  slideInFromRightWithBounce,
   fadeInUp,
   staggerContainer,
 } from "@/animation/motion";
@@ -24,17 +25,21 @@ const shuffleArray = (array: string[]): string[] => {
 };
 
 // Fungsi untuk mendapatkan gambar dari direktori
-const getImagesFromDirectory = async (directoryPath: string): Promise<string[]> => {
+const getImagesFromDirectory = async (
+  directoryPath: string,
+): Promise<string[]> => {
   try {
     // Fetch daftar gambar dari API route
-    const response = await fetch(`/api/get-images?directory=${encodeURIComponent(directoryPath)}`);
-    
+    const response = await fetch(
+      `/api/get-images?directory=${encodeURIComponent(directoryPath)}`,
+    );
+
     if (!response.ok) {
       throw new Error(`Failed to fetch images: ${response.statusText}`);
     }
-    
+
     const data = await response.json();
-    
+
     // Langsung acak gambar setelah mendapatkannya
     return shuffleArray(data.images);
   } catch (error) {
@@ -44,44 +49,85 @@ const getImagesFromDirectory = async (directoryPath: string): Promise<string[]> 
 };
 
 export default function Bp() {
-  const [images, setImages] = useState<string[]>([]);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  
+  const [homeImages, setHomeImages] = useState<string[]>([]);
+  const [photoboxImages, setPhotoboxImages] = useState<string[]>([]);
+  const [currentHomeImageIndex, setCurrentHomeImageIndex] = useState(0);
+  const [currentPhotoboxImageIndex, setCurrentPhotoboxImageIndex] = useState(0);
+  const [isHomeLoading, setIsHomeLoading] = useState(true);
+  const [isPhotoboxLoading, setIsPhotoboxLoading] = useState(true);
+
   useEffect(() => {
-    // Muat gambar ketika komponen dipasang
-    const loadImages = async () => {
+    // Muat gambar home ketika komponen dipasang
+    const loadHomeImages = async () => {
       try {
         // Dapatkan gambar yang sudah diacak dari API
         const imageFiles = await getImagesFromDirectory("/assets/images/home");
-        
+
         if (imageFiles.length === 0) {
-          console.warn("No images found in the directory");
-          setIsLoading(false);
+          console.warn("No images found in the home directory");
+          setIsHomeLoading(false);
           return;
         }
-        
-        setImages(imageFiles);
-        setIsLoading(false);
+
+        setHomeImages(imageFiles);
+        setIsHomeLoading(false);
       } catch (error) {
-        console.error("Failed to load images:", error);
-        setIsLoading(false);
+        console.error("Failed to load home images:", error);
+        setIsHomeLoading(false);
       }
     };
 
-    loadImages();
+    // Muat gambar photobox ketika komponen dipasang
+    const loadPhotoboxImages = async () => {
+      try {
+        // Dapatkan gambar yang sudah diacak dari API
+        const imageFiles = await getImagesFromDirectory(
+          "/assets/images/photobox",
+        );
+
+        if (imageFiles.length === 0) {
+          console.warn("No images found in the photobox directory");
+          setIsPhotoboxLoading(false);
+          return;
+        }
+
+        setPhotoboxImages(imageFiles);
+        setIsPhotoboxLoading(false);
+      } catch (error) {
+        console.error("Failed to load photobox images:", error);
+        setIsPhotoboxLoading(false);
+      }
+    };
+
+    loadHomeImages();
+    loadPhotoboxImages();
   }, []);
 
   useEffect(() => {
-    // Ganti gambar setiap 4 detik
-    if (images.length > 0) {
+    // Ganti gambar home setiap 4 detik
+    if (homeImages.length > 0) {
       const interval = setInterval(() => {
-        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+        setCurrentHomeImageIndex(
+          (prevIndex) => (prevIndex + 1) % homeImages.length,
+        );
       }, 4000);
 
       return () => clearInterval(interval);
     }
-  }, [images]);
+  }, [homeImages]);
+
+  useEffect(() => {
+    // Ganti gambar photobox setiap 4 detik
+    if (photoboxImages.length > 0) {
+      const interval = setInterval(() => {
+        setCurrentPhotoboxImageIndex(
+          (prevIndex) => (prevIndex + 1) % photoboxImages.length,
+        );
+      }, 4000);
+
+      return () => clearInterval(interval);
+    }
+  }, [photoboxImages]);
 
   return (
     <>
@@ -103,19 +149,21 @@ export default function Bp() {
             variants={slideInFromLeftWithBounce(0.2)}
           >
             <div className="relative mx-auto w-full">
-              {isLoading ? (
+              {isHomeLoading ? (
                 // Loading state with responsive height
                 <div className="flex h-[400px] w-full items-center justify-center bg-gray-200">
                   <span>Loading...</span>
                 </div>
-              ) : images.length > 0 ? (
+              ) : homeImages.length > 0 ? (
                 // Image carousel with exact proportions matching screenshot
                 <div className="relative aspect-[3/4] w-full overflow-hidden">
-                  {images.map((image, index) => (
-                    <div 
+                  {homeImages.map((image, index) => (
+                    <div
                       key={image}
                       className={`absolute inset-0 h-full w-full transition-opacity duration-1000 ${
-                        index === currentImageIndex ? "opacity-100" : "opacity-0"
+                        index === currentHomeImageIndex
+                          ? "opacity-100"
+                          : "opacity-0"
                       }`}
                     >
                       <Image
@@ -138,9 +186,9 @@ export default function Bp() {
               )}
             </div>
           </motion.div>
-          
+
           {/* Text Column - Adjusted to match current layout */}
-          <div className="!text-primary w-full md:w-[62%] xl:w-[64%] md:pl-12 lg:pl-16">
+          <div className="w-full !text-primary md:w-[62%] md:pl-12 lg:pl-16 xl:w-[64%]">
             <motion.h2
               className="tracking-wid mb-2 text-base uppercase"
               variants={fadeInUp}
@@ -148,12 +196,13 @@ export default function Bp() {
               BP PROJECT BOOTH
             </motion.h2>
             <motion.h3 className="mb-4 text-3xl font-bold" variants={fadeInUp}>
-              Lebih dari 5+ Tahun Melayani Berbagai Brand Ternama
+              Solusi Photobooth Modern untuk Setiap Acara
             </motion.h3>
             <motion.p className="mb-6" variants={fadeInUp}>
-              Sejak 2018, Bp Project Booth telah memberikan layanan photo booth
-              modern dengan teknologi canggih untuk berbagai acara skala besar
-              dan kecil.
+              Sejak 2018, BP Project Booth telah menghadirkan pengalaman
+              photobooth berkualitas tinggi dengan teknologi canggih,
+              menciptakan momen berkesan di berbagai acara, mulai dari
+              pernikahan, acara korporat, hingga pameran besar.
             </motion.p>
             <motion.ul
               className="mb-8 space-y-2"
@@ -163,10 +212,13 @@ export default function Bp() {
               variants={staggerContainer}
             >
               {[
-                "Quality Control System",
-                "100% Satisfaction Guarantee",
-                "Commitment to Customer",
-                "Highly Professional",
+                "Kualitas terbaik dengan kontrol penuh",
+                "Dedikasi tinggi dalam setiap proyek",
+                "Tim profesional dan berpengalaman",
+                "Desain template eksklusif sesuai kebutuhan acara",
+                "Teknologi modern untuk pengalaman photobooth terbaik",
+                "Layanan fleksibel untuk berbagai jenis acara",
+                "Dukungan teknis penuh selama acara berlangsung",
               ].map((item, index) => (
                 <motion.li
                   key={index}
@@ -180,6 +232,109 @@ export default function Bp() {
             </motion.ul>
           </div>
         </div>
+
+        {/* Photobox Section */}
+        <div className="container mx-auto mt-20 flex flex-col items-center px-4 md:flex-row-reverse">
+          {/* Image Column - New carousel for photobox */}
+          <motion.div
+            className="mb-8 w-full md:mb-0 md:w-[38%] xl:w-[36%]"
+            initial="offscreen"
+            whileInView="onscreen"
+            viewport={{ once: true }}
+            variants={slideInFromRightWithBounce(0.2)}
+          >
+            <div className="relative mx-auto w-full">
+              {isPhotoboxLoading ? (
+                // Loading state with responsive height
+                <div className="flex h-[400px] w-full items-center justify-center bg-gray-200">
+                  <span>Loading...</span>
+                </div>
+              ) : photoboxImages.length > 0 ? (
+                // Image carousel with exact proportions matching screenshot
+                <div className="relative aspect-[3/4] w-full overflow-hidden">
+                  {photoboxImages.map((image, index) => (
+                    <div
+                      key={image}
+                      className={`absolute inset-0 h-full w-full transition-opacity duration-1000 ${
+                        index === currentPhotoboxImageIndex
+                          ? "opacity-100"
+                          : "opacity-0"
+                      }`}
+                    >
+                      <Image
+                        src={image}
+                        alt={`Photobox ${index + 1}`}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 768px) 38vw, 450px"
+                        priority={index === 0}
+                        loading={index === 0 ? "eager" : "lazy"}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                // Fallback if no images
+                <div className="flex h-[400px] w-full items-center justify-center rounded bg-gray-100">
+                  <span>No images available</span>
+                </div>
+              )}
+            </div>
+          </motion.div>
+
+          {/* Text Column for Photobox */}
+          <div className="w-full !text-primary md:w-[62%] md:pr-12 lg:pr-16 xl:w-[64%]">
+            <motion.h2
+              className="tracking-wid mb-2 text-base uppercase"
+              variants={fadeInUp}
+            >
+              PHOTOBOX
+            </motion.h2>
+            <motion.h3 className="mb-4 text-3xl font-bold" variants={fadeInUp}>
+              Usaha Photobox & Penyewaan untuk Acara Spesial
+            </motion.h3>
+            <motion.p className="mb-6" variants={fadeInUp}>
+              Photobox adalah peluang bisnis yang menguntungkan sekaligus solusi
+              terbaik untuk membuat acara lebih berkesan. Dengan modal sekali,
+              Anda bisa mendapatkan penghasilan berulang dari penyewaan atau
+              penggunaan harian. Cocok untuk mall, café, tempat wisata, serta
+              berbagai acara seperti pernikahan, ulang tahun, dan corporate
+              event.
+            </motion.p>
+            <motion.h4 className="mb-3 text-lg font-medium" variants={fadeInUp}>
+              Keunggulan photobox kami:
+            </motion.h4>
+            <motion.ul
+              className="mb-8 space-y-2"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={staggerContainer}
+            >
+              {[
+                "Mudah dioperasikan tanpa perlu keahlian khusus",
+                "Bisa disesuaikan dengan berbagai tema dan desain frame",
+                "Foto langsung cetak dalam hitungan detik",
+                "Menambah keseruan dan interaksi bagi tamu acara",
+                "Tersedia layanan maintenance dan upgrade",
+              ].map((item, index) => (
+                <motion.li
+                  key={index}
+                  className="flex items-center font-medium"
+                  variants={fadeInUp}
+                >
+                  <FaCircleCheck className="mr-2" />
+                  {item}
+                </motion.li>
+              ))}
+            </motion.ul>
+            <motion.p className="mt-4 font-medium" variants={fadeInUp}>
+              Baik untuk memulai usaha maupun menyempurnakan acara spesial,
+              photobox adalah pilihan tepat.
+            </motion.p>
+          </div>
+        </div>
+
         <motion.div
           id="our-client"
           className="bg-foreground py-8 md:py-10"
@@ -188,7 +343,7 @@ export default function Bp() {
           viewport={{ once: true }}
           variants={slideInFromBottom(0.3)}
         >
-          <h2 className="mb-6 md:mb-8 text-center text-2xl font-bold text-primary">
+          <h2 className="mb-6 text-center text-2xl font-bold text-primary md:mb-8">
             Our Clients
           </h2>
           <OurClientsMarquee />

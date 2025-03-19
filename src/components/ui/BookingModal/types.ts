@@ -5,7 +5,7 @@ export interface FormData {
     phoneNumber: string;
     email: string;
     eventDate: Date | null;
-    eventTime: Date | null;
+    openBoothTime: Date | null;
     eventLocation: string;
     paymentType: string;
     dpAmount: string;

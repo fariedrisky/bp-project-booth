@@ -15,7 +15,7 @@ const initialFormData: FormData = {
   phoneNumber: "",
   email: "",
   eventDate: null,
-  eventTime: null,
+  openBoothTime: null,
   eventLocation: "",
   paymentType: "",
   dpAmount: "",

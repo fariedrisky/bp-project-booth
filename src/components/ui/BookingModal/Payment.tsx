@@ -17,8 +17,18 @@ export default function Payment({
   service,
   setErrors,
 }: SectionProps) {
+  // Calculate minimum DP amount (50% of total price)
+  const calculateMinDpAmount = () => {
+    if (!service.totalPrice) return "0";
+
+    const halfPrice = Math.ceil(service.totalPrice / 2);
+    return halfPrice.toString();
+  };
+
+  // Handle changes during typing - allow any value during input
   const handleDpAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value.replace(/\./g, ""); // Hapus titik dari input
+
     if (!isNaN(Number(rawValue))) {
       setFormData((prev) => ({
         ...prev,
@@ -27,10 +37,54 @@ export default function Payment({
     }
   };
 
+  // Validate minimum amount on blur (when user finishes typing)
+  const handleDpAmountBlur = () => {
+    const minDpAmount = calculateMinDpAmount();
+
+    if (formData.dpAmount) {
+      const numericValue = Number(formData.dpAmount);
+
+      // If value is below minimum, set to minimum
+      if (numericValue < Number(minDpAmount)) {
+        setFormData((prev) => ({
+          ...prev,
+          dpAmount: minDpAmount,
+        }));
+      }
+    } else {
+      // If field is empty, set to minimum
+      setFormData((prev) => ({
+        ...prev,
+        dpAmount: minDpAmount,
+      }));
+    }
+
+    // Clear error if it exists
+    if (errors.dpAmount) {
+      setErrors((prev) => ({
+        ...prev,
+        dpAmount: "",
+      }));
+    }
+  };
+
   // Format tampilan dengan titik setiap 3 digit
   const formattedDpAmount = formData.dpAmount
     ? formData.dpAmount.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
     : "";
+
+  // Initialize with default 50% when switching to DP payment type
+  const handlePaymentTypeChange = (value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      paymentType: value,
+      dpAmount: value === "dp" ? calculateMinDpAmount() : "", // Set nilai 50% saat memilih DP
+    }));
+
+    if (errors.paymentType) {
+      setErrors((prev) => ({ ...prev, paymentType: "" }));
+    }
+  };
 
   return (
     <>
@@ -41,16 +95,7 @@ export default function Payment({
         <Select
           options={paymentOptions}
           value={formData.paymentType}
-          onChange={(value) => {
-            setFormData((prev) => ({
-              ...prev,
-              paymentType: value,
-              dpAmount: "", // Reset DP amount when changing payment type
-            }));
-            if (errors.paymentType) {
-              setErrors((prev) => ({ ...prev, paymentType: "" }));
-            }
-          }}
+          onChange={handlePaymentTypeChange}
           placeholder="Pilih jenis pembayaran"
           className={errors.paymentType ? "border-red-500" : ""}
           disabled={isSubmitting}
@@ -63,7 +108,9 @@ export default function Payment({
       {formData.paymentType && (
         <div className="space-y-1">
           <Label className="block text-sm font-medium text-gray-700">
-            {formData.paymentType === "full" ? "Harga" : "Jumlah Uang Muka"}
+            {formData.paymentType === "full"
+              ? "Harga"
+              : "Jumlah Uang Muka (DP) Minimal 50%"}
           </Label>
           {formData.paymentType === "full" ? (
             <Input
@@ -78,6 +125,7 @@ export default function Payment({
                 name="dpAmount"
                 value={formattedDpAmount} // Tampilkan angka dengan format
                 onChange={handleDpAmountChange} // Simpan angka mentah ke state
+                onBlur={handleDpAmountBlur} // Validasi nilai minimum saat focus hilang
                 placeholder="Masukkan jumlah uang muka"
                 className={`h-9 w-full ${
                   errors.dpAmount ? "border-red-500" : "border-gray-200"

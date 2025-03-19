@@ -5,7 +5,12 @@ const phoneBoothTypes: ServiceType[] = [
     id: "phone-booth-only",
     title: "Phone Booth (Only)",
     description: "Solusi booth sederhana dengan fokus pada pesan video",
-    duration: "4 Jam",
+    durationOptions: [
+      {
+        value: "4h",
+        label: "4 Jam",
+      },
+    ],
     image: ["/assets/images/services/phone-booth.jpg"],
     price: 2000000,
     features: [

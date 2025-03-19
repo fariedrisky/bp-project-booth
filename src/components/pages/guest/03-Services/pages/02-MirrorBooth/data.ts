@@ -5,7 +5,12 @@ const mirrorBoothTypes: ServiceType[] = [
         id: "mirror-booth",
         title: "Mirror Booth Unlimited",
         description: "Self Service Mode dengan fitur lengkap untuk acara kecil",
-        duration: "4 Jam",
+        durationOptions: [
+            {
+                value: "4h",
+                label: "4 Jam",
+            },
+        ],
         image: ["/assets/images/services/mirror-booth.jpg"],
         price: 5000000,
         features: [

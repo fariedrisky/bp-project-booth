@@ -5,7 +5,6 @@ const boothTypes: ServiceType[] = [
         id: "2r",
         title: "2R",
         description: "Basic Booth dengan ukuran 2R, cocok untuk berbagai acara",
-        duration: "3-4 Jam",
         durationOptions: [
             {
                 value: "3h",
@@ -67,7 +66,6 @@ const boothTypes: ServiceType[] = [
         id: "polaroid",
         title: "Polaroid",
         description: "Basic Booth dengan format Polaroid yang klasik",
-        duration: "3-4 Jam",
         durationOptions: [
             {
                 value: "3h",
@@ -123,7 +121,12 @@ const boothTypes: ServiceType[] = [
         id: "4r-portrait",
         title: "4R Portrait",
         description: "Basic Booth ukuran 4R format portrait",
-        duration: "4 Jam",
+        durationOptions: [
+            {
+                value: "4h",
+                label: "4 Jam",
+            },
+        ],
         image: [
             "/assets/images/services/4r-portrait.jpg",
             "/assets/images/services/4r-portrait-2.jpg",
@@ -177,7 +180,12 @@ const boothTypes: ServiceType[] = [
         id: "4r-landscape",
         title: "4R Landscape",
         description: "Basic Booth ukuran 4R format landscape",
-        duration: "4 Jam",
+        durationOptions: [
+            {
+                value: "4h",
+                label: "4 Jam",
+            },
+        ],
         image: ["/assets/images/services/4r-landscape.jpg"],
         templateImage: [
             "/assets/images/template-options/4r-landscape.jpg",
