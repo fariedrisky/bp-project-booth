@@ -198,7 +198,7 @@ export default function Bp() {
             <motion.h3 className="mb-4 text-3xl font-bold" variants={fadeInUp}>
               Solusi Photobooth Modern untuk Setiap Acara
             </motion.h3>
-            <motion.p className="mb-6" variants={fadeInUp}>
+            <motion.p className="mb-6 text-justify" variants={fadeInUp}>
               Sejak 2018, BP Project Booth telah menghadirkan pengalaman
               photobooth berkualitas tinggi dengan teknologi canggih,
               menciptakan momen berkesan di berbagai acara, mulai dari
@@ -293,7 +293,7 @@ export default function Bp() {
             <motion.h3 className="mb-4 text-3xl font-bold" variants={fadeInUp}>
               Usaha Photobox & Penyewaan untuk Acara Spesial
             </motion.h3>
-            <motion.p className="mb-6" variants={fadeInUp}>
+            <motion.p className="mb-6 text-justify" variants={fadeInUp}>
               Photobox adalah peluang bisnis yang menguntungkan sekaligus solusi
               terbaik untuk membuat acara lebih berkesan. Dengan modal sekali,
               Anda bisa mendapatkan penghasilan berulang dari penyewaan atau
