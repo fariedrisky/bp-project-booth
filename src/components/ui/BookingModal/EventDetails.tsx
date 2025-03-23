@@ -19,16 +19,13 @@ export default function EventDetails({
 
   console.log(service, "service");
 
-
-  
   useEffect(() => {
     // Check if location doesn't include Banda Aceh or Medan
     if (formData.eventLocation && formData.eventLocation.trim() !== "") {
       const location = formData.eventLocation.toLowerCase();
-      const isBandaAcehOrMedan = 
-        location.includes("banda aceh") || 
-        location.includes("medan");
-      
+      const isBandaAcehOrMedan =
+        location.includes("banda aceh") || location.includes("medan");
+
       setShowLocationNotice(!isBandaAcehOrMedan);
     } else {
       setShowLocationNotice(false);
@@ -40,9 +37,9 @@ export default function EventDetails({
     const endTime = calculateEndTime(
       formData.openBoothTime,
       service.selectedDuration?.value,
-      "WIB"
+      "WIB",
     );
-    
+
     setCloseBoothTime(endTime);
   }, [formData.openBoothTime, service.selectedDuration]);
 
@@ -85,7 +82,6 @@ export default function EventDetails({
       }));
     }
   };
-
 
   return (
     <>
@@ -148,8 +144,10 @@ export default function EventDetails({
           <p className="text-sm text-red-500">{errors.eventLocation}</p>
         )}
         {showLocationNotice && (
-          <p className="mt-2 text-xs text-red-500 text-justify">
-          Untuk perjalanan ke luar kota selain Banda Aceh dan Medan, akan ada tambahan biaya akomodasi dan transportasi. Besaran biaya akan diinformasikan lebih lanjut.
+          <p className="mt-2 text-justify text-xs text-red-500">
+            Untuk perjalanan ke luar kota selain Banda Aceh dan Medan, akan ada
+            tambahan biaya akomodasi dan transportasi. Besaran biaya akan
+            diinformasikan lebih lanjut.
           </p>
         )}
       </div>

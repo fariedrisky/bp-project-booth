@@ -42,7 +42,7 @@ export const formatWhatsAppMessage = (
     const priceInfo =
         data.paymentType === "full"
             ? `Harga: Rp ${Number(service.totalPrice)?.toLocaleString("id-ID")}`
-            : `Uang Muka: Rp ${data.dpAmount ? Number(data.dpAmount).toLocaleString("id-ID") : ""}`;
+            : `Uang Muka (DP): Rp ${data.dpAmount ? Number(data.dpAmount).toLocaleString("id-ID") : ""}`;
 
     // Calculate close booth time based on open booth time and duration
     let closeTime = "";
@@ -73,7 +73,7 @@ Telepon: ${data.phoneNumber}
 Email: ${data.email}
 
 *Detail Acara:*
-Tanggal: ${data.eventDate ? formatTanggal(data.eventDate) : ""}
+Hari, Tanggal: ${data.eventDate ? formatTanggal(data.eventDate) : ""}
 Jam Open Booth - Close Booth: ${boothTimeRange}
 Lokasi: ${data.eventLocation}
 
@@ -100,7 +100,7 @@ export const validateForm = (
         newErrors.phoneNumber = "Nomor telepon wajib diisi";
     if (!formData.email) newErrors.email = "Email wajib diisi";
     if (!formData.eventDate) newErrors.eventDate = "Tanggal acara wajib diisi";
-    if (!formData.openBoothTime) newErrors.openBoothTime = "Jam acara wajib diisi";
+    if (!formData.openBoothTime) newErrors.openBoothTime = "Jam open booth wajib diisi";
     if (!formData.eventLocation)
         newErrors.eventLocation = "Lokasi acara wajib diisi";
     if (!formData.paymentType)
