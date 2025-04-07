@@ -291,7 +291,8 @@ export default function Bp() {
               PHOTOBOX
             </motion.h2>
             <motion.h3 className="mb-4 text-3xl font-bold" variants={fadeInUp}>
-              Dari Hobi Jadi Bisnis, Dari Photobox Jadi Cuan Besar!
+              Jadikan photobox pencetak duit untuk kamu, dari photobox jadi cuan
+              besar!
             </motion.h3>
             <motion.p className="mb-6 text-justify" variants={fadeInUp}>
               Gabung kemitraan photobox BP Projectbooth—brand yang udah
@@ -325,10 +326,6 @@ export default function Bp() {
                 </motion.li>
               ))}
             </motion.ul>
-            <motion.p className="mt-4 font-medium" variants={fadeInUp}>
-              Jadikan photobox pencetak duit untuk kamu, dari photobox jadi cuan
-              besar!
-            </motion.p>
             <motion.div className="mt-6" variants={fadeInUp}>
               <button
                 className="hover:bg-primary-dark rounded-lg bg-primary px-6 py-3 font-bold text-white transition-colors"
