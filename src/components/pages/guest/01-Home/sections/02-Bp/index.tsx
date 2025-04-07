@@ -196,13 +196,13 @@ export default function Bp() {
               BP PROJECT BOOTH
             </motion.h2>
             <motion.h3 className="mb-4 text-3xl font-bold" variants={fadeInUp}>
-              Solusi Photobooth Modern untuk Setiap Acara
+              Solusi Photobooth Kekinian untuk Semua Acara Kamu
             </motion.h3>
             <motion.p className="mb-6 text-justify" variants={fadeInUp}>
-              Sejak 2018, BP Project Booth telah menghadirkan pengalaman
-              photobooth berkualitas tinggi dengan teknologi canggih,
-              menciptakan momen berkesan di berbagai acara, mulai dari
-              pernikahan, acara korporat, hingga pameran besar.
+              Sejak 2018, BP Project Booth telah hadir dengan pengalaman
+              photobooth berkualitas premium menggunakan teknologi canggih,
+              menciptakan momen spesial di berbagai acara, mulai dari
+              pernikahan, acara perusahaan, hingga event-event besar.
             </motion.p>
             <motion.ul
               className="mb-8 space-y-2"
@@ -212,13 +212,13 @@ export default function Bp() {
               variants={staggerContainer}
             >
               {[
-                "Kualitas terbaik dengan kontrol penuh",
-                "Dedikasi tinggi dalam setiap proyek",
-                "Tim profesional dan berpengalaman",
-                "Desain template eksklusif sesuai kebutuhan acara",
-                "Teknologi modern untuk pengalaman photobooth terbaik",
-                "Layanan fleksibel untuk berbagai jenis acara",
-                "Dukungan teknis penuh selama acara berlangsung",
+                "Kualitas terbaik dengan hasil maksimal",
+                "Totalitas dalam setiap proyek",
+                "Tim profesional yang berpengalaman",
+                "Desain template eksklusif sesuai tema acara kamu",
+                "Teknologi modern untuk pengalaman photo booth terbaik",
+                "Layanan fleksibel untuk berbagai jenis event",
+                "Support teknis penuh selama acara berlangsung",
               ].map((item, index) => (
                 <motion.li
                   key={index}

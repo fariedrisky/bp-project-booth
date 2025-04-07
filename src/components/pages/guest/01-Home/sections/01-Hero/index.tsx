@@ -85,7 +85,7 @@ export default function Hero() {
             className="mx-auto mb-10 max-w-xl text-base text-gray-200 sm:text-lg"
           >
             Photo booth modern yang menghadirkan kenangan tak terlupakan di
-            setiap acara Anda dengan teknologi terkini dan desain yang elegan
+            setiap acara kamu dengan teknologi terkini dan desain yang elegan
           </motion.p>
 
           <motion.div
