@@ -291,15 +291,12 @@ export default function Bp() {
               PHOTOBOX
             </motion.h2>
             <motion.h3 className="mb-4 text-3xl font-bold" variants={fadeInUp}>
-              Usaha Photobox & Penyewaan untuk Acara Spesial
+              Dari Hobi Jadi Bisnis, Dari Photobox Jadi Cuan Besar!
             </motion.h3>
             <motion.p className="mb-6 text-justify" variants={fadeInUp}>
-              Photobox adalah peluang bisnis yang menguntungkan sekaligus solusi
-              terbaik untuk membuat acara lebih berkesan. Dengan modal sekali,
-              Anda bisa mendapatkan penghasilan berulang dari penyewaan atau
-              penggunaan harian. Cocok untuk mall, café, tempat wisata, serta
-              berbagai acara seperti pernikahan, ulang tahun, dan corporate
-              event.
+              Gabung kemitraan photobox BP Projectbooth—brand yang udah
+              dipercaya di berbagai event. Kami siap bantu kamu mulai dari nol
+              sampai jepret pertama!
             </motion.p>
             <motion.h4 className="mb-3 text-lg font-medium" variants={fadeInUp}>
               Keunggulan photobox kami:
@@ -329,9 +326,25 @@ export default function Bp() {
               ))}
             </motion.ul>
             <motion.p className="mt-4 font-medium" variants={fadeInUp}>
-              Baik untuk memulai usaha maupun menyempurnakan acara spesial,
-              photobox adalah pilihan tepat.
+              Jadikan photobox pencetak duit untuk kamu, dari photobox jadi cuan
+              besar!
             </motion.p>
+            <motion.div className="mt-6" variants={fadeInUp}>
+              <button
+                className="hover:bg-primary-dark rounded-lg bg-primary px-6 py-3 font-bold text-white transition-colors"
+                onClick={() => {
+                  const whatsappMessage = encodeURIComponent(
+                    "Halo, saya tertarik dengan bisnis photobox BP Projectbooth dan ingin konsultasi lebih lanjut.",
+                  );
+                  window.open(
+                    `https://wa.me/6285157316767?text=${whatsappMessage}`,
+                    "_blank",
+                  );
+                }}
+              >
+                Ayo Konsultasikan Sekarang
+              </button>
+            </motion.div>
           </div>
         </div>
 
