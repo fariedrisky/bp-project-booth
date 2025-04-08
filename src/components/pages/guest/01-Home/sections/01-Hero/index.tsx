@@ -11,11 +11,10 @@ export default function Hero() {
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.playbackRate = 0.8; // Sedikit diperlambat untuk efek yang lebih elegan
+      videoRef.current.playbackRate = 0.8;
     }
   }, []);
 
-  // Function to scroll to the Our Service section
   const scrollToServices = () => {
     const servicesSection = document.getElementById("our-service");
     if (servicesSection) {
@@ -28,10 +27,10 @@ export default function Hero() {
       id="hero-section"
       className="relative h-screen w-full overflow-hidden bg-black"
     >
-      {/* Overlay gradient untuk memperindah background video */}
+      {/* Overlay gradient */}
       <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/70 via-black/40 to-black/90"></div>
 
-      {/* Background Video dengan efek zoom yang halus */}
+      {/* Background Video */}
       <video
         ref={videoRef}
         autoPlay
@@ -47,94 +46,109 @@ export default function Hero() {
         <source src="/assets/videos/hero.mp4" type="video/mp4" />
       </video>
 
-      {/* Content Section di tengah */}
-      <div className="relative z-20 flex h-full w-full items-center justify-center">
+      {/* Content Section */}
+      <div className="relative z-20 flex h-full w-full items-center justify-center px-4 sm:px-6">
         <motion.div
           initial="hidden"
           animate="visible"
           variants={staggerContainer}
-          className="max-w-4xl px-6 pt-0 text-center"
+          className="w-full max-w-4xl"
         >
-          <motion.div
-            variants={fadeInUp}
-            className="mb-6 inline-block rounded-full bg-opacity-10 bg-gradient-to-r from-accent/80 to-accent px-6 py-3 backdrop-blur-md"
-          >
-            <span className="text-sm font-medium tracking-wide text-white sm:text-base">
-              Professional Photo Booth Service
-            </span>
-          </motion.div>
+          {/* Badge */}
+          <div className="text-center">
+            <motion.div
+              variants={fadeInUp}
+              className="mb-4 inline-block rounded-full bg-gradient-to-r from-accent/80 to-accent px-5 py-2 backdrop-blur-md sm:mb-6 sm:px-6 sm:py-3"
+            >
+              <span className="text-xs font-medium tracking-wide text-white sm:text-sm md:text-base">
+                Gak Cuma Poto
+              </span>
+            </motion.div>
 
-          <motion.h1
-            variants={fadeInUp}
-            className="mb-6 font-serif text-4xl font-bold leading-tight text-white sm:text-5xl md:text-6xl"
-          >
-            <motion.span custom={0} variants={textTyping}>
-              Hadir Mengabadikan <br />
-            </motion.span>
-            <motion.span custom={1} variants={textTyping}>
-              Setiap{" "}
+            {/* Heading */}
+            <motion.h1
+              variants={fadeInUp}
+              className="mb-4 font-serif text-4xl font-bold leading-tight text-white sm:mb-6 sm:text-4xl md:text-5xl lg:text-6xl"
+            >
+              Hadir Mengabadikan Setiap{" "}
               <span className="relative italic text-accent">
                 Momen
                 <span className="absolute -bottom-1 left-0 h-[3px] w-full bg-accent/30"></span>
               </span>
-            </motion.span>
-          </motion.h1>
+            </motion.h1>
+          </div>
 
+          {/* Main Description */}
           <motion.p
             variants={fadeInUp}
-            className="mx-auto mb-10 max-w-xl text-base text-gray-200 sm:text-lg"
+            className="mb-6 text-justify text-sm text-gray-200 sm:text-base md:mb-8 md:text-lg"
           >
-            Photo booth modern yang menghadirkan kenangan tak terlupakan di
-            setiap acara kamu dengan teknologi terkini dan desain yang elegan
+            "Gak Cuma Poto" adalah lebih dari sekadar tagline—ini adalah janji
+            pengalaman. Di BP Projectbooth, kami tidak hanya menyediakan layanan
+            photobooth biasa. Kami menghadirkan momen, menciptakan kenangan, dan
+            menyulap setiap jepretan jadi cerita. Mulai dari konsep kreatif,
+            properti unik, hingga interaksi seru di booth, semua kami rancang
+            untuk bikin acara kamu makin hidup.
           </motion.p>
 
-          <motion.div
+          {/* Caption */}
+          <motion.p
             variants={fadeInUp}
-            className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-6 sm:space-y-0"
+            className="mb-8 text-center text-xs italic text-gray-300 sm:text-sm"
           >
-            <Button
-              onClick={scrollToServices}
-              className="group relative !bg-accent px-8 py-3 text-base font-semibold text-white transition-all duration-300 hover:!bg-accent/90 sm:px-10"
-            >
-              <span className="relative z-10">Lihat Produk</span>
-              <span className="absolute bottom-0 left-0 h-full w-0 bg-white/20 transition-all duration-300 group-hover:w-full"></span>
-            </Button>
+            Karena buat kami, setiap klik bukan cuma foto. Itu adalah ekspresi,
+            keseruan, dan bagian dari momen yang layak dikenang
+          </motion.p>
 
-            <Link
-              href="https://wa.me/6285157316767"
-              target="_blank"
-              rel="noopener noreferrer"
+          {/* Buttons */}
+          <div className="text-center">
+            <motion.div
+              variants={fadeInUp}
+              className="flex flex-col items-center justify-center space-y-3 sm:flex-row sm:space-x-4 sm:space-y-0 md:space-x-6"
             >
-              <Button className="group relative flex w-full items-center justify-center border border-white/30 bg-transparent px-8 py-3 text-base font-semibold text-white backdrop-blur-sm transition duration-300 hover:border-white hover:bg-white/10 sm:px-10">
-                Kontak Kami
+              <Button
+                onClick={scrollToServices}
+                className="group relative w-full !bg-accent px-6 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:!bg-accent/90 sm:w-auto sm:px-8 sm:py-3 sm:text-base"
+              >
+                <span className="relative z-10">Lihat Produk</span>
+                <span className="absolute bottom-0 left-0 h-full w-0 bg-white/20 transition-all duration-300 group-hover:w-full"></span>
               </Button>
-            </Link>
-          </motion.div>
 
-          {/* Ornamen dekoratif */}
+              <Link
+                href="https://wa.me/6285157316767"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto"
+              >
+                <Button className="group relative flex w-full items-center justify-center border border-white/30 bg-transparent px-6 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition duration-300 hover:border-white hover:bg-white/10 sm:px-8 sm:py-3 sm:text-base">
+                  Kontak Kami
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
+
+          {/* Decorative line */}
           <motion.div
             variants={fadeInUp}
-            className="absolute -bottom-10 left-1/2 h-[1px] w-[200px] -translate-x-1/2 bg-gradient-to-r from-transparent via-accent/50 to-transparent"
+            className="absolute -bottom-10 left-1/2 h-[1px] w-[150px] -translate-x-1/2 bg-gradient-to-r from-transparent via-accent/50 to-transparent sm:w-[200px]"
           ></motion.div>
         </motion.div>
       </div>
 
-      {/* Particles overlay effect */}
+      {/* Noise overlay */}
       <div className="pointer-events-none absolute inset-0 z-10 bg-[url('/assets/images/noise-pattern.png')] opacity-30 mix-blend-soft-light"></div>
+
+      {/* Animation keyframes */}
+      <style jsx global>{`
+        @keyframes slowZoom {
+          from {
+            transform: scale(1.05);
+          }
+          to {
+            transform: scale(1.15);
+          }
+        }
+      `}</style>
     </section>
   );
 }
-
-{
-  /* Tambahkan keyframes untuk efek zoom lambat */
-}
-<style jsx global>{`
-  @keyframes slowZoom {
-    from {
-      transform: scale(1.05);
-    }
-    to {
-      transform: scale(1.15);
-    }
-  }
-`}</style>;
