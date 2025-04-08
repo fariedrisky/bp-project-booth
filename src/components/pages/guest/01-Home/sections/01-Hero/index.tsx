@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { fadeInUp, staggerContainer, textTyping } from "@/animation/motion";
+import { fadeInUp, staggerContainer } from "@/animation/motion";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 
@@ -83,12 +83,12 @@ export default function Hero() {
             variants={fadeInUp}
             className="mb-6 text-justify text-sm text-gray-200 sm:text-base md:mb-8 md:text-lg"
           >
-            &quot;Gak Cuma Poto&quot; adalah lebih dari sekadar tagline—ini adalah
-            janji pengalaman. Di BP Projectbooth, kami tidak hanya menyediakan
-            layanan photobooth biasa. Kami menghadirkan momen, menciptakan
-            kenangan, dan menyulap setiap jepretan jadi cerita. Mulai dari
-            konsep kreatif, properti unik, hingga interaksi seru di booth, semua
-            kami rancang untuk bikin acara kamu makin hidup.
+            &quot;Gak Cuma Poto&quot; adalah lebih dari sekadar tagline—ini
+            adalah janji pengalaman. Di BP Projectbooth, kami tidak hanya
+            menyediakan layanan photobooth biasa. Kami menghadirkan momen,
+            menciptakan kenangan, dan menyulap setiap jepretan jadi cerita.
+            Mulai dari konsep kreatif, properti unik, hingga interaksi seru di
+            booth, semua kami rancang untuk bikin acara kamu makin hidup.
           </motion.p>
 
           {/* Caption */}
