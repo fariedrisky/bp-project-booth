@@ -334,7 +334,7 @@ export default function Bp() {
                     "Halo, saya tertarik dengan bisnis photobox BP Projectbooth dan ingin konsultasi lebih lanjut.",
                   );
                   window.open(
-                    `https://wa.me/6285157316767?text=${whatsappMessage}`,
+                    `https://wa.me/6285370530813?text=${whatsappMessage}`,
                     "_blank",
                   );
                 }}
