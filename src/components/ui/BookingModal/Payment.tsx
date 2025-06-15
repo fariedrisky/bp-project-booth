@@ -90,6 +90,25 @@ export default function Payment({
     <>
       <div className="space-y-1">
         <Label className="block text-sm font-medium text-gray-700">
+          Kode Promo (opsional)
+        </Label>
+        <Input
+          name="promoCode"
+          value={formData.promoCode}
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              promoCode: e.target.value.toUpperCase().trim(),
+            }))
+          }
+          placeholder="Masukkan kode promo"
+          className="h-9 w-full border border-gray-200"
+          disabled={isSubmitting}
+        />
+      </div>
+      
+      <div className="space-y-1">
+        <Label className="block text-sm font-medium text-gray-700">
           Jenis Pembayaran
         </Label>
         <Select

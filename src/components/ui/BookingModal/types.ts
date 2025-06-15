@@ -10,6 +10,7 @@ export interface FormData {
     paymentType: string;
     dpAmount: string;
     templateOption: string;
+    promoCode: string;
 }
 
 export interface BookingModalProps {

@@ -20,6 +20,7 @@ const initialFormData: FormData = {
   paymentType: "",
   dpAmount: "",
   templateOption: "",
+  promoCode: "",
 };
 
 export default function BookingModal({

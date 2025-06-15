@@ -85,6 +85,8 @@ Template: ${data.templateOption || "-"}
 
 Jenis Pembayaran: ${data.paymentType === "full" ? "Pembayaran Penuh (Full)" : "Uang Muka (DP)"}
 ${priceInfo}
+
+*Kode Promo:* ${data.promoCode || "-"}
 `);
 };
 
