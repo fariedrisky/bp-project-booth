@@ -5,7 +5,7 @@
 // TODO: ganti dengan URL publik logo kamu — HARUS format PNG (bukan SVG!).
 // Banyak email client (Outlook, sebagian proxy gambar Gmail) tidak render
 // SVG di dalam email sama sekali, hasilnya gambar kosong/patah.
-const LOGO_URL = "https://bp-projectbooth.com/assets/images/logo.png";
+const LOGO_URL = "https://bp-projectbooth.com/assets/images/logo-email.png";
 
 // Font stack: "Google Sans" & "Inter" ditulis duluan untuk client yang
 // kebetulan punya font itu terpasang di sistem (mis. Android tertentu),
