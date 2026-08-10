@@ -3,6 +3,7 @@ import { MenuItem } from "./types";
 const menu: MenuItem[] = [
     { url: "/", label: "Home" },
     { url: "/about-us", label: "About Us" },
+    { url: "/careers", label: "Careers" },
     {
         url: "/services",
         label: "Services",

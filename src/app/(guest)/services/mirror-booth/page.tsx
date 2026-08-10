@@ -1,4 +1,4 @@
-import MirrorBooth from "@/components/pages/guest/03-Services/pages/02-MirrorBooth";
+import MirrorBooth from "@/components/pages/guest/04-Services/pages/02-MirrorBooth";
 
 export default function Page() {
   return <MirrorBooth />;
