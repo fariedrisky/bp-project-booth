@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
         const transporter = getTransporter();
         const fromAddress = process.env.SMTP_FROM ?? process.env.SMTP_USER!;
         // HR notification address — override via HR_EMAIL env var if needed
-        const hrAddress = process.env.HR_EMAIL || "fdfilters@gmail.com";
+        const hrAddress = process.env.HR_EMAIL
 
         const applicantData = {
             fullName,
