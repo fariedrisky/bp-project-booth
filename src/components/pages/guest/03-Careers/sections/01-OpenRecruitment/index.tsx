@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { fadeInUp, staggerContainer } from "@/animation/motion";
 import ApplyModal from "@/components/ui/ApplyModal";
 import VacancyCard, { VacancyType } from "@/components/ui/VacancyCard";
 
@@ -9,6 +11,7 @@ const vacancies: VacancyType[] = [
     id: "event-crew",
     title: "EVENT CREW",
     employmentType: "Freelance",
+    image: "/assets/images/careers/crew-event.png",
     qualifications: [
       "Pria/Wanita usia 18–25 tahun",
       "Berpenampilan menarik dan memiliki sikap yang baik",
@@ -35,26 +38,38 @@ export default function OpenRecruitment() {
 
   return (
     <>
-      <section className="py-16 text-center">
-        <h2 className="font-serif text-3xl font-bold text-gray-900">
-          Open Recruitment
-        </h2>
-        <p className="mx-auto mt-2 max-w-xl text-sm text-gray-500">
-          Kami sedang membuka kesempatan untuk bergabung bersama tim kami. Yuk,
-          jadi bagian dari perjalanan kami.
-        </p>
+      <motion.section
+        className="py-16 text-center"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={staggerContainer}
+      >
+        <motion.div variants={fadeInUp}>
+          <h2 className="font-serif text-3xl font-bold text-gray-900">
+            Open Recruitment
+          </h2>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-gray-500">
+            Kami sedang membuka kesempatan untuk bergabung bersama tim kami.
+            Yuk, jadi bagian dari perjalanan kami.
+          </p>
+        </motion.div>
 
-        <div className="mx-auto mt-10 flex max-w-5xl flex-wrap justify-center gap-6 px-4">
+        <motion.div
+          className="mx-auto mt-10 flex max-w-5xl flex-wrap justify-center gap-6 px-4"
+          variants={staggerContainer}
+        >
           {vacancies.map((vacancy) => (
-            <VacancyCard
+            <motion.div
               key={vacancy.id}
-              vacancy={vacancy}
-              onApply={handleApply}
+              variants={fadeInUp}
               className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
-            />
+            >
+              <VacancyCard vacancy={vacancy} onApply={handleApply} />
+            </motion.div>
           ))}
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
 
       <ApplyModal
         isOpen={isModalOpen}

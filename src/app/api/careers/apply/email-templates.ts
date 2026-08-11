@@ -35,10 +35,61 @@ const CONTACT = {
     tiktokHref: "https://www.tiktok.com/@bp.projectbooth",
 };
 
+const GENDER_LABELS: Record<string, string> = {
+    male: "Pria",
+    female: "Wanita",
+};
+
+const EDUCATION_LABELS: Record<string, string> = {
+    sd: "SD / Sederajat",
+    smp: "SMP / Sederajat",
+    sma: "SMA / SMK / Sederajat",
+    d3: "D3",
+    s1: "S1",
+    s2: "S2",
+    s3: "S3",
+};
+
+function formatDateID(isoDate: string): string {
+    const date = new Date(isoDate);
+    if (Number.isNaN(date.getTime())) return isoDate;
+    return new Intl.DateTimeFormat("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    }).format(date);
+}
+
+interface WorkExperienceInput {
+    companyName: string;
+    position: string;
+    jobDescription: string;
+    startYear: string;
+    endYear: string;
+    isCurrent: boolean;
+}
+
+function formatWorkExperiences(
+    hasNoWorkExperience: boolean,
+    workExperiences: WorkExperienceInput[],
+): string {
+    if (hasNoWorkExperience || workExperiences.length === 0) {
+        return "Belum memiliki pengalaman kerja";
+    }
+
+    return workExperiences
+        .map((exp, idx) => {
+            const period = `${exp.startYear} - ${exp.isCurrent ? "Sekarang" : exp.endYear}`;
+            return `${idx + 1}. <strong>${exp.position}</strong> di ${exp.companyName} (${period})<br/>&nbsp;&nbsp;&nbsp;Tugas: ${exp.jobDescription}`;
+        })
+        .join("<br/><br/>");
+}
+
 interface DetailRow {
     label: string;
     value: string;
     isLink?: boolean;
+    isHtml?: boolean;
 }
 
 function renderDetailsTable(rows: DetailRow[]): string {
@@ -48,10 +99,10 @@ function renderDetailsTable(rows: DetailRow[]): string {
             .map(
                 (row) => `
         <tr>
-          <td style="padding: 12px 0; border-bottom: 1px solid ${COLORS.border}; font-size: 14px; font-family: ${FONT_STACK}; color: ${COLORS.textMuted}; width: 40%; vertical-align: top;">
+          <td style="padding: 12px 0; border-bottom: 1px solid ${COLORS.border}; font-size: 14px; font-family: ${FONT_STACK}; color: ${COLORS.textMuted}; width: 35%; vertical-align: top;">
             ${row.label}
           </td>
-          <td style="padding: 12px 0; border-bottom: 1px solid ${COLORS.border}; font-size: 14px; font-family: ${FONT_STACK}; color: ${COLORS.textPrimary}; font-weight: 600; vertical-align: top;">
+          <td style="padding: 12px 0; border-bottom: 1px solid ${COLORS.border}; font-size: 14px; font-family: ${FONT_STACK}; color: ${COLORS.textPrimary}; font-weight: ${row.isHtml ? 400 : 600}; vertical-align: top;">
             ${row.isLink
                         ? `<a href="${row.value}" style="color: ${COLORS.accent}; text-decoration: underline; word-break: break-all;">${row.value}</a>`
                         : row.value
@@ -119,14 +170,14 @@ function renderLayout(opts: {
             <!-- Header / Logo -->
             <tr>
               <td style="padding: 32px 32px 16px; text-align: center;">
-                <img src="${LOGO_URL}" alt="BP Project Booth" width="140" style="display: inline-block; max-width: 140px; height: auto;" />
+                <img src="${LOGO_URL}" alt="BP Project Booth" width="140" height="74" style="display: inline-block; max-width: 140px; height: auto;" />
               </td>
             </tr>
 
             <!-- Accent divider -->
             <tr>
               <td style="padding: 0 32px;">
-                <div style="height: 3px; background-color: ${COLORS.footerBg};"></div>
+                <div style="height: 3px; background-color: ${COLORS.accent};"></div>
               </td>
             </tr>
 
@@ -154,13 +205,57 @@ function renderLayout(opts: {
   `;
 }
 
-export function getApplicantConfirmationEmail(data: {
+interface ApplicantEmailData {
     fullName: string;
+    dateOfBirth: string;
+    gender: string;
+    lastEducation: string;
+    isCurrentlyStudying: boolean;
+    currentStudyProgram: string;
+    hasNoWorkExperience: boolean;
+    workExperiences: WorkExperienceInput[];
     email: string;
     phoneNumber: string;
-    cvLink: string;
     position: string;
-}): { subject: string; html: string } {
+}
+
+function buildDetailRows(data: ApplicantEmailData, positionLabel: string): DetailRow[] {
+    const rows: DetailRow[] = [
+        { label: "Posisi Dilamar", value: positionLabel },
+        { label: "Nama Lengkap", value: data.fullName },
+        { label: "Tanggal Lahir", value: formatDateID(data.dateOfBirth) },
+        { label: "Jenis Kelamin", value: GENDER_LABELS[data.gender] ?? data.gender },
+        {
+            label: "Pendidikan Terakhir",
+            value: EDUCATION_LABELS[data.lastEducation] ?? data.lastEducation,
+        },
+    ];
+
+    if (data.isCurrentlyStudying) {
+        rows.push({
+            label: "Sedang Studi",
+            value: data.currentStudyProgram || "-",
+        });
+    }
+
+    rows.push({
+        label: "Pengalaman Kerja",
+        value: formatWorkExperiences(
+            data.hasNoWorkExperience,
+            data.workExperiences,
+        ),
+        isHtml: true,
+    });
+
+    rows.push({ label: "Email", value: data.email });
+    rows.push({ label: "Nomor Telepon (WhatsApp)", value: data.phoneNumber });
+
+    return rows;
+}
+
+export function getApplicantConfirmationEmail(
+    data: ApplicantEmailData,
+): { subject: string; html: string } {
     const positionLabel = data.position || "posisi yang tersedia";
 
     const bodyHtml = `
@@ -173,13 +268,7 @@ export function getApplicantConfirmationEmail(data: {
       dengan detail sebagai berikut:
     </p>
 
-    ${renderDetailsTable([
-        { label: "Posisi Dilamar", value: positionLabel },
-        { label: "Nama Lengkap", value: data.fullName },
-        { label: "Email", value: data.email },
-        { label: "Nomor Telepon (WhatsApp)", value: data.phoneNumber },
-        { label: "Link CV", value: data.cvLink, isLink: true },
-    ])}
+    ${renderDetailsTable(buildDetailRows(data, positionLabel))}
 
     <p style="margin: 12px 0; font-size: 14px; line-height: 1.6; font-family: ${FONT_STACK}; color: ${COLORS.textPrimary};">
       Tim HR kami akan meninjau lamaran Anda dan akan menghubungi Anda melalui
@@ -200,13 +289,13 @@ export function getApplicantConfirmationEmail(data: {
     };
 }
 
-export function getHrNotificationEmail(data: {
-    fullName: string;
-    email: string;
-    phoneNumber: string;
-    cvLink: string;
+interface HrEmailData extends Omit<ApplicantEmailData, "position"> {
     position?: string;
-}): { subject: string; html: string } {
+}
+
+export function getHrNotificationEmail(
+    data: HrEmailData,
+): { subject: string; html: string } {
     const positionLabel = data.position || "-";
 
     const bodyHtml = `
@@ -214,13 +303,7 @@ export function getHrNotificationEmail(data: {
       Ada lamaran baru masuk melalui form Open Recruitment:
     </p>
 
-    ${renderDetailsTable([
-        { label: "Posisi", value: positionLabel },
-        { label: "Nama Lengkap", value: data.fullName },
-        { label: "Email", value: data.email },
-        { label: "Nomor Telepon (WhatsApp)", value: data.phoneNumber },
-        { label: "Link CV", value: data.cvLink, isLink: true },
-    ])}
+    ${renderDetailsTable(buildDetailRows({ ...data, position: positionLabel }, positionLabel))}
 
     <p style="margin: 12px 0; font-size: 13px; line-height: 1.6; font-family: ${FONT_STACK}; color: ${COLORS.textMuted};">
       Balas email ini untuk menghubungi pelamar langsung.

@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import {
   Card,
   CardContent,
@@ -14,6 +15,7 @@ export interface VacancyType {
   title: string;
   employmentType?: string; // e.g. "Freelance", "Full-time"
   qualifications: string[];
+  image?: string;
 }
 
 interface VacancyCardProps {
@@ -34,6 +36,18 @@ export const VacancyCard: React.FC<VacancyCardProps> = ({
         className,
       )}
     >
+      {vacancy.image && (
+        <div className="relative aspect-[16/9] w-full overflow-hidden">
+          <Image
+            src={vacancy.image}
+            alt={vacancy.title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+        </div>
+      )}
+
       <CardHeader className="p-4 pb-0 sm:p-6 sm:pb-0">
         {vacancy.employmentType && (
           <span className="mb-2 inline-block w-fit rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-medium text-accent">
