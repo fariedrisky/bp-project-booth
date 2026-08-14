@@ -31,8 +31,8 @@ export const SpinViewer = () => {
                 <Image
                   src={src}
                   alt={`Client ${index + 1}`}
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  style={{ objectFit: "cover" }}
                   className="rounded-lg border border-gray-400 shadow-lg"
                 />
               </div>

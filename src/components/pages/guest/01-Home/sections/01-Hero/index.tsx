@@ -139,7 +139,7 @@ export default function Hero() {
       <div className="pointer-events-none absolute inset-0 z-10 bg-[url('/assets/images/noise-pattern.png')] opacity-30 mix-blend-soft-light"></div>
 
       {/* Animation keyframes */}
-      <style jsx global>{`
+      <style>{`
         @keyframes slowZoom {
           from {
             transform: scale(1.05);

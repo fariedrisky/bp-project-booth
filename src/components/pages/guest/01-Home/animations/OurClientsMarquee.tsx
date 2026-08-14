@@ -18,7 +18,7 @@ export default function OurClientsMarquee() {
                 src={src}
                 height={100}
                 alt={`Client ${index + 1}`}
-                objectFit="contain"
+                style={{ objectFit: "contain" }}
                 loading="lazy"
               />
             </div>

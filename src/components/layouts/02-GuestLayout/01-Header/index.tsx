@@ -64,6 +64,7 @@ export default function Header() {
                 alt="logo"
                 width={120}
                 className="flex-shrink-0"
+                data-scroll-behavior="smooth"
               />
             </Link>
           </motion.div>

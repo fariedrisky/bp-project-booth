@@ -131,6 +131,7 @@ export default function Introducing() {
             src={logowhite}
             alt="BP Project Booth"
             width={150}
+            loading="eager"
             className="mx-auto sm:w-[200px]"
           />
         </motion.div>

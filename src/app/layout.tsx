@@ -70,7 +70,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" dir="ltr">
+    <html lang="id" dir="ltr" data-scroll-behavior="smooth">
       <head>
         <meta
           name="viewport"
@@ -78,7 +78,9 @@ export default function RootLayout({
         />
         <link rel="canonical" href="https://bp-projectbooth.com" />
       </head>
-      <body className={`${plus_jakarta_sans.className} ${ibarra_real_nova.variable}`}>
+      <body
+        className={`${plus_jakarta_sans.className} ${ibarra_real_nova.variable}`}
+      >
         <Toaster position="top-center" />
         <script
           type="application/ld+json"
