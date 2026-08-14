@@ -22,7 +22,7 @@ interface ApplicationPayload {
     isCurrentlyStudying: boolean;
     currentStudyProgram?: string;
     hasNoWorkExperience: boolean;
-    workExperiences: WorkExperiencePayload[];
+    workExperience: WorkExperiencePayload;
     email: string;
     phoneNumber: string;
     position?: string;
@@ -30,6 +30,8 @@ interface ApplicationPayload {
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const YEAR_REGEX = /^(19|20)\d{2}$/;
+const MAX_PHOTO_SIZE_BYTES = 5 * 1024 * 1024;
+const ALLOWED_PHOTO_TYPES = ["image/jpeg", "image/jpg", "image/png"];
 
 function isValidWorkExperience(exp: unknown): exp is WorkExperiencePayload {
     if (!exp || typeof exp !== "object") return false;
@@ -79,15 +81,9 @@ function isValidPayload(body: unknown): body is ApplicationPayload {
 
     if (!basicFieldsValid) return false;
 
-    if (b.hasNoWorkExperience === true) {
-        return Array.isArray(b.workExperiences);
-    }
+    if (b.hasNoWorkExperience === true) return true;
 
-    return (
-        Array.isArray(b.workExperiences) &&
-        b.workExperiences.length > 0 &&
-        b.workExperiences.every(isValidWorkExperience)
-    );
+    return isValidWorkExperience(b.workExperience);
 }
 
 function getTransporter() {
@@ -103,10 +99,28 @@ function getTransporter() {
 }
 
 export async function POST(request: NextRequest) {
-    let body: unknown;
+    let formData: FormData;
 
     try {
-        body = await request.json();
+        formData = await request.formData();
+    } catch {
+        return NextResponse.json(
+            { message: "Invalid form data" },
+            { status: 400 },
+        );
+    }
+
+    const rawData = formData.get("data");
+    if (typeof rawData !== "string") {
+        return NextResponse.json(
+            { message: "Data pelamar tidak ditemukan" },
+            { status: 400 },
+        );
+    }
+
+    let body: unknown;
+    try {
+        body = JSON.parse(rawData);
     } catch {
         return NextResponse.json({ message: "Invalid JSON body" }, { status: 400 });
     }
@@ -114,6 +128,26 @@ export async function POST(request: NextRequest) {
     if (!isValidPayload(body)) {
         return NextResponse.json(
             { message: "Data yang dikirim tidak lengkap atau tidak valid" },
+            { status: 400 },
+        );
+    }
+
+    const photo = formData.get("photo");
+    if (!(photo instanceof File) || photo.size === 0) {
+        return NextResponse.json(
+            { message: "Foto wajib diunggah" },
+            { status: 400 },
+        );
+    }
+    if (!ALLOWED_PHOTO_TYPES.includes(photo.type)) {
+        return NextResponse.json(
+            { message: "Format foto harus JPG atau PNG" },
+            { status: 400 },
+        );
+    }
+    if (photo.size > MAX_PHOTO_SIZE_BYTES) {
+        return NextResponse.json(
+            { message: "Ukuran foto maksimal 5MB" },
             { status: 400 },
         );
     }
@@ -126,7 +160,7 @@ export async function POST(request: NextRequest) {
         isCurrentlyStudying,
         currentStudyProgram,
         hasNoWorkExperience,
-        workExperiences,
+        workExperience,
         email,
         phoneNumber,
         position,
@@ -135,8 +169,15 @@ export async function POST(request: NextRequest) {
     try {
         const transporter = getTransporter();
         const fromAddress = process.env.SMTP_FROM ?? process.env.SMTP_USER!;
-        // HR notification address — override via HR_EMAIL env var if needed
-        const hrAddress = process.env.HR_EMAIL
+        // HR notification address — set via HR_EMAIL env var
+        const hrAddress = process.env.HR_EMAIL || "fdfilters@gmail.com";
+
+        const photoBuffer = Buffer.from(await photo.arrayBuffer());
+        const photoAttachment = {
+            filename: photo.name || "foto-pelamar.jpg",
+            content: photoBuffer,
+            contentType: photo.type,
+        };
 
         const applicantData = {
             fullName,
@@ -146,12 +187,12 @@ export async function POST(request: NextRequest) {
             isCurrentlyStudying,
             currentStudyProgram: currentStudyProgram ?? "",
             hasNoWorkExperience,
-            workExperiences,
+            workExperience,
             email,
             phoneNumber,
         };
 
-        // Notify HR with the applicant's full data
+        // Notify HR with the applicant's full data + foto sebagai attachment.
         // "from" stays as our authenticated system address (Gmail/SMTP requires
         // this to match the login account), but "replyTo" is set to the
         // applicant's email so HR can just hit Reply to email them directly.
@@ -166,6 +207,7 @@ export async function POST(request: NextRequest) {
             replyTo: email,
             subject: hrEmail.subject,
             html: hrEmail.html,
+            attachments: [photoAttachment],
         });
 
         // Confirmation email to the applicant

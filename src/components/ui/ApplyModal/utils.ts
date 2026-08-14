@@ -3,6 +3,8 @@ import { ApplicationFormData, ApplicationFormErrors } from "./types";
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^(\+62|62|0)8[1-9][0-9]{6,10}$/;
 const YEAR_REGEX = /^(19|20)\d{2}$/;
+const MAX_PHOTO_SIZE_MB = 5;
+const ALLOWED_PHOTO_TYPES = ["image/jpeg", "image/jpg", "image/png"];
 
 export function validateApplicationForm(
     data: ApplicationFormData,
@@ -27,6 +29,14 @@ export function validateApplicationForm(
         errors.gender = "Jenis kelamin wajib dipilih";
     }
 
+    if (!data.photo) {
+        errors.photo = "Foto ukuran postcard 2x3 wajib diunggah";
+    } else if (!ALLOWED_PHOTO_TYPES.includes(data.photo.type)) {
+        errors.photo = "Format foto harus JPG atau PNG";
+    } else if (data.photo.size > MAX_PHOTO_SIZE_MB * 1024 * 1024) {
+        errors.photo = `Ukuran foto maksimal ${MAX_PHOTO_SIZE_MB}MB`;
+    }
+
     // Pendidikan
     if (!data.lastEducation) {
         errors.lastEducation = "Pendidikan terakhir wajib dipilih";
@@ -36,27 +46,23 @@ export function validateApplicationForm(
         errors.currentStudyProgram = "Program studi/jurusan wajib diisi";
     }
 
-    // Pengalaman kerja: kalau bukan "tidak ada pengalaman", minimal satu
-    // entri harus lengkap (nama tempat kerja, posisi, deskripsi tugas,
-    // tahun mulai, dan tahun selesai — kecuali masih bekerja di sana)
+    // Pengalaman kerja: kalau bukan "tidak ada pengalaman", entri (tunggal)
+    // harus lengkap (nama tempat kerja, posisi, deskripsi tugas, tahun
+    // mulai, dan tahun selesai — kecuali masih bekerja di sana)
     if (!data.hasNoWorkExperience) {
-        const isIncomplete =
-            data.workExperiences.length === 0 ||
-            data.workExperiences.some((exp) => {
-                const missingBasicFields =
-                    !exp.companyName.trim() ||
-                    !exp.position.trim() ||
-                    !exp.jobDescription.trim();
+        const exp = data.workExperience;
+        const missingBasicFields =
+            !exp.companyName.trim() ||
+            !exp.position.trim() ||
+            !exp.jobDescription.trim();
 
-                const invalidStartYear = !YEAR_REGEX.test(exp.startYear.trim());
-                const invalidEndYear =
-                    !exp.isCurrent && !YEAR_REGEX.test(exp.endYear.trim());
+        const invalidStartYear = !YEAR_REGEX.test(exp.startYear.trim());
+        const invalidEndYear =
+            !exp.isCurrent && !YEAR_REGEX.test(exp.endYear.trim());
 
-                return missingBasicFields || invalidStartYear || invalidEndYear;
-            });
-        if (isIncomplete) {
-            errors.workExperiences =
-                'Lengkapi semua pengalaman kerja (termasuk periode tahun), atau centang "Tidak memiliki pengalaman"';
+        if (missingBasicFields || invalidStartYear || invalidEndYear) {
+            errors.workExperience =
+                'Lengkapi pengalaman kerja (termasuk periode tahun), atau centang "Tidak memiliki pengalaman"';
         }
     }
 

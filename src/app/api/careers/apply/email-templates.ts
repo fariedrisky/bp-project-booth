@@ -60,6 +60,25 @@ function formatDateID(isoDate: string): string {
     }).format(date);
 }
 
+function calculateAge(isoDate: string): number | null {
+    const dob = new Date(isoDate);
+    if (Number.isNaN(dob.getTime())) return null;
+
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+        age--;
+    }
+    return age;
+}
+
+function formatDateWithAge(isoDate: string): string {
+    const formatted = formatDateID(isoDate);
+    const age = calculateAge(isoDate);
+    return age !== null ? `${formatted} (${age} Tahun)` : formatted;
+}
+
 interface WorkExperienceInput {
     companyName: string;
     position: string;
@@ -69,20 +88,17 @@ interface WorkExperienceInput {
     isCurrent: boolean;
 }
 
-function formatWorkExperiences(
+function formatWorkExperience(
     hasNoWorkExperience: boolean,
-    workExperiences: WorkExperienceInput[],
+    workExperience: WorkExperienceInput,
 ): string {
-    if (hasNoWorkExperience || workExperiences.length === 0) {
+    if (hasNoWorkExperience) {
         return "Belum memiliki pengalaman kerja";
     }
 
-    return workExperiences
-        .map((exp, idx) => {
-            const period = `${exp.startYear} - ${exp.isCurrent ? "Sekarang" : exp.endYear}`;
-            return `${idx + 1}. <strong>${exp.position}</strong> di ${exp.companyName} (${period})<br/>&nbsp;&nbsp;&nbsp;Tugas: ${exp.jobDescription}`;
-        })
-        .join("<br/><br/>");
+    const period = `${workExperience.startYear} - ${workExperience.isCurrent ? "Sekarang" : workExperience.endYear
+        }`;
+    return `<strong>${workExperience.position}</strong> di ${workExperience.companyName} (${period})<br/>&nbsp;&nbsp;&nbsp;Tugas: ${workExperience.jobDescription}`;
 }
 
 interface DetailRow {
@@ -213,7 +229,7 @@ interface ApplicantEmailData {
     isCurrentlyStudying: boolean;
     currentStudyProgram: string;
     hasNoWorkExperience: boolean;
-    workExperiences: WorkExperienceInput[];
+    workExperience: WorkExperienceInput;
     email: string;
     phoneNumber: string;
     position: string;
@@ -223,7 +239,7 @@ function buildDetailRows(data: ApplicantEmailData, positionLabel: string): Detai
     const rows: DetailRow[] = [
         { label: "Posisi Dilamar", value: positionLabel },
         { label: "Nama Lengkap", value: data.fullName },
-        { label: "Tanggal Lahir", value: formatDateID(data.dateOfBirth) },
+        { label: "Tanggal Lahir", value: formatDateWithAge(data.dateOfBirth) },
         { label: "Jenis Kelamin", value: GENDER_LABELS[data.gender] ?? data.gender },
         {
             label: "Pendidikan Terakhir",
@@ -240,9 +256,9 @@ function buildDetailRows(data: ApplicantEmailData, positionLabel: string): Detai
 
     rows.push({
         label: "Pengalaman Kerja",
-        value: formatWorkExperiences(
+        value: formatWorkExperience(
             data.hasNoWorkExperience,
-            data.workExperiences,
+            data.workExperience,
         ),
         isHtml: true,
     });

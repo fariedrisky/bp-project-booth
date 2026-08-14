@@ -25,15 +25,16 @@ export interface ApplicationFormData {
     fullName: string;
     dateOfBirth: string; // ISO date string, dari <input type="date">
     gender: Gender;
+    photo: File | null; // foto ukuran postcard 2x3
 
     // Pendidikan
     lastEducation: LastEducation;
     isCurrentlyStudying: boolean;
     currentStudyProgram: string; // diisi kalau isCurrentlyStudying true
 
-    // Pengalaman kerja
+    // Pengalaman kerja — hanya 1 entri (yang terakhir/paling relevan)
     hasNoWorkExperience: boolean;
-    workExperiences: WorkExperienceEntry[];
+    workExperience: WorkExperienceEntry;
 
     // Kontak
     email: string;
@@ -45,9 +46,10 @@ export type ApplicationFormErrors = Partial<
         | "fullName"
         | "dateOfBirth"
         | "gender"
+        | "photo"
         | "lastEducation"
         | "currentStudyProgram"
-        | "workExperiences"
+        | "workExperience"
         | "email"
         | "phoneNumber",
         string
@@ -55,8 +57,8 @@ export type ApplicationFormErrors = Partial<
 >;
 
 export const GENDER_OPTIONS: { value: Gender; label: string }[] = [
-    { value: "male", label: "Laki-laki" },
-    { value: "female", label: "Perempuan" },
+    { value: "male", label: "Pria" },
+    { value: "female", label: "Wanita" },
 ];
 
 export const EDUCATION_OPTIONS: { value: LastEducation; label: string }[] = [
@@ -71,7 +73,7 @@ export const EDUCATION_OPTIONS: { value: LastEducation; label: string }[] = [
 
 export function createEmptyExperience(): WorkExperienceEntry {
     return {
-        id: Math.random().toString(36).slice(2),
+        id: "work-experience",
         companyName: "",
         position: "",
         jobDescription: "",
