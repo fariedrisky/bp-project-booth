@@ -1,6 +1,7 @@
 "use client";
+
 import Image from "next/image";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { heroBackground } from "@/data/images/heroImages";
 import { logowhite } from "@/data/images/logo";
@@ -10,12 +11,11 @@ import {
 } from "@/animation/motion";
 
 // Constants
-const TYPING_SPEED = 25; // milliseconds per character
-const PARAGRAPH_PAUSE = 800; // milliseconds between paragraphs
+const TYPING_SPEED = 25;
+const PARAGRAPH_PAUSE = 800;
 
-// TypeWriter Animation Component
-const TypewriterAnimation = (): JSX.Element => {
-  // Content paragraphs - defined with useMemo to fix ESLint warning
+// Typewriter Animation Component
+const TypewriterAnimation = () => {
   const paragraphs = useMemo(
     () => [
       "Bp Project Booth adalah perusahaan yang bergerak di bidang Photo Booth dengan memanfaatkan teknologi modern. Kami hadir untuk memberikan pengalaman berbeda di setiap acara. Fokus kami adalah menjaga setiap detail agar menciptakan momen berkesan.",
@@ -26,20 +26,19 @@ const TypewriterAnimation = (): JSX.Element => {
     [],
   );
 
-  // State management
   const [displayedText, setDisplayedText] = useState<string[]>(
     Array(paragraphs.length).fill(""),
   );
+
   const [currentParagraphIndex, setCurrentParagraphIndex] = useState<number>(0);
+
   const [currentCharIndex, setCurrentCharIndex] = useState<number>(0);
+
   const [isComplete, setIsComplete] = useState<boolean>(false);
 
-  // Typewriter animation effect
   useEffect(() => {
-    // Stop if animation is complete
     if (isComplete) return;
 
-    // Check if all paragraphs are complete
     if (currentParagraphIndex >= paragraphs.length) {
       setIsComplete(true);
       return;
@@ -47,42 +46,42 @@ const TypewriterAnimation = (): JSX.Element => {
 
     const currentParagraph = paragraphs[currentParagraphIndex];
 
-    // Handle typing characters within current paragraph
     if (currentCharIndex < currentParagraph.length) {
       const timer = setTimeout(() => {
         setDisplayedText((prevText) => {
           const newText = [...prevText];
+
           newText[currentParagraphIndex] = currentParagraph.substring(
             0,
             currentCharIndex + 1,
           );
+
           return newText;
         });
+
         setCurrentCharIndex((prevIndex) => prevIndex + 1);
       }, TYPING_SPEED);
 
       return () => clearTimeout(timer);
     }
-    // Handle moving to next paragraph
-    else {
-      const pauseTimer = setTimeout(() => {
-        setCurrentParagraphIndex((prevIndex) => prevIndex + 1);
-        setCurrentCharIndex(0);
-      }, PARAGRAPH_PAUSE);
 
-      return () => clearTimeout(pauseTimer);
-    }
+    const pauseTimer = setTimeout(() => {
+      setCurrentParagraphIndex((prevIndex) => prevIndex + 1);
+      setCurrentCharIndex(0);
+    }, PARAGRAPH_PAUSE);
+
+    return () => clearTimeout(pauseTimer);
   }, [currentParagraphIndex, currentCharIndex, isComplete, paragraphs]);
 
-  // Render paragraphs with typewriter effect
   return (
     <div className="max-w-5xl space-y-4 text-justify text-base leading-relaxed sm:space-y-6 sm:text-lg lg:text-xl">
       {displayedText.map((text, index) => (
         <div key={index} className="overflow-hidden">
           <p className="whitespace-pre-wrap px-1 sm:px-0">
             {text}
+
             {index === currentParagraphIndex && !isComplete && (
-              <span className="animate-blink inline-block h-5 w-1 bg-secondary"></span>
+              <span className="animate-blink inline-block h-5 w-1 bg-secondary" />
             )}
           </p>
         </div>
@@ -92,7 +91,7 @@ const TypewriterAnimation = (): JSX.Element => {
 };
 
 // Main Component
-export default function Introducing(): JSX.Element {
+export default function Introducing() {
   return (
     <section
       id="bp-section"
@@ -108,8 +107,8 @@ export default function Introducing(): JSX.Element {
         <Image
           src={heroBackground}
           alt="Hero Background"
-          layout="fill"
-          objectFit="cover"
+          fill
+          style={{ objectFit: "cover" }}
           priority
           className="opacity-20 mix-blend-lighten"
         />
@@ -143,16 +142,18 @@ export default function Introducing(): JSX.Element {
       </motion.div>
 
       {/* Cursor Blink Animation */}
-      <style jsx global>{`
+      <style>{`
         @keyframes blink {
           0%,
           100% {
             opacity: 1;
           }
+
           50% {
             opacity: 0;
           }
         }
+
         .animate-blink {
           animation: blink 0.8s infinite;
         }
