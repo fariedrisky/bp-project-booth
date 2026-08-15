@@ -34,7 +34,7 @@ export default function Spin360() {
           <h2 className="font-serif text-2xl font-bold md:text-3xl">
             Spin 360°
           </h2>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-white/70">
             Booth terpopuler dengan fitur video 360° menggunakan iPhone dan
             GoPro
           </p>

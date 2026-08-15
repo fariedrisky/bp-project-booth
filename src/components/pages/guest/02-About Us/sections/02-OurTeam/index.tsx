@@ -82,7 +82,7 @@ const OurTeam = () => {
             transition={{ delay: 0.2 }}
           >
             <h3 className="text-lg font-medium">{member.name}</h3>
-            <p className="text-sm text-gray-600">{member.position}</p>
+            <p className="text-sm text-white/70">{member.position}</p>
           </motion.div>
         </CardContent>
       </Card>

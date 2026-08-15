@@ -35,7 +35,7 @@ export default function BasicBooth() {
           <h2 className="font-serif text-2xl font-bold md:text-3xl">
             Basic Booth
           </h2>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-white/70">
             Cocok untuk event besar dan kecil, dengan ukuran foto 2R, 4R, dan
             Polaroid.
           </p>

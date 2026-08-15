@@ -34,7 +34,7 @@ export default function PhoneBooth() {
           <h2 className="font-serif text-2xl font-bold md:text-3xl">
             Phone Booth
           </h2>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-white/70">
             Booth sederhana untuk mengabadikan pesan video
           </p>
         </motion.div>

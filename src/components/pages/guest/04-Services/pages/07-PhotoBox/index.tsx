@@ -34,7 +34,7 @@ export default function PhotoBox() {
           <h2 className="font-serif text-2xl font-bold md:text-3xl">
             Photo Box
           </h2>
-          <p className="mt-2 text-gray-600">Cara Seru Mengabadikan Kenangan</p>
+          <p className="mt-2 text-white/70">Cara Seru Mengabadikan Kenangan</p>
         </motion.div>
 
         <motion.div

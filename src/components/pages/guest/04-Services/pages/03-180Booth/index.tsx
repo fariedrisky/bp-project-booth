@@ -34,7 +34,7 @@ export default function Booth180() {
           <h2 className="font-serif text-2xl font-bold md:text-3xl">
             180° Booth
           </h2>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-white/70">
             Efek foto dengan sudut pandang 180° yang futuristik menggunakan
             multiple kamera
           </p>

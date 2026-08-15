@@ -34,7 +34,7 @@ export default function MirrorBooth() {
           <h2 className="font-serif text-2xl font-bold md:text-3xl">
             Mirror Booth
           </h2>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-white/70">
             Elegan, Interaktif, dan Memorable
           </p>
         </motion.div>

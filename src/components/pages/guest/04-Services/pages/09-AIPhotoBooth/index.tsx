@@ -34,7 +34,7 @@ export default function AIPhotoBooth() {
           <h2 className="font-serif text-2xl font-bold md:text-3xl">
             AI Photobooth
           </h2>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-white/70">
             Pengalaman Foto Interaktif dengan Teknologi AI
           </p>
         </motion.div>
