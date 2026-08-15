@@ -8,21 +8,21 @@ import ApplyModal from "@/components/ui/ApplyModal";
 import VacancyCard, { VacancyType } from "@/components/ui/VacancyCard";
 
 const vacancies: VacancyType[] = [
-  //  {
-  //    id: "event-crew",
-  //    title: "EVENT CREW",
-  //    employmentType: "Freelance",
-  //    image: "/assets/images/careers/crew-event.png",
-  //    qualifications: [
-  //      "Pria/Wanita, usia maksimal 25 tahun",
-  //      "Bersemangat belajar dan siap berkembang bersama",
-  //      "Menyukai dunia event & hospitality",
-  //      "Bertanggung jawab serta mampu bekerja dalam tim",
-  //      "Memiliki kendaraan pribadi (diutamakan dapat mengemudi)",
-  //      "Mampu mengoperasikan komputer/laptop menjadi nilai tambah",
-  //      "Terbuka untuk mahasiswa aktif",
-  //    ],
-  //  },
+  {
+    id: "event-crew",
+    title: "EVENT CREW",
+    employmentType: "Freelance",
+    image: "/assets/images/careers/crew-event.png",
+    qualifications: [
+      "Pria/Wanita, usia maksimal 25 tahun",
+      "Bersemangat belajar dan siap berkembang bersama",
+      "Menyukai dunia event & hospitality",
+      "Bertanggung jawab serta mampu bekerja dalam tim",
+      "Memiliki kendaraan pribadi (diutamakan dapat mengemudi)",
+      "Mampu mengoperasikan komputer/laptop menjadi nilai tambah",
+      "Terbuka untuk mahasiswa aktif",
+    ],
+  },
 ];
 
 export default function OpenRecruitment() {
