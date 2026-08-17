@@ -22,11 +22,14 @@ export default function RecruitmentContent({
 }: RecruitmentContentProps) {
   /*
    * ============================
-   * DATABASE VACANCIES
+   * VACANCIES
    * ============================
    *
-   * Berisi vacancy yang sudah ada
-   * di database.
+   * Data awal berasal dari server.
+   *
+   * Setelah itu seluruh perubahan
+   * create / update / delete
+   * dikelola melalui state lokal.
    */
   const [vacancies, setVacancies] = useState<VacancyType[]>(initialVacancies);
 
@@ -34,10 +37,8 @@ export default function RecruitmentContent({
    * ============================
    * DRAFT VACANCY
    * ============================
-   *
-   * Vacancy baru hanya berada
-   * di state lokal sampai disimpan.
    */
+
   const [draftVacancy, setDraftVacancy] = useState<VacancyType | null>(null);
 
   /*
@@ -82,18 +83,10 @@ export default function RecruitmentContent({
   const handleEdit = (vacancy: VacancyType) => {
     if (!editable) return;
 
-    /*
-     * Tidak boleh edit dua vacancy
-     * sekaligus.
-     */
     if (editingId !== null) {
       return;
     }
 
-    /*
-     * Tidak boleh edit ketika
-     * sedang membuat draft.
-     */
     if (draftVacancy !== null) {
       return;
     }
@@ -112,8 +105,14 @@ export default function RecruitmentContent({
 
   /*
    * ============================
-   * UPDATE EXISTING LOCAL
+   * UPDATE LOCAL
    * ============================
+   *
+   * Dipanggil setiap kali user
+   * mengubah field pada editor.
+   *
+   * Ini membuat state parent
+   * selalu mengikuti editor.
    */
 
   const handleUpdateLocal = (updatedVacancy: VacancyType) => {
@@ -126,26 +125,17 @@ export default function RecruitmentContent({
 
   /*
    * ============================
-   * CREATE DRAFT
+   * CREATE VACANCY
    * ============================
    */
 
   const handleCreateVacancy = () => {
     if (!editable) return;
 
-    /*
-     * Jangan buat draft kedua.
-     */
     if (editingId !== null || draftVacancy !== null) {
       return;
     }
 
-    /*
-     * ID sementara hanya untuk React.
-     *
-     * ID ini BELUM merupakan ID
-     * database.
-     */
     const newVacancy: VacancyType = {
       id: `draft-${Date.now()}`,
       title: "",
@@ -154,23 +144,10 @@ export default function RecruitmentContent({
       qualifications: [""],
     };
 
-    /*
-     * Simpan draft ke state lokal.
-     *
-     * Card editor langsung muncul.
-     */
     setDraftVacancy(newVacancy);
 
-    /*
-     * Tandai draft sebagai
-     * item yang sedang diedit.
-     */
     setEditingId(newVacancy.id);
 
-    /*
-     * Scroll ke draft setelah
-     * React selesai render.
-     */
     requestAnimationFrame(() => {
       setTimeout(() => {
         document
@@ -209,49 +186,18 @@ export default function RecruitmentContent({
    * CREATE SUCCESS
    * ============================
    *
-   * Dipanggil oleh
-   * VacancyInlineEditor setelah
-   * POST /api/vacancies berhasil.
+   * API mengembalikan vacancy
+   * yang benar-benar sudah dibuat
+   * di database.
+   *
+   * Langsung masukkan ke state.
+   * Tidak perlu refresh.
    */
+
   const handleCreateSuccess = (createdVacancy: VacancyType) => {
-    /*
-     * 1. Hapus draft lokal.
-     */
+    setVacancies((current) => [createdVacancy, ...current]);
+
     setDraftVacancy(null);
-
-    /*
-     * 2. Masukkan vacancy hasil API
-     *    ke state database.
-     *
-     *    Karena ini setState React,
-     *    card langsung dirender ulang
-     *    tanpa refresh browser.
-     */
-    setVacancies((current) => {
-      /*
-       * Safety:
-       * Jangan sampai vacancy yang sama
-       * masuk dua kali.
-       */
-      const alreadyExists = current.some(
-        (vacancy) => vacancy.id === createdVacancy.id,
-      );
-
-      if (alreadyExists) {
-        return current.map((vacancy) =>
-          vacancy.id === createdVacancy.id ? createdVacancy : vacancy,
-        );
-      }
-
-      /*
-       * Vacancy baru berada paling atas.
-       */
-      return [createdVacancy, ...current];
-    });
-
-    /*
-     * 3. Keluar dari mode editing.
-     */
     setEditingId(null);
   };
 
@@ -259,6 +205,12 @@ export default function RecruitmentContent({
    * ============================
    * UPDATE SUCCESS
    * ============================
+   *
+   * API mengembalikan data terbaru
+   * dari database.
+   *
+   * Replace vacancy lama
+   * dengan data terbaru.
    */
 
   const handleUpdateSuccess = (updatedVacancy: VacancyType) => {
