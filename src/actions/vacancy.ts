@@ -6,99 +6,95 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const uploadDirectory = path.join(
+    process.cwd(),
+    "public",
+    "assets",
+    "images",
+    "careers",
+);
 
-const ALLOWED_IMAGE_TYPES = [
-    "image/jpeg",
-    "image/png",
-    "image/webp",
-    "image/jpg",
-];
-
-async function saveImage(file: File) {
+async function saveImage(file: File | null) {
     if (!file || file.size === 0) {
         return null;
     }
 
-    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-        throw new Error(
-            "Format image harus JPG, JPEG, PNG, atau WEBP.",
-        );
+    if (!file.type.startsWith("image/")) {
+        throw new Error("File harus berupa gambar.");
     }
 
-    if (file.size > MAX_FILE_SIZE) {
-        throw new Error("Ukuran image maksimal 5 MB.");
+    // Maksimal 5 MB
+    if (file.size > 5 * 1024 * 1024) {
+        throw new Error("Ukuran gambar maksimal 5 MB.");
     }
 
-    const uploadDir = path.join(
-        process.cwd(),
-        "public",
-        "assets",
-        "images",
-        "careers",
-    );
-
-    await fs.mkdir(uploadDir, {
+    await fs.mkdir(uploadDirectory, {
         recursive: true,
     });
 
-    const extension =
-        file.name.split(".").pop()?.toLowerCase() || "jpg";
+    const extension = path.extname(file.name) || ".jpg";
 
-    const fileName = `vacancy-${Date.now()}-${Math.random()
-        .toString(36)
-        .substring(2, 8)}.${extension}`;
+    const safeName = path
+        .basename(file.name, extension)
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
 
-    const filePath = path.join(uploadDir, fileName);
+    const filename = `${Date.now()}-${safeName || "vacancy"}${extension}`;
 
-    const buffer = Buffer.from(
-        await file.arrayBuffer(),
-    );
+    const filePath = path.join(uploadDirectory, filename);
+
+    const buffer = Buffer.from(await file.arrayBuffer());
 
     await fs.writeFile(filePath, buffer);
 
-    return `/assets/images/careers/${fileName}`;
+    return `/assets/images/careers/${filename}`;
+}
+
+function getQualifications(formData: FormData) {
+    return formData
+        .getAll("qualifications")
+        .map((item) => String(item).trim())
+        .filter(Boolean);
 }
 
 export async function createVacancy(formData: FormData) {
-    const title = String(
-        formData.get("title") ?? "",
-    ).trim();
+    const title = String(formData.get("title") ?? "").trim();
 
     const employmentType = String(
         formData.get("employmentType") ?? "",
     ).trim();
 
+    const imageUrl = String(formData.get("image") ?? "").trim();
+
     const imageFile = formData.get("imageFile");
 
-    const qualifications = formData
-        .getAll("qualifications")
-        .map((item) => String(item).trim())
-        .filter(Boolean);
+    const qualifications = getQualifications(formData);
 
     if (!title) {
         throw new Error("Title wajib diisi.");
     }
 
     if (!employmentType) {
-        throw new Error(
-            "Employment type wajib diisi.",
-        );
+        throw new Error("Employment type wajib diisi.");
     }
 
-    if (
-        !(imageFile instanceof File) ||
-        imageFile.size === 0
-    ) {
-        throw new Error("Image wajib diupload.");
+    if (qualifications.length === 0) {
+        throw new Error("Minimal satu kualifikasi wajib diisi.");
     }
 
-    const image = await saveImage(imageFile);
+    let image = imageUrl;
+
+    if (imageFile instanceof File && imageFile.size > 0) {
+        const uploadedImage = await saveImage(imageFile);
+
+        if (uploadedImage) {
+            image = uploadedImage;
+        }
+    }
 
     if (!image) {
-        throw new Error(
-            "Gagal menyimpan image.",
-        );
+        throw new Error("Image wajib diisi.");
     }
 
     await prisma.vacancy.create({
@@ -110,80 +106,67 @@ export async function createVacancy(formData: FormData) {
         },
     });
 
-    revalidatePath("/dashboard/careers");
     revalidatePath("/careers");
+    revalidatePath("/careers/editor");
+    revalidatePath("/dashboard/careers");
 
-    redirect("/dashboard/careers");
+    return {
+        success: true,
+    };
 }
 
 export async function updateVacancy(
     id: number,
     formData: FormData,
 ) {
-    const title = String(
-        formData.get("title") ?? "",
-    ).trim();
+    const title = String(formData.get("title") ?? "").trim();
 
     const employmentType = String(
         formData.get("employmentType") ?? "",
     ).trim();
 
     const currentImage = String(
-        formData.get("currentImage") ?? "",
+        formData.get("image") ?? "",
     ).trim();
 
     const imageFile = formData.get("imageFile");
 
-    const qualifications = formData
-        .getAll("qualifications")
-        .map((item) => String(item).trim())
-        .filter(Boolean);
+    const qualifications = getQualifications(formData);
 
     if (!title) {
         throw new Error("Title wajib diisi.");
     }
 
     if (!employmentType) {
-        throw new Error(
-            "Employment type wajib diisi.",
-        );
+        throw new Error("Employment type wajib diisi.");
     }
 
-    // Ambil data vacancy yang sekarang
-    const existingVacancy =
-        await prisma.vacancy.findUnique({
-            where: {
-                id,
-            },
-        });
+    if (qualifications.length === 0) {
+        throw new Error("Minimal satu kualifikasi wajib diisi.");
+    }
+
+    const existingVacancy = await prisma.vacancy.findUnique({
+        where: {
+            id,
+        },
+    });
 
     if (!existingVacancy) {
-        throw new Error(
-            "Vacancy tidak ditemukan.",
-        );
+        throw new Error("Vacancy tidak ditemukan.");
     }
 
-    let image = currentImage;
+    let image = currentImage || existingVacancy.image || "";
 
-    // Kalau user upload image baru
-    if (
-        imageFile instanceof File &&
-        imageFile.size > 0
-    ) {
-        const newImage =
-            await saveImage(imageFile);
+    if (imageFile instanceof File && imageFile.size > 0) {
+        const uploadedImage = await saveImage(imageFile);
 
-        if (newImage) {
-            image = newImage;
+        if (uploadedImage) {
+            image = uploadedImage;
         }
     }
 
-    // Kalau image lama tidak ada dan tidak ada
-    // image baru
     if (!image) {
-        throw new Error(
-            "Image wajib tersedia.",
-        );
+        throw new Error("Image wajib diisi.");
     }
 
     await prisma.vacancy.update({
@@ -198,51 +181,24 @@ export async function updateVacancy(
         },
     });
 
-    revalidatePath("/dashboard/careers");
-    revalidatePath(
-        `/dashboard/careers/${id}/edit`,
-    );
     revalidatePath("/careers");
+    revalidatePath("/careers/editor");
+    revalidatePath("/dashboard/careers");
 
-    redirect("/dashboard/careers");
+    return {
+        success: true,
+    };
 }
 
-export async function deleteVacancy(
-    id: number,
-) {
-    const vacancy =
-        await prisma.vacancy.findUnique({
-            where: {
-                id,
-            },
-        });
+export async function deleteVacancy(id: number) {
+    const vacancy = await prisma.vacancy.findUnique({
+        where: {
+            id,
+        },
+    });
 
     if (!vacancy) {
-        throw new Error(
-            "Vacancy tidak ditemukan.",
-        );
-    }
-
-    // Hapus file image dari filesystem
-    // hanya jika image merupakan file lokal
-    if (
-        vacancy.image &&
-        vacancy.image.startsWith(
-            "/assets/images/careers/",
-        )
-    ) {
-        const imagePath = path.join(
-            process.cwd(),
-            "public",
-            vacancy.image,
-        );
-
-        try {
-            await fs.unlink(imagePath);
-        } catch {
-            // File mungkin sudah tidak ada.
-            // Tidak perlu menggagalkan proses delete.
-        }
+        throw new Error("Vacancy tidak ditemukan.");
     }
 
     await prisma.vacancy.delete({
@@ -251,6 +207,11 @@ export async function deleteVacancy(
         },
     });
 
-    revalidatePath("/dashboard/careers");
     revalidatePath("/careers");
+    revalidatePath("/careers/editor");
+    revalidatePath("/dashboard/careers");
+
+    return {
+        success: true,
+    };
 }

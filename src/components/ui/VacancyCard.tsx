@@ -22,12 +22,14 @@ interface VacancyCardProps {
   vacancy: VacancyType;
   className?: string;
   onApply: (vacancy: VacancyType) => void;
+  disabled?: boolean;
 }
 
 export const VacancyCard: React.FC<VacancyCardProps> = ({
   vacancy,
   className = "",
   onApply,
+  disabled = false,
 }) => {
   return (
     <Card
@@ -82,6 +84,7 @@ export const VacancyCard: React.FC<VacancyCardProps> = ({
         <Button
           type="button"
           variant="default"
+          disabled={disabled}
           className="h-10 w-full px-6 font-medium shadow-sm !transition-colors !duration-300 hover:bg-accent/90"
           onClick={() => onApply(vacancy)}
         >
