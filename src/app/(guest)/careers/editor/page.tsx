@@ -1,11 +1,9 @@
 import { prisma } from "@/lib/prisma";
+
 import RecruitmentContent from "@/components/pages/guest/03-Careers/sections/01-OpenRecruitment/RecruitmentContent";
 
 export default async function CareersEditor() {
   const vacancies = await prisma.vacancy.findMany({
-    where: {
-      isActive: true,
-    },
     orderBy: {
       createdAt: "desc",
     },

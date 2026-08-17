@@ -2,7 +2,9 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Briefcase, Pencil, Plus } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
+
+import { fadeInUp, staggerContainer } from "@/animation/motion";
 
 import ApplyModal from "@/components/ui/ApplyModal";
 import VacancyCard, { VacancyType } from "@/components/ui/VacancyCard";
@@ -10,37 +12,48 @@ import VacancyCard, { VacancyType } from "@/components/ui/VacancyCard";
 import VacancyInlineEditor from "./VacancyInlineEditor";
 
 type RecruitmentContentProps = {
+  vacancies?: VacancyType[];
   editable?: boolean;
 };
 
 export default function RecruitmentContent({
+  vacancies: initialVacancies,
   editable = false,
 }: RecruitmentContentProps) {
   /*
    * =====================================================
    * VACANCIES
    * =====================================================
+   *
+   * Jika data dikirim dari server (CareersEditor),
+   * langsung gunakan data tersebut.
+   *
+   * Jika tidak ada data dari server,
+   * data akan diambil melalui API.
    */
-  const [vacancies, setVacancies] = useState<VacancyType[]>([]);
+
+  const [vacancies, setVacancies] = useState<VacancyType[]>(
+    initialVacancies ?? [],
+  );
 
   /*
    * =====================================================
-   * INITIAL LOADING
+   * LOADING
    * =====================================================
    *
-   * Loading hanya digunakan saat pertama kali
-   * mengambil data vacancy.
-   *
-   * Setelah CREATE / UPDATE / DELETE,
-   * loading tidak akan muncul lagi.
+   * Kalau initialVacancies tersedia,
+   * tidak perlu loading karena data sudah ada
+   * dari server.
    */
-  const [isLoading, setIsLoading] = useState(true);
+
+  const [isLoading, setIsLoading] = useState(initialVacancies === undefined);
 
   /*
    * =====================================================
    * DRAFT VACANCY
    * =====================================================
    */
+
   const [draftVacancy, setDraftVacancy] = useState<VacancyType | null>(null);
 
   /*
@@ -48,6 +61,7 @@ export default function RecruitmentContent({
    * EDITING
    * =====================================================
    */
+
   const [editingId, setEditingId] = useState<string | null>(null);
 
   /*
@@ -55,6 +69,7 @@ export default function RecruitmentContent({
    * APPLY MODAL
    * =====================================================
    */
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [selectedVacancy, setSelectedVacancy] = useState<VacancyType | null>(
@@ -63,16 +78,30 @@ export default function RecruitmentContent({
 
   /*
    * =====================================================
-   * FETCH VACANCIES
+   * SYNC SERVER DATA
    * =====================================================
    *
-   * initial = true
-   * → tampilkan loading.
-   *
-   * initial = false
-   * → fetch di background tanpa mengubah loading.
+   * Jika parent/server memberikan data baru,
+   * state lokal ikut diperbarui.
    */
-  const fetchVacancies = useCallback(async (initial = false) => {
+
+  useEffect(() => {
+    if (initialVacancies !== undefined) {
+      setVacancies(initialVacancies);
+      setIsLoading(false);
+    }
+  }, [initialVacancies]);
+
+  /*
+   * =====================================================
+   * GET VACANCIES
+   * =====================================================
+   *
+   * Digunakan untuk guest page atau
+   * refresh data setelah create/update/delete.
+   */
+
+  const fetchVacancies = useCallback(async () => {
     try {
       const response = await fetch("/api/vacancies", {
         method: "GET",
@@ -104,20 +133,9 @@ export default function RecruitmentContent({
     } catch (error) {
       console.error("Fetch vacancies error:", error);
 
-      /*
-       * Hanya kosongkan state ketika
-       * initial fetch gagal.
-       *
-       * Kalau background refresh gagal,
-       * data yang sedang tampil tetap dipertahankan.
-       */
-      if (initial) {
-        setVacancies([]);
-      }
+      setVacancies([]);
     } finally {
-      if (initial) {
-        setIsLoading(false);
-      }
+      setIsLoading(false);
     }
   }, []);
 
@@ -125,16 +143,26 @@ export default function RecruitmentContent({
    * =====================================================
    * INITIAL FETCH
    * =====================================================
+   *
+   * Kalau initialVacancies belum diberikan,
+   * ambil dari API.
+   *
+   * Kalau initialVacancies sudah diberikan dari
+   * CareersEditor, jangan fetch lagi.
    */
+
   useEffect(() => {
-    fetchVacancies(true);
-  }, [fetchVacancies]);
+    if (initialVacancies === undefined) {
+      fetchVacancies();
+    }
+  }, [initialVacancies, fetchVacancies]);
 
   /*
    * =====================================================
    * APPLY
    * =====================================================
    */
+
   const handleApply = (vacancy: VacancyType) => {
     if (editable) return;
 
@@ -147,12 +175,17 @@ export default function RecruitmentContent({
    * EDIT
    * =====================================================
    */
+
   const handleEdit = (vacancy: VacancyType) => {
     if (!editable) return;
 
-    if (editingId !== null) return;
+    if (editingId !== null) {
+      return;
+    }
 
-    if (draftVacancy !== null) return;
+    if (draftVacancy !== null) {
+      return;
+    }
 
     setEditingId(vacancy.id);
 
@@ -171,9 +204,10 @@ export default function RecruitmentContent({
    * UPDATE LOCAL
    * =====================================================
    *
-   * Ketika user sedang mengetik,
-   * card/editor langsung mengikuti state.
+   * Saat sedang mengetik di editor,
+   * card langsung mengikuti perubahan.
    */
+
   const handleUpdateLocal = (updatedVacancy: VacancyType) => {
     setVacancies((current) =>
       current.map((vacancy) =>
@@ -189,6 +223,7 @@ export default function RecruitmentContent({
    * CREATE DRAFT
    * =====================================================
    */
+
   const handleCreateVacancy = () => {
     if (!editable) return;
 
@@ -224,6 +259,7 @@ export default function RecruitmentContent({
    * UPDATE DRAFT
    * =====================================================
    */
+
   const handleUpdateDraft = (updatedVacancy: VacancyType) => {
     setDraftVacancy(updatedVacancy);
   };
@@ -233,6 +269,7 @@ export default function RecruitmentContent({
    * CANCEL DRAFT
    * =====================================================
    */
+
   const handleCancelDraft = () => {
     setDraftVacancy(null);
     setEditingId(null);
@@ -242,41 +279,23 @@ export default function RecruitmentContent({
    * =====================================================
    * CREATE SUCCESS
    * =====================================================
-   *
-   * Card langsung dimasukkan ke state.
-   *
-   * Tidak perlu menunggu GET selesai.
    */
-  const handleCreateSuccess = async (createdVacancy: VacancyType) => {
-    /*
-     * Tambahkan vacancy baru langsung ke UI.
-     */
-    setVacancies((current) => {
-      const exists = current.some(
-        (item) => String(item.id) === String(createdVacancy.id),
-      );
 
-      if (exists) {
-        return current.map((item) =>
-          String(item.id) === String(createdVacancy.id) ? createdVacancy : item,
-        );
-      }
-
-      return [...current, createdVacancy];
-    });
+  const handleCreateSuccess = async (createdVacancy?: VacancyType) => {
+    console.log("Vacancy created:", createdVacancy);
 
     /*
-     * Tutup editor.
+     * Tutup draft terlebih dahulu.
      */
+
     setDraftVacancy(null);
     setEditingId(null);
 
     /*
-     * Sinkronisasi dengan API.
-     *
-     * Tidak mengaktifkan loading.
+     * Ambil data terbaru dari API.
      */
-    await fetchVacancies(false);
+
+    await fetchVacancies();
   };
 
   /*
@@ -284,25 +303,13 @@ export default function RecruitmentContent({
    * UPDATE SUCCESS
    * =====================================================
    */
-  const handleUpdateSuccess = async (updatedVacancy: VacancyType) => {
-    /*
-     * Update UI langsung.
-     */
-    setVacancies((current) =>
-      current.map((item) =>
-        String(item.id) === String(updatedVacancy.id) ? updatedVacancy : item,
-      ),
-    );
 
-    /*
-     * Tutup editor.
-     */
+  const handleUpdateSuccess = async (updatedVacancy?: VacancyType) => {
+    console.log("Vacancy updated:", updatedVacancy);
+
     setEditingId(null);
 
-    /*
-     * Sinkronisasi background.
-     */
-    await fetchVacancies(false);
+    await fetchVacancies();
   };
 
   /*
@@ -310,22 +317,11 @@ export default function RecruitmentContent({
    * DELETE SUCCESS
    * =====================================================
    */
-  const handleDeleteExisting = async (vacancyId?: string) => {
-    /*
-     * Hapus langsung dari UI.
-     */
-    if (vacancyId) {
-      setVacancies((current) =>
-        current.filter((item) => String(item.id) !== String(vacancyId)),
-      );
-    }
 
+  const handleDeleteExisting = async () => {
     setEditingId(null);
 
-    /*
-     * Sinkronisasi background.
-     */
-    await fetchVacancies(false);
+    await fetchVacancies();
   };
 
   /*
@@ -333,52 +329,34 @@ export default function RecruitmentContent({
    * RENDER
    * =====================================================
    */
+
   return (
     <>
       <motion.section
         className="flex min-h-[60vh] flex-col justify-center px-4 pb-16 pt-32 text-center"
-        initial={{
-          opacity: 0,
-        }}
-        animate={{
-          opacity: 1,
-        }}
-        transition={{
-          duration: 0.45,
-          ease: [0.22, 1, 0.36, 1],
-        }}
+        initial="hidden"
+        animate="visible"
+        variants={staggerContainer}
       >
         {/* =================================================
             HEADER
         ================================================= */}
 
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: -4,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            duration: 0.5,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          className="w-full"
-        >
+        <motion.div variants={fadeInUp} className="w-full">
           <h2 className="font-serif text-3xl font-bold text-white">
             Open Recruitment
           </h2>
 
-          {/*
-           * Jangan tampilkan text ketika loading.
-           */}
+          {/* 
+            Jangan tampilkan text kosong saat loading.
+            Header tetap stabil.
+          */}
+
           {!isLoading && (
             <motion.p
               initial={{
                 opacity: 0,
-                y: -4,
+                y: -6,
               }}
               animate={{
                 opacity: 1,
@@ -386,7 +364,6 @@ export default function RecruitmentContent({
               }}
               transition={{
                 duration: 0.45,
-                delay: 0.05,
                 ease: [0.22, 1, 0.36, 1],
               }}
               className="mx-auto mt-2 max-w-xl text-sm text-white/70"
@@ -400,32 +377,17 @@ export default function RecruitmentContent({
           {/* TAMBAH VACANCY */}
 
           {editable && (
-            <motion.div
-              initial={{
-                opacity: 0,
-                y: -3,
-              }}
-              animate={{
-                opacity: isLoading ? 0 : 1,
-                y: isLoading ? -3 : 0,
-              }}
-              transition={{
-                duration: 0.4,
-                ease: [0.22, 1, 0.36, 1],
-              }}
+            <button
+              type="button"
+              onClick={handleCreateVacancy}
+              disabled={
+                editingId !== null || draftVacancy !== null || isLoading
+              }
+              className="mt-5 inline-flex items-center gap-2 rounded-md bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <button
-                type="button"
-                onClick={handleCreateVacancy}
-                disabled={
-                  editingId !== null || draftVacancy !== null || isLoading
-                }
-                className="mt-5 inline-flex items-center gap-2 rounded-md bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <Plus className="h-4 w-4" />
-                Tambah Vacancy
-              </button>
-            </motion.div>
+              <Plus className="h-4 w-4" />
+              Tambah Vacancy
+            </button>
           )}
         </motion.div>
 
@@ -434,17 +396,12 @@ export default function RecruitmentContent({
         ================================================= */}
 
         <div className="mx-auto mt-10 min-h-[300px] w-full max-w-5xl">
-          <AnimatePresence initial={false}>
+          <AnimatePresence mode="wait">
+            {/* =================================================
+                LOADING
+            ================================================= */}
+
             {isLoading ? (
-              /*
-               * =================================================
-               * LOADING
-               * =================================================
-               *
-               * Sengaja kosong.
-               * Tidak ada text.
-               * Tidak ada spinner.
-               */
               <motion.div
                 key="loading"
                 initial={{
@@ -457,24 +414,28 @@ export default function RecruitmentContent({
                   opacity: 0,
                 }}
                 transition={{
-                  duration: 0.4,
-                  ease: "easeOut",
+                  duration: 0.25,
                 }}
                 className="min-h-[300px] w-full"
               />
             ) : vacancies.length > 0 || draftVacancy !== null ? (
-              /*
-               * =================================================
-               * VACANCIES
-               * =================================================
-               */
+              /* =================================================
+                 VACANCIES
+              ================================================= */
+
               <motion.div
                 key="vacancies"
                 initial={{
                   opacity: 0,
+                  y: -10,
                 }}
                 animate={{
                   opacity: 1,
+                  y: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                  y: 6,
                 }}
                 transition={{
                   duration: 0.5,
@@ -493,10 +454,9 @@ export default function RecruitmentContent({
                     <motion.div
                       key={vacancy.id}
                       id={`vacancy-${vacancy.id}`}
-                      layout
                       initial={{
                         opacity: 0,
-                        y: -6,
+                        y: -8,
                       }}
                       animate={{
                         opacity: 1,
@@ -507,20 +467,11 @@ export default function RecruitmentContent({
                         y: -4,
                       }}
                       transition={{
-                        layout: {
-                          duration: 0.5,
-                          ease: [0.22, 1, 0.36, 1],
-                        },
-                        opacity: {
-                          duration: 0.5,
-                          ease: "easeOut",
-                        },
-                        y: {
-                          duration: 0.55,
-                          ease: [0.22, 1, 0.36, 1],
-                        },
-                        delay: index * 0.045,
+                        duration: 0.45,
+                        delay: index * 0.06,
+                        ease: [0.22, 1, 0.36, 1],
                       }}
+                      layout
                       className="relative w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
                     >
                       {isEditing ? (
@@ -529,7 +480,7 @@ export default function RecruitmentContent({
                           isNew={false}
                           onChange={handleUpdateLocal}
                           onCancel={() => setEditingId(null)}
-                          onDelete={() => handleDeleteExisting(vacancy.id)}
+                          onDelete={handleDeleteExisting}
                           onCreateSuccess={handleCreateSuccess}
                           onUpdateSuccess={handleUpdateSuccess}
                         />
@@ -568,10 +519,9 @@ export default function RecruitmentContent({
                   <motion.div
                     key={draftVacancy.id}
                     id={`vacancy-draft-${draftVacancy.id}`}
-                    layout
                     initial={{
                       opacity: 0,
-                      y: -6,
+                      y: -8,
                     }}
                     animate={{
                       opacity: 1,
@@ -582,19 +532,10 @@ export default function RecruitmentContent({
                       y: -4,
                     }}
                     transition={{
-                      layout: {
-                        duration: 0.5,
-                        ease: [0.22, 1, 0.36, 1],
-                      },
-                      opacity: {
-                        duration: 0.5,
-                        ease: "easeOut",
-                      },
-                      y: {
-                        duration: 0.55,
-                        ease: [0.22, 1, 0.36, 1],
-                      },
+                      duration: 0.45,
+                      ease: [0.22, 1, 0.36, 1],
                     }}
+                    layout
                     className="relative w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
                   >
                     <VacancyInlineEditor
@@ -610,30 +551,44 @@ export default function RecruitmentContent({
                 )}
               </motion.div>
             ) : (
-              /*
-               * =================================================
-               * EMPTY STATE
-               * =================================================
-               */
+              /* =================================================
+                 EMPTY STATE
+              ================================================= */
 
               <motion.div
                 key="empty"
                 initial={{
                   opacity: 0,
-                  y: -6,
+                  y: -8,
                 }}
                 animate={{
                   opacity: 1,
                   y: 0,
                 }}
+                exit={{
+                  opacity: 0,
+                }}
                 transition={{
-                  duration: 0.5,
+                  duration: 0.45,
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 className="mx-auto flex max-w-md flex-col items-center gap-4 rounded border border-dashed border-gray-300 bg-gray-50 px-8 py-16"
               >
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-accent/10">
-                  <Briefcase className="h-6 w-6 text-accent" />
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-accent"
+                  >
+                    <rect width="20" height="14" x="2" y="7" rx="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                  </svg>
                 </div>
 
                 <p className="text-sm text-gray-500">
