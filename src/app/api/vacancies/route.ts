@@ -1,42 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-/*
- * ============================
- * FORCE DYNAMIC
- * ============================
- *
- * Jangan cache API vacancy.
- * Penting terutama di production.
- */
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-
-/*
- * ============================
- * GET
- * ============================
- */
 
 export async function GET() {
     try {
         const vacancies = await prisma.vacancy.findMany({
+            where: {
+                isActive: true,
+            },
             orderBy: {
                 createdAt: "desc",
             },
         });
 
         return NextResponse.json(vacancies, {
-            status: 200,
-
-            /*
-             * Pastikan browser/CDN tidak
-             * menyimpan response lama.
-             */
             headers: {
                 "Cache-Control": "no-store, no-cache, must-revalidate",
-                Pragma: "no-cache",
-                Expires: "0",
             },
         });
     } catch (error) {
@@ -52,12 +33,6 @@ export async function GET() {
         );
     }
 }
-
-/*
- * ============================
- * POST
- * ============================
- */
 
 export async function POST(request: NextRequest) {
     try {
@@ -79,12 +54,6 @@ export async function POST(request: NextRequest) {
                 .map((item: unknown) => String(item).trim())
                 .filter(Boolean)
             : [];
-
-        /*
-         * ============================
-         * VALIDATION
-         * ============================
-         */
 
         if (!title) {
             return NextResponse.json(
@@ -119,12 +88,6 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        /*
-         * ============================
-         * CREATE DATABASE
-         * ============================
-         */
-
         const vacancy = await prisma.vacancy.create({
             data: {
                 title,
@@ -135,13 +98,21 @@ export async function POST(request: NextRequest) {
             },
         });
 
-        return NextResponse.json(vacancy, {
-            status: 201,
-
-            headers: {
-                "Cache-Control": "no-store",
+        return NextResponse.json(
+            {
+                id: vacancy.id.toString(),
+                title: vacancy.title,
+                employmentType: vacancy.employmentType,
+                image: vacancy.image ?? "",
+                qualifications: vacancy.qualifications,
             },
-        });
+            {
+                status: 201,
+                headers: {
+                    "Cache-Control": "no-store",
+                },
+            },
+        );
     } catch (error) {
         console.error("POST /api/vacancies error:", error);
 

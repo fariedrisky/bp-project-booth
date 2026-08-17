@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Check, ImagePlus, Plus, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -48,9 +48,41 @@ export default function VacancyInlineEditor({
   const [isDeleting, setIsDeleting] = useState(false);
 
   /*
-   * ============================
+   * =====================================================
+   * AUTO RESIZE TEXTAREA
+   * =====================================================
+   *
+   * Setiap textarea mengikuti tinggi isi.
+   *
+   * Jadi jika teks:
+   *
+   * "Memiliki kendaraan pribadi (diutamakan
+   * dapat mengemudi)"
+   *
+   * maka seluruh teks tetap terlihat.
+   */
+
+  const resizeTextareas = () => {
+    requestAnimationFrame(() => {
+      const textareas = document.querySelectorAll<HTMLTextAreaElement>(
+        `[data-vacancy-editor="${vacancy.id}"]`,
+      );
+
+      textareas.forEach((textarea) => {
+        textarea.style.height = "auto";
+        textarea.style.height = `${textarea.scrollHeight}px`;
+      });
+    });
+  };
+
+  useEffect(() => {
+    resizeTextareas();
+  }, [vacancy.id, vacancy.qualifications]);
+
+  /*
+   * =====================================================
    * UPDATE FIELD
-   * ============================
+   * =====================================================
    */
 
   const updateField = <K extends keyof VacancyType>(
@@ -64,9 +96,9 @@ export default function VacancyInlineEditor({
   };
 
   /*
-   * ============================
+   * =====================================================
    * QUALIFICATION
-   * ============================
+   * =====================================================
    */
 
   const updateQualification = (index: number, value: string) => {
@@ -99,15 +131,21 @@ export default function VacancyInlineEditor({
   };
 
   /*
-   * ============================
+   * =====================================================
    * KEYBOARD QUALIFICATION
-   * ============================
+   * =====================================================
    */
 
   const handleQualificationKeyDown = (
     event: React.KeyboardEvent<HTMLTextAreaElement>,
     index: number,
   ) => {
+    /*
+     * ENTER
+     *
+     * Buat qualification baru.
+     */
+
     if (event.key === "Enter") {
       event.preventDefault();
 
@@ -115,7 +153,7 @@ export default function VacancyInlineEditor({
 
       requestAnimationFrame(() => {
         const nextInput = document.querySelector<HTMLTextAreaElement>(
-          `[data-qualification-index="${index + 1}"]`,
+          `[data-vacancy-editor="${vacancy.id}"][data-qualification-index="${index + 1}"]`,
         );
 
         nextInput?.focus();
@@ -123,6 +161,12 @@ export default function VacancyInlineEditor({
 
       return;
     }
+
+    /*
+     * BACKSPACE PADA INPUT KOSONG
+     *
+     * Hapus qualification tersebut.
+     */
 
     if (
       event.key === "Backspace" &&
@@ -135,7 +179,10 @@ export default function VacancyInlineEditor({
 
       requestAnimationFrame(() => {
         const previousInput = document.querySelector<HTMLTextAreaElement>(
-          `[data-qualification-index="${Math.max(0, index - 1)}"]`,
+          `[data-vacancy-editor="${vacancy.id}"][data-qualification-index="${Math.max(
+            0,
+            index - 1,
+          )}"]`,
         );
 
         previousInput?.focus();
@@ -144,9 +191,9 @@ export default function VacancyInlineEditor({
   };
 
   /*
-   * ============================
+   * =====================================================
    * IMAGE UPLOAD
-   * ============================
+   * =====================================================
    */
 
   const handleImageChange = async (
@@ -200,31 +247,51 @@ export default function VacancyInlineEditor({
   };
 
   /*
-   * ============================
+   * =====================================================
+   * NORMALIZE API DATA
+   * =====================================================
+   */
+
+  const normalizeVacancy = (data: any, fallback: VacancyType): VacancyType => {
+    return {
+      id: String(data.id),
+      title: String(data.title ?? fallback.title),
+      employmentType: String(
+        data.employmentType ?? fallback.employmentType ?? "",
+      ),
+      image: data.image ?? fallback.image ?? "",
+      qualifications: Array.isArray(data.qualifications)
+        ? data.qualifications.map((item: unknown) => String(item))
+        : fallback.qualifications,
+    };
+  };
+
+  /*
+   * =====================================================
    * SAVE
-   * ============================
+   * =====================================================
    */
 
   const handleSave = async () => {
     setError("");
 
-    /*
-     * VALIDATION
-     */
+    const title = vacancy.title.trim();
 
-    if (!vacancy.title.trim()) {
-      setError("Title vacancy wajib diisi.");
-      return;
-    }
-
-    if (!vacancy.employmentType?.trim()) {
-      setError("Employment type wajib diisi.");
-      return;
-    }
+    const employmentType = vacancy.employmentType?.trim() ?? "";
 
     const qualifications = vacancy.qualifications
       .map((item) => item.trim())
       .filter(Boolean);
+
+    if (!title) {
+      setError("Title vacancy wajib diisi.");
+      return;
+    }
+
+    if (!employmentType) {
+      setError("Employment type wajib diisi.");
+      return;
+    }
 
     if (qualifications.length === 0) {
       setError("Minimal satu kualifikasi wajib diisi.");
@@ -235,9 +302,9 @@ export default function VacancyInlineEditor({
 
     try {
       /*
-       * ============================
+       * =================================================
        * CREATE
-       * ============================
+       * =================================================
        */
 
       if (isNew) {
@@ -245,48 +312,33 @@ export default function VacancyInlineEditor({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
           },
           body: JSON.stringify({
-            title: vacancy.title.trim(),
-            employmentType: vacancy.employmentType.trim(),
+            title,
+            employmentType,
             image: vacancy.image || null,
             qualifications,
           }),
+          cache: "no-store",
         });
 
         const data = await response.json();
+
+        console.log("POST /api/vacancies response:", data);
 
         if (!response.ok) {
           throw new Error(data?.message || "Gagal membuat vacancy.");
         }
 
-        /*
-         * Pastikan data hasil API
-         * langsung dikonversi ke VacancyType.
-         */
+        const createdVacancy = normalizeVacancy(data, {
+          ...vacancy,
+          title,
+          employmentType,
+          qualifications,
+        });
 
-        const createdVacancy: VacancyType = {
-          id: String(data.id),
-          title: data.title ?? vacancy.title.trim(),
-          employmentType: data.employmentType ?? vacancy.employmentType.trim(),
-          image: data.image ?? vacancy.image ?? "",
-          qualifications: Array.isArray(data.qualifications)
-            ? data.qualifications
-            : qualifications,
-        };
-
-        /*
-         * PENTING:
-         *
-         * Kirim vacancy hasil database
-         * ke parent.
-         *
-         * Parent akan:
-         * 1. menghapus draft
-         * 2. memasukkan vacancy baru
-         *    ke state vacancies
-         * 3. menghilangkan mode editing
-         */
+        console.log("Created vacancy:", createdVacancy);
 
         onCreateSuccess(createdVacancy);
 
@@ -296,39 +348,42 @@ export default function VacancyInlineEditor({
       }
 
       /*
-       * ============================
+       * =================================================
        * UPDATE
-       * ============================
+       * =================================================
        */
 
       const response = await fetch(`/api/vacancies/${vacancy.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
         },
         body: JSON.stringify({
-          title: vacancy.title.trim(),
-          employmentType: vacancy.employmentType.trim(),
+          title,
+          employmentType,
           image: vacancy.image || null,
           qualifications,
         }),
+        cache: "no-store",
       });
 
       const data = await response.json();
+
+      console.log("PUT /api/vacancies response:", data);
 
       if (!response.ok) {
         throw new Error(data?.message || "Gagal mengubah vacancy.");
       }
 
-      const updatedVacancy: VacancyType = {
-        id: String(data.id),
-        title: data.title ?? vacancy.title.trim(),
-        employmentType: data.employmentType ?? vacancy.employmentType.trim(),
-        image: data.image ?? vacancy.image ?? "",
-        qualifications: Array.isArray(data.qualifications)
-          ? data.qualifications
-          : qualifications,
-      };
+      const updatedVacancy = normalizeVacancy(data, {
+        ...vacancy,
+        title,
+        employmentType,
+        qualifications,
+      });
+
+      console.log("Updated vacancy:", updatedVacancy);
 
       onUpdateSuccess(updatedVacancy);
 
@@ -348,16 +403,12 @@ export default function VacancyInlineEditor({
   };
 
   /*
-   * ============================
+   * =====================================================
    * DELETE CLICK
-   * ============================
+   * =====================================================
    */
 
   const handleDeleteClick = () => {
-    /*
-     * Draft belum masuk database.
-     */
-
     if (isNew) {
       onDelete();
 
@@ -370,9 +421,9 @@ export default function VacancyInlineEditor({
   };
 
   /*
-   * ============================
+   * =====================================================
    * CONFIRM DELETE
-   * ============================
+   * =====================================================
    */
 
   const handleConfirmDelete = async () => {
@@ -388,6 +439,7 @@ export default function VacancyInlineEditor({
     try {
       const response = await fetch(`/api/vacancies/${vacancy.id}`, {
         method: "DELETE",
+        cache: "no-store",
       });
 
       const data = await response.json();
@@ -395,11 +447,6 @@ export default function VacancyInlineEditor({
       if (!response.ok) {
         throw new Error(data?.message || "Gagal menghapus vacancy.");
       }
-
-      /*
-       * API berhasil.
-       * Baru hapus card dari state parent.
-       */
 
       onDelete();
 
@@ -421,21 +468,31 @@ export default function VacancyInlineEditor({
   };
 
   /*
-   * ============================
+   * =====================================================
    * RENDER
-   * ============================
+   * =====================================================
    */
 
   return (
     <>
       <Card
         className={cn(
-          "mx-auto flex h-full max-w-[480px] flex-col overflow-hidden border-2 border-dashed border-accent bg-white shadow-md",
+          /*
+           * Sama seperti VacancyCard:
+           * - max width 480px
+           * - flex column
+           * - tidak menggunakan h-full
+           * - tidak overflow-hidden agar content editor
+           *   tidak terpotong
+           */
+          "mx-auto flex w-full max-w-[480px] flex-col overflow-visible border-2 border-dashed border-accent bg-white shadow-md",
         )}
       >
-        {/* IMAGE */}
+        {/* =================================================
+            IMAGE
+        ================================================= */}
 
-        <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-100">
+        <div className="relative aspect-[16/9] w-full overflow-hidden rounded-t-[inherit] bg-gray-100">
           {imagePreview ? (
             <img
               src={imagePreview}
@@ -469,25 +526,29 @@ export default function VacancyInlineEditor({
           />
         </div>
 
-        {/* HEADER */}
+        {/* =================================================
+            HEADER
+        ================================================= */}
 
         <CardHeader className="p-4 pb-0 sm:p-6 sm:pb-0">
-          <div className="mb-3 text-left">
-            <select
-              value={vacancy.employmentType ?? ""}
-              onChange={(event) =>
-                updateField("employmentType", event.target.value)
-              }
-              disabled={isSaving || isDeleting}
-              className="w-fit rounded-full border-0 bg-accent/10 px-3 py-1 text-xs font-medium text-accent outline-none disabled:opacity-50"
-            >
-              <option value="Freelance">Freelance</option>
-              <option value="Full Time">Full Time</option>
-              <option value="Part Time">Part Time</option>
-              <option value="Internship">Internship</option>
-              <option value="Contract">Contract</option>
-            </select>
-          </div>
+          {vacancy.employmentType && (
+            <div className="mb-2 text-left">
+              <select
+                value={vacancy.employmentType ?? ""}
+                onChange={(event) =>
+                  updateField("employmentType", event.target.value)
+                }
+                disabled={isSaving || isDeleting}
+                className="inline-block w-fit rounded-full border-0 bg-accent/10 px-2.5 py-0.5 text-xs font-medium text-accent outline-none disabled:opacity-50"
+              >
+                <option value="Freelance">Freelance</option>
+                <option value="Full Time">Full Time</option>
+                <option value="Part Time">Part Time</option>
+                <option value="Internship">Internship</option>
+                <option value="Contract">Contract</option>
+              </select>
+            </div>
+          )}
 
           <input
             type="text"
@@ -495,30 +556,64 @@ export default function VacancyInlineEditor({
             onChange={(event) => updateField("title", event.target.value)}
             disabled={isSaving || isDeleting}
             placeholder="EVENT CREW"
-            className="w-full border-b-2 border-gray-200 bg-transparent px-0 py-1 text-center font-serif text-lg font-semibold outline-none transition focus:border-accent disabled:opacity-50 sm:text-2xl"
+            className="w-full border-0 bg-transparent px-0 py-0 text-center font-serif text-lg font-semibold outline-none sm:text-2xl"
           />
         </CardHeader>
 
-        {/* CONTENT */}
+        {/* =================================================
+            CONTENT
+        ================================================= */}
 
-        <CardContent className="flex flex-grow flex-col p-4 pt-3 sm:p-6 sm:pt-4">
+        <CardContent className="flex flex-col p-4 pt-3 sm:p-6 sm:pt-4">
           <Separator className="mb-3 bg-gray-200 sm:mb-4" />
+
+          {/*
+           * SAMA DENGAN VACANCYCARD
+           */}
 
           <h4 className="text-left text-sm font-medium text-gray-600 sm:text-base">
             Kualifikasi:
           </h4>
 
-          <div className="mt-2 space-y-2">
+          {/*
+           * SAMA DENGAN:
+           *
+           * <ul className="mt-2 space-y-2 text-left">
+           *
+           * Editor dibuat tetap menggunakan layout
+           * yang sama.
+           */}
+
+          <div className="mt-2 space-y-2 text-left">
             {vacancy.qualifications.map((qualification, index) => (
               <div
                 key={`${vacancy.id}-qualification-${index}`}
-                className="group flex items-start gap-1"
+                className="group flex items-start gap-2"
               >
-                <span className="mt-[9px] h-1.5 w-1.5 flex-shrink-0 rounded-full bg-accent" />
+                {/*
+                 * BULLET SAMA DENGAN VACANCYCARD
+                 */}
+
+                <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-accent" />
+
+                {/*
+                 * TEXTAREA
+                 *
+                 * Font SAMA dengan VacancyCard:
+                 *
+                 * text-sm
+                 * leading-relaxed
+                 *
+                 * sm tidak diubah menjadi text-base
+                 * karena VacancyCard tetap text-sm.
+                 *
+                 * Height otomatis mengikuti isi.
+                 */}
 
                 <textarea
                   rows={1}
                   value={qualification}
+                  data-vacancy-editor={vacancy.id}
                   data-qualification-index={index}
                   onChange={(event) =>
                     updateQualification(index, event.target.value)
@@ -528,7 +623,7 @@ export default function VacancyInlineEditor({
                   }
                   disabled={isSaving || isDeleting}
                   placeholder="Tulis kualifikasi..."
-                  className="min-w-0 flex-1 resize-none overflow-hidden border-0 bg-transparent px-0 py-0.5 text-left text-sm leading-relaxed text-gray-600 outline-none focus:ring-0 disabled:opacity-50"
+                  className="m-0 min-h-[24px] min-w-0 flex-1 resize-none overflow-hidden border-0 bg-transparent p-0 text-sm leading-relaxed text-gray-600 outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0 disabled:opacity-50"
                   onInput={(event) => {
                     const target = event.currentTarget;
 
@@ -537,30 +632,42 @@ export default function VacancyInlineEditor({
                   }}
                 />
 
+                {/*
+                 * DELETE QUALIFICATION
+                 */}
+
                 {vacancy.qualifications.length > 1 && (
                   <button
                     type="button"
                     onClick={() => removeQualification(index)}
                     disabled={isSaving || isDeleting}
                     aria-label="Hapus kualifikasi"
-                    className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded text-gray-300 opacity-0 transition hover:text-red-500 disabled:pointer-events-none group-hover:opacity-100"
+                    className="mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded text-gray-300 opacity-0 transition hover:text-red-500 disabled:pointer-events-none group-hover:opacity-100"
                   >
-                    <X className="h-3 w-3" />
+                    <X className="h-3.5 w-3.5" />
                   </button>
                 )}
               </div>
             ))}
           </div>
 
+          {/* =================================================
+              ADD QUALIFICATION
+          ================================================= */}
+
           <button
             type="button"
             onClick={() => addQualification()}
             disabled={isSaving || isDeleting}
-            className="mt-4 flex w-fit items-center gap-1.5 text-xs font-medium text-accent transition hover:opacity-70 disabled:opacity-50"
+            className="mt-4 flex w-fit items-center gap-1.5 text-xs font-medium text-accent transition hover:opacity-70 disabled:opacity-50 sm:text-sm"
           >
             <Plus className="h-3.5 w-3.5" />
             Tambah Kualifikasi
           </button>
+
+          {/* =================================================
+              ERROR
+          ================================================= */}
 
           {error && (
             <p className="mt-4 rounded-md bg-red-50 px-3 py-2 text-left text-xs text-red-600">
@@ -569,16 +676,19 @@ export default function VacancyInlineEditor({
           )}
         </CardContent>
 
-        {/* FOOTER */}
+        {/* =================================================
+            FOOTER
+        ================================================= */}
 
         <CardFooter className="flex flex-wrap justify-between gap-2 border-t bg-gray-50 p-4 sm:p-6">
           <button
             type="button"
             onClick={handleDeleteClick}
             disabled={isSaving || isDeleting}
-            className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-xs font-medium text-red-500 transition hover:bg-red-50 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-xs font-medium text-red-500 transition hover:bg-red-50 disabled:opacity-50 sm:text-sm"
           >
             <Trash2 className="h-4 w-4" />
+
             {isNew ? "Batalkan" : "Hapus"}
           </button>
 
@@ -587,7 +697,7 @@ export default function VacancyInlineEditor({
               type="button"
               onClick={onCancel}
               disabled={isSaving || isDeleting}
-              className="inline-flex items-center gap-2 rounded-md border px-4 py-2 text-xs font-medium text-gray-600 transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-md border px-4 py-2 text-xs font-medium text-gray-600 transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
             >
               <X className="h-4 w-4" />
               Batal
@@ -597,7 +707,7 @@ export default function VacancyInlineEditor({
               type="button"
               onClick={handleSave}
               disabled={isSaving || isDeleting}
-              className="inline-flex items-center gap-2 rounded-md bg-black px-4 py-2 text-xs font-medium text-white transition hover:bg-black/80 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-md bg-black px-4 py-2 text-xs font-medium text-white transition hover:bg-black/80 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
             >
               <Check className="h-4 w-4" />
 
@@ -611,7 +721,9 @@ export default function VacancyInlineEditor({
         </CardFooter>
       </Card>
 
-      {/* CONFIRM DELETE */}
+      {/* =====================================================
+          CONFIRM DELETE
+      ===================================================== */}
 
       <ConfirmDialog
         open={showDeleteDialog}

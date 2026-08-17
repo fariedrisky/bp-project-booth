@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 type Props = {
     params: Promise<{
         id: string;
@@ -13,6 +16,7 @@ export async function GET(
 ) {
     try {
         const { id } = await params;
+
         const vacancyId = Number(id);
 
         if (!Number.isInteger(vacancyId)) {
@@ -43,7 +47,20 @@ export async function GET(
             );
         }
 
-        return NextResponse.json(vacancy);
+        return NextResponse.json(
+            {
+                id: vacancy.id.toString(),
+                title: vacancy.title,
+                employmentType: vacancy.employmentType,
+                image: vacancy.image ?? "",
+                qualifications: vacancy.qualifications,
+            },
+            {
+                headers: {
+                    "Cache-Control": "no-store, no-cache, must-revalidate",
+                },
+            },
+        );
     } catch (error) {
         console.error("GET /api/vacancies/[id] error:", error);
 
@@ -64,6 +81,7 @@ export async function PUT(
 ) {
     try {
         const { id } = await params;
+
         const vacancyId = Number(id);
 
         if (!Number.isInteger(vacancyId)) {
@@ -158,13 +176,20 @@ export async function PUT(
             },
         });
 
-        return NextResponse.json({
-            id: vacancy.id.toString(),
-            title: vacancy.title,
-            employmentType: vacancy.employmentType,
-            image: vacancy.image ?? "",
-            qualifications: vacancy.qualifications,
-        });
+        return NextResponse.json(
+            {
+                id: vacancy.id.toString(),
+                title: vacancy.title,
+                employmentType: vacancy.employmentType,
+                image: vacancy.image ?? "",
+                qualifications: vacancy.qualifications,
+            },
+            {
+                headers: {
+                    "Cache-Control": "no-store",
+                },
+            },
+        );
     } catch (error) {
         console.error("PUT /api/vacancies/[id] error:", error);
 
@@ -185,6 +210,7 @@ export async function DELETE(
 ) {
     try {
         const { id } = await params;
+
         const vacancyId = Number(id);
 
         if (!Number.isInteger(vacancyId)) {
@@ -221,9 +247,16 @@ export async function DELETE(
             },
         });
 
-        return NextResponse.json({
-            message: "Vacancy berhasil dihapus.",
-        });
+        return NextResponse.json(
+            {
+                message: "Vacancy berhasil dihapus.",
+            },
+            {
+                headers: {
+                    "Cache-Control": "no-store",
+                },
+            },
+        );
     } catch (error) {
         console.error("DELETE /api/vacancies/[id] error:", error);
 
