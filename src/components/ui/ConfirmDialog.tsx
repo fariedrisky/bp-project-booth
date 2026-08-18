@@ -2,6 +2,8 @@
 
 import React, { useEffect } from "react";
 import { AlertTriangle, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Button } from "@/components/ui/Button";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -27,6 +29,11 @@ export default function ConfirmDialog({
   useEffect(() => {
     if (!open) return;
 
+    const originalOverflow = document.body.style.overflow;
+
+    // Lock scroll
+    document.body.style.overflow = "hidden";
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" && !loading) {
         onCancel();
@@ -36,104 +43,154 @@ export default function ConfirmDialog({
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
+      // Unlock scroll
+      document.body.style.overflow = originalOverflow;
+
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [open, loading, onCancel]);
 
-  if (!open) {
-    return null;
-  }
-
   return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center px-4"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="confirm-dialog-title"
-    >
-      {/* BACKDROP */}
-
-      <button
-        type="button"
-        aria-label="Tutup dialog"
-        disabled={loading}
-        onClick={onCancel}
-        className="absolute inset-0 cursor-default bg-black/60 backdrop-blur-[2px]"
-      />
-
-      {/* DIALOG */}
-
-      <div className="relative z-10 w-full max-w-md overflow-hidden rounded-xl bg-white shadow-2xl">
-        {/* CLOSE */}
-
-        <button
-          type="button"
-          onClick={onCancel}
-          disabled={loading}
-          aria-label="Tutup"
-          className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 disabled:pointer-events-none disabled:opacity-50"
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          className="fixed inset-0 z-[100] flex items-center justify-center px-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="confirm-dialog-title"
         >
-          <X className="h-4 w-4" />
-        </button>
-
-        {/* CONTENT */}
-
-        <div className="p-6">
-          {/* ICON */}
-
-          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-red-50">
-            <AlertTriangle className="h-5 w-5 text-red-500" />
-          </div>
-
-          {/* TITLE */}
-
-          <h2
-            id="confirm-dialog-title"
-            className="pr-8 text-lg font-semibold text-gray-900"
-          >
-            {title}
-          </h2>
-
-          {/* DESCRIPTION */}
-
-          <p className="mt-2 text-sm leading-relaxed text-gray-500">
-            {description}
-          </p>
-        </div>
-
-        {/* FOOTER */}
-
-        <div className="flex items-center justify-end gap-2 border-t bg-gray-50 px-6 py-4">
-          {/* CANCEL */}
-
-          <button
+          {/* Backdrop */}
+          <motion.button
             type="button"
+            aria-label="Tutup dialog"
+            disabled={loading}
             onClick={onCancel}
-            disabled={loading}
-            className="rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {cancelText}
-          </button>
+            className="absolute inset-0 cursor-default bg-black/60 backdrop-blur-[2px]"
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.3,
+              ease: [0.4, 0, 0.2, 1],
+            }}
+          />
 
-          {/* CONFIRM */}
-
-          <button
-            type="button"
-            onClick={onConfirm}
-            disabled={loading}
-            className="inline-flex min-w-[130px] items-center justify-center rounded-md bg-red-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60"
+          {/* Dialog */}
+          <motion.div
+            className="relative z-10 w-full max-w-md overflow-hidden rounded-xl bg-white shadow-2xl"
+            initial={{
+              opacity: 0,
+              scale: 0.98,
+              y: 6,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              y: 0,
+            }}
+            exit={{
+              opacity: 0,
+              scale: 0.98,
+              y: 6,
+            }}
+            transition={{
+              duration: 0.22,
+              ease: [0.4, 0, 0.2, 1],
+            }}
           >
-            {loading ? (
-              <>
-                <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                Menghapus...
-              </>
-            ) : (
-              confirmText
-            )}
-          </button>
-        </div>
-      </div>
-    </div>
+            {/* Close Button */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={onCancel}
+              disabled={loading}
+              aria-label="Tutup"
+              className="absolute right-4 top-4 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+
+            {/* Content */}
+            <div className="p-6">
+              {/* Icon */}
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  scale: 0.9,
+                }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                  scale: 0.9,
+                }}
+                transition={{
+                  duration: 0.2,
+                  delay: 0.03,
+                  ease: [0.4, 0, 0.2, 1],
+                }}
+                className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-red-50"
+              >
+                <AlertTriangle className="h-5 w-5 text-red-500" />
+              </motion.div>
+
+              {/* Title */}
+              <h2
+                id="confirm-dialog-title"
+                className="pr-8 text-lg font-semibold text-gray-900"
+              >
+                {title}
+              </h2>
+
+              {/* Description */}
+              <p className="mt-2 text-sm leading-relaxed text-gray-500">
+                {description}
+              </p>
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-end gap-2 border-t bg-gray-50 px-6 py-4">
+              {/* Cancel */}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onCancel}
+                disabled={loading}
+                className="rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+              >
+                {cancelText}
+              </Button>
+
+              {/* Confirm */}
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={onConfirm}
+                disabled={loading}
+                className="min-w-[130px] rounded-md"
+              >
+                {loading ? (
+                  <>
+                    <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    Menghapus...
+                  </>
+                ) : (
+                  confirmText
+                )}
+              </Button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
